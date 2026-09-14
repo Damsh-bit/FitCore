@@ -1,24 +1,53 @@
 import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Plus, Check, MessageCircle } from "lucide-react";
+import {
+  Plus,
+  Check,
+  MessageCircle,
+  AlertTriangle,
+  Clock,
+  CheckCircle2,
+  DollarSign,
+  Download,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  ShieldAlert,
+  Percent,
+} from "lucide-react";
 import { buildWhatsAppUrl } from "@/lib/utils";
 import { useGymSettings } from "@/context/GymSettingsContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
+import PersonaAvatar from "@/components/ui/persona-avatar";
 import {
-  Table, TableBody, TableCell, TableHead,
-  TableHeader, TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import {
-  Dialog, DialogContent, DialogDescription,
-  DialogFooter, DialogHeader, DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Select, SelectContent, SelectItem,
-  SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { apiFetch } from "@/lib/api";
 
@@ -51,19 +80,33 @@ type EstadoCuenta = {
   periodos: PeriodoEstado[];
 };
 
-const METODOS = ["Efectivo", "Transferencia", "Tarjeta", "Otro"];
+const METODOS = ["Efectivo", "Transferencia", "Débito", "Crédito"];
 
 const ESTADO_CONFIG = {
-  AlDia: { label: "Al día", className: "bg-green-100 text-green-700" },
-  PendienteMesActual: { label: "Pendiente", className: "bg-gray-100 text-gray-600" },
-  ConDeuda: { label: "Con deuda", className: "bg-red-100 text-red-600" },
+  AlDia: {
+    label: "Al día",
+    className: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    badgeVariant: "success" as const,
+  },
+  PendienteMesActual: {
+    label: "Pendiente este mes",
+    className: "bg-amber-50 text-amber-700 border-amber-200",
+    badgeVariant: "outline" as const,
+  },
+  ConDeuda: {
+    label: "Con deuda vencida",
+    className: "bg-rose-50 text-rose-700 border-rose-200",
+    badgeVariant: "danger" as const,
+  },
 };
 
 function TableRowSkeleton({ cols }: { cols: number }) {
   return (
     <TableRow>
       {Array.from({ length: cols }).map((_, i) => (
-        <TableCell key={i}><Skeleton className="h-4 w-20" /></TableCell>
+        <TableCell key={i}>
+          <Skeleton className="h-5 w-24 rounded-lg" />
+        </TableCell>
       ))}
     </TableRow>
   );
@@ -72,15 +115,23 @@ function TableRowSkeleton({ cols }: { cols: number }) {
 export default function EstadoCuenta() {
   const [searchParams] = useSearchParams();
   const { settings } = useGymSettings();
+  const { toast } = useToast();
 
   const [clientes, setClientes] = useState<EstadoCuenta[]>([]);
   const [planes, setPlanes] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Filtros
   const [filtroEstado, setFiltroEstado] = useState(() => {
     const estadoInicial = searchParams.get("estado");
     return estadoInicial && estadoInicial in ESTADO_CONFIG ? estadoInicial : "Todos";
   });
+  const [filtroPlan, setFiltroPlan] = useState("todos");
   const [busqueda, setBusqueda] = useState("");
+
+  // Paginación
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [itemsPorPagina, setItemsPorPagina] = useState(10);
 
   // Modal pago
   const [modalOpen, setModalOpen] = useState(false);
@@ -93,53 +144,185 @@ export default function EstadoCuenta() {
     nota: "",
   });
 
-  // Descuento
+  // Descuento en modal pago
   const [aplicaDescuento, setAplicaDescuento] = useState(false);
   const [porcentajeDescuento, setPorcentajeDescuento] = useState("");
   const [importeFinal, setImporteFinal] = useState("");
 
-  const { toast } = useToast();
+  // Modal selector de WhatsApp
+  const [waModalOpen, setWaModalOpen] = useState(false);
+  const [clienteWa, setClienteWa] = useState<EstadoCuenta | null>(null);
 
   const cargar = async () => {
     setLoading(true);
     try {
       const [data, planesData] = await Promise.all([
         apiFetch("/api/pagos/estado-cuenta").then((r) => r.json()),
-        apiFetch("/api/planes").then((r) => r.json()).catch(() => [])
+        apiFetch("/api/planes").then((r) => r.json()).catch(() => []),
       ]);
-      setClientes(data);
+      setClientes(Array.isArray(data) ? data : []);
       if (Array.isArray(planesData)) {
         setPlanes(planesData);
       }
+    } catch {
+      toast({
+        variant: "destructive",
+        title: "Error al cargar",
+        description: "No se pudo cargar el estado de cuentas.",
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => { cargar(); }, []);
+  useEffect(() => {
+    cargar();
+  }, []);
 
+  // ── Cálculos Financieros y KPIs para el Dueño ─────────────
+  const metricas = useMemo(() => {
+    const hoy = new Date();
+    const mesActual = hoy.getMonth() + 1;
+    const anioActual = hoy.getFullYear();
+
+    let deudaTotalDinero = 0;
+    let porCobrarMesDinero = 0;
+    let cobradoMesDinero = 0;
+    let clientesConDeudaCount = 0;
+    let clientesPendientesCount = 0;
+    let clientesAlDiaCount = 0;
+
+    clientes.forEach((c) => {
+      const precioEstimado =
+        c.planPrecio ?? planes.find((pl) => pl.nombre === c.planNombre)?.precio ?? 0;
+
+      // Meses anteriores adeudados
+      const mesesAnterioresImpagos = c.periodos.filter(
+        (p) => !(p.mes === mesActual && p.anio === anioActual) && !p.pagado
+      );
+
+      // Mes actual impago
+      const mesActualImpago = c.periodos.find(
+        (p) => p.mes === mesActual && p.anio === anioActual && !p.pagado
+      );
+
+      // Mes actual cobrado
+      const mesActualPagado = c.periodos.find(
+        (p) => p.mes === mesActual && p.anio === anioActual && p.pagado
+      );
+
+      if (mesesAnterioresImpagos.length > 0) {
+        clientesConDeudaCount++;
+        deudaTotalDinero += mesesAnterioresImpagos.length * precioEstimado;
+      }
+
+      if (mesActualImpago) {
+        clientesPendientesCount++;
+        porCobrarMesDinero += precioEstimado;
+      }
+
+      if (mesActualPagado) {
+        cobradoMesDinero += precioEstimado;
+      }
+
+      if (c.estadoGeneral === "AlDia") {
+        clientesAlDiaCount++;
+      }
+    });
+
+    const totalActivos = clientes.length || 1;
+    const tasaEfectividad = Math.round((clientesAlDiaCount / totalActivos) * 100);
+
+    return {
+      deudaTotalDinero,
+      porCobrarMesDinero,
+      cobradoMesDinero,
+      clientesConDeudaCount,
+      clientesPendientesCount,
+      clientesAlDiaCount,
+      tasaEfectividad,
+    };
+  }, [clientes, planes]);
+
+  // ── Filtrado y Paginación ────────────────────────────────
   const clientesFiltrados = useMemo(() => {
     return clientes.filter((c) => {
       const matchEstado = filtroEstado === "Todos" || c.estadoGeneral === filtroEstado;
-      const matchBusqueda = c.nombre.toLowerCase().includes(busqueda.toLowerCase());
-      return matchEstado && matchBusqueda;
+      const matchPlan =
+        filtroPlan === "todos" ||
+        (filtroPlan === "sin_plan" ? !c.planNombre : c.planNombre?.toLowerCase() === filtroPlan.toLowerCase());
+      const q = busqueda.trim().toLowerCase();
+      const matchBusqueda =
+        !q ||
+        c.nombre.toLowerCase().includes(q) ||
+        c.email.toLowerCase().includes(q) ||
+        (c.telefono && c.telefono.includes(q));
+
+      return matchEstado && matchPlan && matchBusqueda;
     });
-  }, [clientes, filtroEstado, busqueda]);
+  }, [clientes, filtroEstado, filtroPlan, busqueda]);
 
-  const resumen = useMemo(() => ({
-    alDia: clientes.filter((c) => c.estadoGeneral === "AlDia").length,
-    pendiente: clientes.filter((c) => c.estadoGeneral === "PendienteMesActual").length,
-    conDeuda: clientes.filter((c) => c.estadoGeneral === "ConDeuda").length,
-  }), [clientes]);
+  const totalPaginas = Math.ceil(clientesFiltrados.length / itemsPorPagina) || 1;
+  const paginaAjustada = Math.min(paginaActual, totalPaginas);
 
-  // Obtener los headers de períodos del primer cliente
+  const clientesPaginados = useMemo(() => {
+    const inicio = (paginaAjustada - 1) * itemsPorPagina;
+    return clientesFiltrados.slice(inicio, inicio + itemsPorPagina);
+  }, [clientesFiltrados, paginaAjustada, itemsPorPagina]);
+
+  // Headers de períodos
   const periodoHeaders = clientes[0]?.periodos.map((p) => p.nombreMes) ?? [];
 
-  // ── Validaciones de entrada ──────────────────────────────
-  const preventInvalidNumberKeys = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (["-", "+", "e", "E"].includes(e.key)) {
-      e.preventDefault();
+  // Exportar morosos a CSV
+  const exportarMorososCSV = () => {
+    const morosos = clientes.filter((c) => c.estadoGeneral === "ConDeuda");
+    if (morosos.length === 0) {
+      toast({ title: "Sin morosos", description: "No hay socios con deuda vencida para exportar." });
+      return;
     }
+
+    const headers = ["Cliente", "Email", "Telefono", "Plan", "Precio Plan", "Meses Impagos"];
+    const rows = morosos.map((c) => {
+      const impagos = c.periodos.filter((p) => !p.pagado).map((p) => p.nombreMes).join(" - ");
+      return [
+        `"${c.nombre}"`,
+        `"${c.email}"`,
+        `"${c.telefono || "Sin tel"}"`,
+        `"${c.planNombre || "Sin plan"}"`,
+        c.planPrecio ?? 0,
+        `"${impagos}"`,
+      ];
+    });
+
+    const csvContent = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `FitCore_Morosos_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast({ title: "CSV exportado", description: `Se descargó el listado de ${morosos.length} socios con deuda.` });
+  };
+
+  // ── Manejo del Modal de Pago ─────────────────────────────
+  const abrirPago = (cliente: EstadoCuenta, periodo: PeriodoEstado) => {
+    setClienteSeleccionado(cliente);
+    setPeriodoSeleccionado(periodo);
+
+    const precio = cliente.planPrecio ?? planes.find((pl) => pl.nombre === cliente.planNombre)?.precio;
+    const montoInicial = precio !== undefined && precio !== null ? String(precio) : "";
+
+    setPagoForm({
+      monto: montoInicial,
+      metodo: "Efectivo",
+      nota: "",
+    });
+    setAplicaDescuento(false);
+    setPorcentajeDescuento("");
+    setImporteFinal(montoInicial);
+    setModalOpen(true);
   };
 
   const handleMontoChange = (val: string) => {
@@ -197,47 +380,6 @@ export default function EstadoCuenta() {
     setImporteFinal(String(final));
   };
 
-  const handleImporteFinalChange = (val: string) => {
-    const sanitized = val.replace(/[^0-9.]/g, "");
-    if (sanitized === "") {
-      setImporteFinal("");
-      return;
-    }
-
-    let finalVal = parseFloat(sanitized);
-    if (isNaN(finalVal)) return;
-    if (finalVal < 0) finalVal = 0;
-
-    const base = parseFloat(pagoForm.monto) || 0;
-    if (base > 0) {
-      if (finalVal > base) {
-        finalVal = base;
-      }
-      const pct = Math.max(0, Math.min(100, Math.round(((base - finalVal) / base) * 100)));
-      setPorcentajeDescuento(String(pct));
-    }
-    setImporteFinal(String(finalVal));
-  };
-
-  const abrirPago = (cliente: EstadoCuenta, periodo: PeriodoEstado) => {
-    setClienteSeleccionado(cliente);
-    setPeriodoSeleccionado(periodo);
-
-    // Autocompletar el monto con el costo del plan asociado
-    const precio = cliente.planPrecio ?? planes.find((pl) => pl.nombre === cliente.planNombre)?.precio;
-    const montoInicial = precio !== undefined && precio !== null ? String(precio) : "";
-
-    setPagoForm({
-      monto: montoInicial,
-      metodo: "Efectivo",
-      nota: ""
-    });
-    setAplicaDescuento(false);
-    setPorcentajeDescuento("");
-    setImporteFinal(montoInicial);
-    setModalOpen(true);
-  };
-
   const handleRegistrarPago = async () => {
     if (!clienteSeleccionado || !periodoSeleccionado) return;
 
@@ -246,28 +388,19 @@ export default function EstadoCuenta() {
       toast({
         variant: "destructive",
         title: "Monto inválido",
-        description: "El monto base debe ser un número mayor a cero."
+        description: "El monto base debe ser un número mayor a cero.",
       });
       return;
     }
 
     let montoCobro = baseMonto;
-
     if (aplicaDescuento) {
       const final = parseFloat(importeFinal);
       if (isNaN(final) || final <= 0) {
         toast({
           variant: "destructive",
           title: "Importe final inválido",
-          description: "El importe final con descuento debe ser mayor a cero."
-        });
-        return;
-      }
-      if (final > baseMonto) {
-        toast({
-          variant: "destructive",
-          title: "Descuento inválido",
-          description: "El importe final no puede ser mayor al monto original."
+          description: "El importe con descuento debe ser mayor a cero.",
         });
         return;
       }
@@ -307,8 +440,8 @@ export default function EstadoCuenta() {
 
       toast({
         variant: "success",
-        title: "Pago registrado",
-        description: `Pago de ${clienteSeleccionado.nombre} por $${montoCobro.toLocaleString("es-AR")} registrado para ${periodoSeleccionado.nombreMes}.`,
+        title: "Pago registrado con éxito",
+        description: `Se cobraron $${montoCobro.toLocaleString("es-AR")} a ${clienteSeleccionado.nombre} (${periodoSeleccionado.nombreMes}).`,
       });
       setModalOpen(false);
       cargar();
@@ -323,309 +456,677 @@ export default function EstadoCuenta() {
     }
   };
 
-  return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-black">Estado de cuenta</h1>
+  // ── Generador de Mensajes Inteligentes de WhatsApp ────────
+  const obtenerMensajesWhatsApp = (c: EstadoCuenta) => {
+    const gym = settings.nombreGimnasio || "el gimnasio";
+    const primerNombre = c.nombre.split(" ")[0];
+    const impagos = c.periodos.filter((p) => !p.pagado).map((p) => p.nombreMes);
 
-      {/* Resumen clickeable */}
-      <div className="grid grid-cols-3 gap-4">
-        {[
-          { key: "AlDia", label: "Al día", value: resumen.alDia, color: "text-green-600", hover: "hover:border-green-300" },
-          { key: "PendienteMesActual", label: "Pendiente este mes", value: resumen.pendiente, color: "text-gray-600", hover: "hover:border-gray-300" },
-          { key: "ConDeuda", label: "Con deuda", value: resumen.conDeuda, color: "text-red-600", hover: "hover:border-red-300" },
-        ].map((item) => (
-          <div
-            key={item.key}
-            onClick={() => setFiltroEstado(filtroEstado === item.key ? "Todos" : item.key)}
-            className={`bg-white border rounded-lg p-4 cursor-pointer transition-colors ${item.hover} ${filtroEstado === item.key ? "border-gray-400" : "border-gray-200"}`}
+    const msjRecordatorioMes = `Hola ${primerNombre}! 👋 Te escribimos desde *${gym}* para recordarte que tenés disponible la cuota de este mes para abonar. ¡Te esperamos para seguir entrenando! 💪`;
+
+    const msjRegularizacionDeuda = `Hola ${primerNombre}! 👋 Nos comunicamos desde *${gym}* para informarte que tenés cuotas pendientes de pago (${impagos.join(", ")}). Te pedimos que pases por recepción para regularizar tu cuenta y mantener tu acceso habilitado. Si ya abonaste, por favor envianos tu comprobante. ¡Muchas gracias! 🙏`;
+
+    return {
+      recordatorio: buildWhatsAppUrl(c.telefono, msjRecordatorioMes),
+      regularizacion: buildWhatsAppUrl(c.telefono, msjRegularizacionDeuda),
+    };
+  };
+
+  return (
+    <div className="space-y-8 pb-12">
+      {/* ── Encabezado Principal ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900">Estado de Cuenta</h1>
+            <Badge variant="outline" className="text-xs font-semibold px-2.5 py-0.5 rounded-full border-gray-200 bg-gray-50 text-gray-700">
+              Control de Deudas
+            </Badge>
+          </div>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">
+            Matriz de cobranza por período, gestión de morosos y recordatorios automáticos por WhatsApp.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={exportarMorososCSV}
+            className="rounded-xl border-gray-200 shadow-xs hover:bg-gray-50 text-xs font-medium text-rose-700"
           >
-            <p className="text-xs text-gray-500 mb-1">{item.label}</p>
+            <Download className="w-3.5 h-3.5 mr-1.5 text-rose-600" />
+            Descargar Morosos (CSV)
+          </Button>
+        </div>
+      </div>
+
+      {/* ── KPIs Financieros de Deuda (Cards) ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        {/* 1. Deuda Vencida Acumulada */}
+        <button
+          type="button"
+          onClick={() => {
+            setFiltroEstado(filtroEstado === "ConDeuda" ? "Todos" : "ConDeuda");
+            setPaginaActual(1);
+          }}
+          className={`bg-white border rounded-2xl p-4 sm:p-5 shadow-xs text-center cursor-pointer transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center relative overflow-hidden group hover:shadow-md ${
+            filtroEstado === "ConDeuda"
+              ? "border-rose-500 ring-2 ring-rose-500/15 bg-rose-50/30 shadow-sm"
+              : "border-slate-200/80 hover:border-rose-200 hover:bg-rose-50/20"
+          }`}
+        >
+          {filtroEstado === "ConDeuda" && (
+            <div className="absolute top-0 left-0 right-0 h-1 bg-rose-500" />
+          )}
+          <div className="flex items-center justify-center gap-2">
+            <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+              filtroEstado === "ConDeuda"
+                ? "bg-rose-600 text-white shadow-xs"
+                : "bg-rose-50 text-rose-600 border border-rose-200/60"
+            }`}>
+              <AlertTriangle className="w-3.5 h-3.5" />
+            </div>
+            <span className={`text-[11px] font-bold uppercase tracking-wider ${
+              filtroEstado === "ConDeuda" ? "text-rose-800" : "text-slate-500"
+            }`}>
+              Deuda Vencida
+            </span>
+          </div>
+          <div className="my-1">
             {loading ? (
-              <Skeleton className="h-7 w-10 rounded mt-0.5" />
+              <Skeleton className="h-8 w-32 rounded mx-auto" />
             ) : (
-              <p className={`text-2xl font-bold ${item.color} animate-fade-in-up`}>{item.value}</p>
+              <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+                ${metricas.deudaTotalDinero.toLocaleString("es-AR")}
+              </p>
             )}
           </div>
-        ))}
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-rose-700 font-medium truncate w-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+            <span>{metricas.clientesConDeudaCount} socios con mora</span>
+          </div>
+        </button>
+
+        {/* 2. Pendiente Este Mes */}
+        <button
+          type="button"
+          onClick={() => {
+            setFiltroEstado(filtroEstado === "PendienteMesActual" ? "Todos" : "PendienteMesActual");
+            setPaginaActual(1);
+          }}
+          className={`bg-white border rounded-2xl p-4 sm:p-5 shadow-xs text-center cursor-pointer transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center relative overflow-hidden group hover:shadow-md ${
+            filtroEstado === "PendienteMesActual"
+              ? "border-amber-500 ring-2 ring-amber-500/15 bg-amber-50/30 shadow-sm"
+              : "border-slate-200/80 hover:border-amber-200 hover:bg-amber-50/20"
+          }`}
+        >
+          {filtroEstado === "PendienteMesActual" && (
+            <div className="absolute top-0 left-0 right-0 h-1 bg-amber-500" />
+          )}
+          <div className="flex items-center justify-center gap-2">
+            <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+              filtroEstado === "PendienteMesActual"
+                ? "bg-amber-500 text-white shadow-xs"
+                : "bg-amber-50 text-amber-600 border border-amber-200/60"
+            }`}>
+              <Clock className="w-3.5 h-3.5" />
+            </div>
+            <span className={`text-[11px] font-bold uppercase tracking-wider ${
+              filtroEstado === "PendienteMesActual" ? "text-amber-800" : "text-slate-500"
+            }`}>
+              Por Cobrar Mes
+            </span>
+          </div>
+          <div className="my-1">
+            {loading ? (
+              <Skeleton className="h-8 w-32 rounded mx-auto" />
+            ) : (
+              <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+                ${metricas.porCobrarMesDinero.toLocaleString("es-AR")}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-amber-700 font-medium truncate w-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+            <span>{metricas.clientesPendientesCount} socios por liquidar</span>
+          </div>
+        </button>
+
+        {/* 3. Cobrado Este Mes */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group hover:shadow-md transition-all duration-200">
+          <div className="flex items-center justify-center gap-2">
+            <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200/60 flex items-center justify-center">
+              <DollarSign className="w-3.5 h-3.5" />
+            </div>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              Cobrado Este Mes
+            </span>
+          </div>
+          <div className="my-1">
+            {loading ? (
+              <Skeleton className="h-8 w-28 rounded mx-auto" />
+            ) : (
+              <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+                ${metricas.cobradoMesDinero.toLocaleString("es-AR")}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-emerald-700 font-medium truncate w-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+            <span>Ingreso neto liquidado</span>
+          </div>
+        </div>
+
+        {/* 4. Efectividad de Cobranza */}
+        <button
+          type="button"
+          onClick={() => {
+            setFiltroEstado(filtroEstado === "AlDia" ? "Todos" : "AlDia");
+            setPaginaActual(1);
+          }}
+          className={`bg-white border rounded-2xl p-4 sm:p-5 shadow-xs text-center cursor-pointer transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center relative overflow-hidden group hover:shadow-md ${
+            filtroEstado === "AlDia"
+              ? "border-indigo-500 ring-2 ring-indigo-500/15 bg-indigo-50/30 shadow-sm"
+              : "border-slate-200/80 hover:border-indigo-200 hover:bg-indigo-50/20"
+          }`}
+        >
+          {filtroEstado === "AlDia" && (
+            <div className="absolute top-0 left-0 right-0 h-1 bg-indigo-500" />
+          )}
+          <div className="flex items-center justify-center gap-2">
+            <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+              filtroEstado === "AlDia"
+                ? "bg-indigo-600 text-white shadow-xs"
+                : "bg-indigo-50 text-indigo-600 border border-indigo-200/60"
+            }`}>
+              <CheckCircle2 className="w-3.5 h-3.5" />
+            </div>
+            <span className={`text-[11px] font-bold uppercase tracking-wider ${
+              filtroEstado === "AlDia" ? "text-indigo-800" : "text-slate-500"
+            }`}>
+              Efectividad Cobro
+            </span>
+          </div>
+          <div className="my-1">
+            {loading ? (
+              <Skeleton className="h-8 w-28 rounded mx-auto" />
+            ) : (
+              <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+                {metricas.tasaEfectividad}%
+              </p>
+            )}
+          </div>
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-indigo-700 font-medium mt-1 truncate w-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
+            <span>{metricas.clientesAlDiaCount} socios 100% al día</span>
+          </div>
+        </button>
       </div>
 
-      {/* Filtros */}
-      <div className="flex gap-3 items-center">
-        <Input
-          placeholder="Buscar cliente..."
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          className="max-w-xs"
-        />
-        {filtroEstado !== "Todos" && (
-          <Button variant="ghost" onClick={() => setFiltroEstado("Todos")}>
-            Limpiar filtro
-          </Button>
-        )}
+      {/* ── Barra de Filtros y Búsqueda ── */}
+      <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5 w-full sm:w-auto flex-wrap">
+          {/* Buscador */}
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
+            <Input
+              placeholder="Buscar socio, email o teléfono..."
+              value={busqueda}
+              onChange={(e) => {
+                setBusqueda(e.target.value);
+                setPaginaActual(1);
+              }}
+              className="pl-8 rounded-xl h-9 text-xs"
+            />
+          </div>
+
+          {/* Filtro Plan */}
+          <Select
+            value={filtroPlan}
+            onValueChange={(val) => {
+              setFiltroPlan(val);
+              setPaginaActual(1);
+            }}
+          >
+            <SelectTrigger className="w-[145px] rounded-xl h-9 text-xs font-medium">
+              <SelectValue placeholder="Todos los planes" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos" className="text-xs">Todos los planes</SelectItem>
+              <SelectItem value="sin_plan" className="text-xs">Sin plan</SelectItem>
+              {planes.map((p) => (
+                <SelectItem key={p.id} value={p.nombre} className="text-xs">
+                  {p.nombre}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Filtro Estado */}
+          <Select
+            value={filtroEstado}
+            onValueChange={(val) => {
+              setFiltroEstado(val);
+              setPaginaActual(1);
+            }}
+          >
+            <SelectTrigger className="w-[160px] rounded-xl h-9 text-xs font-medium">
+              <SelectValue placeholder="Estado de cuenta" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Todos" className="text-xs">Todos los estados</SelectItem>
+              <SelectItem value="AlDia" className="text-xs">Al día</SelectItem>
+              <SelectItem value="PendienteMesActual" className="text-xs">Pendiente este mes</SelectItem>
+              <SelectItem value="ConDeuda" className="text-xs">Con deuda vencida</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {(filtroEstado !== "Todos" || filtroPlan !== "todos" || busqueda) && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setFiltroEstado("Todos");
+                setFiltroPlan("todos");
+                setBusqueda("");
+                setPaginaActual(1);
+              }}
+              className="text-xs text-gray-500 hover:text-gray-900 h-9"
+            >
+              Limpiar filtros
+            </Button>
+          )}
+        </div>
+
+        <span className="text-xs text-gray-400 font-medium">
+          {clientesFiltrados.length} socios listados
+        </span>
       </div>
 
-      {/* Tabla */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-x-auto">
+      {/* ── Matriz de Estados de Cuenta ── */}
+      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-xs">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Cliente</TableHead>
-              <TableHead>Plan</TableHead>
-              <TableHead>Estado</TableHead>
+            <TableRow className="bg-gray-50/70 border-b border-gray-100 text-[11px] uppercase tracking-wider text-gray-400 font-bold">
+              <TableHead className="py-3 px-4">Socio</TableHead>
+              <TableHead className="py-3 px-4">Plan & Tarifa</TableHead>
+              <TableHead className="py-3 px-4">Estado General</TableHead>
               {periodoHeaders.map((h) => (
-                <TableHead key={h} className="text-center">{h}</TableHead>
+                <TableHead key={h} className="text-center py-3 px-4">
+                  {h}
+                </TableHead>
               ))}
+              <TableHead className="text-right py-3 px-4">Acción Rápida</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <TableRowSkeleton key={i} cols={3 + periodoHeaders.length} />
+                <TableRowSkeleton key={i} cols={4 + periodoHeaders.length} />
               ))
             ) : clientesFiltrados.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={3 + periodoHeaders.length} className="text-center text-gray-500 py-8">
-                  No hay clientes
+                <TableCell colSpan={4 + periodoHeaders.length} className="text-center text-gray-400 py-12 text-xs">
+                  No se encontraron socios con los filtros actuales.
                 </TableCell>
               </TableRow>
             ) : (
-              clientesFiltrados.map((c, i) => {
+              clientesPaginados.map((c) => {
                 const cfg = ESTADO_CONFIG[c.estadoGeneral];
                 const debeRecordar = c.estadoGeneral === "ConDeuda" || c.estadoGeneral === "PendienteMesActual";
-                const waUrl = debeRecordar
-                  ? buildWhatsAppUrl(
-                      c.telefono,
-                      `Hola ${c.nombre.split(" ")[0]}! Te escribimos desde ${settings.nombreGimnasio ?? "el gimnasio"} para recordarte que tenés la cuota${c.estadoGeneral === "ConDeuda" ? " pendiente de meses anteriores" : " de este mes"} sin abonar. ¡Te esperamos!`
-                    )
-                  : null;
                 return (
                   <TableRow
                     key={c.userId}
-                    className="hover:bg-gray-50 animate-fade-in-up"
-                    style={{ animationDelay: `${Math.min(i, 10) * 30}ms` }}
+                    className="hover:bg-gray-50/80 transition-colors"
                   >
-                    <TableCell>
+                    {/* Socio */}
+                    <TableCell className="py-3.5 px-4">
+                      <div className="flex items-center gap-3">
+                        <PersonaAvatar seed={c.userId} size={36} />
+                        <div className="min-w-0">
+                          <p className="font-bold text-xs text-gray-900 truncate">{c.nombre}</p>
+                          <p className="text-[11px] text-gray-400 truncate">{c.email || c.telefono || "Sin contacto"}</p>
+                        </div>
+                      </div>
+                    </TableCell>
+
+                    {/* Plan */}
+                    <TableCell className="py-3.5 px-4">
                       <div>
-                        <p className="font-medium text-black">{c.nombre}</p>
-                        <p className="text-xs text-gray-400">{c.email}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-sm">{c.planNombre ?? <span className="text-gray-400">—</span>}</span>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <span className={`text-xs font-medium px-2 py-1 rounded-full ${cfg.className}`}>
-                          {cfg.label}
+                        <span className="text-xs font-bold text-gray-800">
+                          {c.planNombre ?? <span className="text-gray-400 font-normal">Sin plan</span>}
                         </span>
-                        {waUrl && (
-                          <a
-                            href={waUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`Recordar pago a ${c.nombre} por WhatsApp`}
-                            title="Recordar pago por WhatsApp"
-                            className="text-emerald-600 hover:text-emerald-700"
-                          >
-                            <MessageCircle className="h-3.5 w-3.5" />
-                          </a>
-                        )}
+                        {c.planPrecio ? (
+                          <p className="text-[11px] font-medium text-emerald-700">
+                            ${c.planPrecio.toLocaleString("es-AR")} / mes
+                          </p>
+                        ) : null}
                       </div>
                     </TableCell>
+
+                    {/* Estado */}
+                    <TableCell className="py-3.5 px-4">
+                      <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full border ${cfg.className}`}>
+                        {c.estadoGeneral === "ConDeuda" && <AlertTriangle className="w-3 h-3 text-rose-600" />}
+                        {c.estadoGeneral === "PendienteMesActual" && <Clock className="w-3 h-3 text-amber-600" />}
+                        {c.estadoGeneral === "AlDia" && <CheckCircle2 className="w-3 h-3 text-emerald-600" />}
+                        <span>{cfg.label}</span>
+                      </span>
+                    </TableCell>
+
+                    {/* Períodos */}
                     {c.periodos.map((p) => (
-                      <TableCell key={`${p.mes}-${p.anio}`} className="text-center">
+                      <TableCell key={`${p.mes}-${p.anio}`} className="text-center py-3.5 px-3">
                         {p.pagado ? (
-                          <div className="flex flex-col items-center gap-0.5">
-                            <Check className="h-4 w-4 text-green-500" />
-                            <span className="text-xs text-gray-400">${p.monto?.toLocaleString()}</span>
+                          <div className="inline-flex flex-col items-center">
+                            <span className="w-6 h-6 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center">
+                              <Check className="h-3.5 w-3.5" />
+                            </span>
+                            <span className="text-[10px] text-gray-400 font-bold mt-0.5">
+                              ${p.monto?.toLocaleString("es-AR")}
+                            </span>
                           </div>
                         ) : (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-7 px-2 text-xs text-red-500 hover:text-red-600 hover:bg-red-50"
+                          <button
+                            type="button"
                             onClick={() => abrirPago(c, p)}
+                            className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10.5px] font-bold text-rose-700 bg-rose-50 border border-rose-200 hover:bg-rose-100 hover:border-rose-300 transition-colors shadow-2xs"
+                            title={`Cobrar ${p.nombreMes}`}
                           >
-                            <Plus className="h-3 w-3 mr-1" />
-                            Pagar
-                          </Button>
+                            <Plus className="h-3 w-3 text-rose-600" />
+                            Cobrar
+                          </button>
                         )}
                       </TableCell>
                     ))}
+
+                    {/* Acción Rápida: WhatsApp inteligente */}
+                    <TableCell className="py-3.5 px-4 text-right">
+                      {debeRecordar && c.telefono ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setClienteWa(c);
+                            setWaModalOpen(true);
+                          }}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-colors"
+                          title="Gestionar recordatorio de pago"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>WhatsApp</span>
+                        </button>
+                      ) : (
+                        <span className="text-gray-300 text-xs">—</span>
+                      )}
+                    </TableCell>
                   </TableRow>
                 );
               })
             )}
           </TableBody>
         </Table>
+
+        {/* ── Controles de Paginación ── */}
+        {!loading && clientesFiltrados.length > 0 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 border-t border-gray-100 text-xs text-gray-500">
+            <div className="flex items-center gap-2">
+              <span>Mostrar</span>
+              <Select
+                value={String(itemsPorPagina)}
+                onValueChange={(val) => {
+                  setItemsPorPagina(Number(val));
+                  setPaginaActual(1);
+                }}
+              >
+                <SelectTrigger className="w-[70px] h-7 text-xs rounded-lg">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="25">25</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                </SelectContent>
+              </Select>
+              <span>por página</span>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7 rounded-lg"
+                onClick={() => setPaginaActual(1)}
+                disabled={paginaAjustada === 1}
+              >
+                <ChevronsLeft className="w-3.5 h-3.5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7 rounded-lg"
+                onClick={() => setPaginaActual((p) => Math.max(1, p - 1))}
+                disabled={paginaAjustada === 1}
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </Button>
+              <span className="px-2 text-xs font-semibold text-gray-700">
+                Página {paginaAjustada} de {totalPaginas}
+              </span>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7 rounded-lg"
+                onClick={() => setPaginaActual((p) => Math.min(totalPaginas, p + 1))}
+                disabled={paginaAjustada === totalPaginas}
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7 rounded-lg"
+                onClick={() => setPaginaActual(totalPaginas)}
+                disabled={paginaAjustada === totalPaginas}
+              >
+                <ChevronsRight className="w-3.5 h-3.5" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Modal pago */}
+      {/* ── Modal Cobrar Cuota ── */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md p-6">
           <DialogHeader>
-            <DialogTitle>Registrar pago</DialogTitle>
-            <DialogDescription>
-              <span className="font-medium text-gray-900">{clienteSeleccionado?.nombre}</span>
-              {" — "}{periodoSeleccionado?.nombreMes}
+            <DialogTitle className="text-base font-bold flex items-center gap-2">
+              <DollarSign className="w-5 h-5 text-primary" />
+              Registrar Pago de Cuota
+            </DialogTitle>
+            <DialogDescription className="text-xs">
+              <span className="font-bold text-gray-900">{clienteSeleccionado?.nombre}</span>
+              {" — "}
+              <span className="capitalize font-semibold text-primary">{periodoSeleccionado?.nombreMes}</span>
             </DialogDescription>
           </DialogHeader>
 
           <div className="mt-4 space-y-4">
             {clienteSeleccionado?.planNombre && (
-              <div className="flex items-center justify-between p-2.5 rounded-lg bg-muted/60 border border-border text-xs">
-                <span className="text-muted-foreground">Plan asociado:</span>
-                <span className="font-semibold text-foreground">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-200 text-xs">
+                <span className="text-gray-500">Plan contratado:</span>
+                <span className="font-bold text-gray-900">
                   {clienteSeleccionado.planNombre}
-                  {(clienteSeleccionado.planPrecio || planes.find((pl) => pl.nombre === clienteSeleccionado.planNombre)?.precio) && (
-                    <span className="ml-1 text-emerald-600 font-bold">
-                      (${Number(clienteSeleccionado.planPrecio ?? planes.find((pl) => pl.nombre === clienteSeleccionado.planNombre)?.precio).toLocaleString("es-AR")})
+                  {clienteSeleccionado.planPrecio && (
+                    <span className="ml-1 text-emerald-700 font-bold">
+                      (${clienteSeleccionado.planPrecio.toLocaleString("es-AR")})
                     </span>
                   )}
                 </span>
               </div>
             )}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="montoBase">Monto original</Label>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label htmlFor="montoBase" className="text-xs font-semibold text-gray-700">Monto Original</Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-muted-foreground">$</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400">$</span>
                   <Input
                     id="montoBase"
-                    type="number"
-                    min="0"
-                    step="any"
+                    type="text"
+                    inputMode="decimal"
                     placeholder="0"
-                    className="pl-7"
+                    className="pl-7 rounded-xl font-bold text-sm"
                     value={pagoForm.monto}
                     onChange={(e) => handleMontoChange(e.target.value)}
-                    onKeyDown={preventInvalidNumberKeys}
                     disabled={saving}
                   />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>Método</Label>
+
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold text-gray-700">Método de Pago</Label>
                 <Select
                   value={pagoForm.metodo}
                   onValueChange={(v) => setPagoForm((p) => ({ ...p, metodo: v }))}
                 >
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="rounded-xl text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    {METODOS.map((m) => <SelectItem key={m} value={m}>{m}</SelectItem>)}
+                    {METODOS.map((m) => (
+                      <SelectItem key={m} value={m} className="text-xs">{m}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            {/* Checkbox Aplica Descuento */}
-            <div className="pt-2 border-t border-border">
-              <label
-                htmlFor="checkDescuento"
-                className="flex items-center gap-2.5 py-1 text-sm font-medium cursor-pointer select-none"
-              >
+            {/* Checkbox Descuento */}
+            <div className="pt-2 border-t border-gray-100">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
-                  id="checkDescuento"
                   type="checkbox"
                   checked={aplicaDescuento}
                   onChange={(e) => handleToggleDescuento(e.target.checked)}
                   disabled={saving}
-                  className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black accent-black cursor-pointer"
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                 />
-                <span>Aplica descuento</span>
+                <span className="text-xs font-bold text-gray-700 flex items-center gap-1">
+                  <Percent className="w-3.5 h-3.5 text-amber-600" />
+                  Aplicar Descuento / Bonificación
+                </span>
               </label>
 
               {aplicaDescuento && (
-                <div className="mt-3 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 space-y-3">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1.5">
-                      <Label htmlFor="pctDescuento" className="text-xs font-semibold text-amber-900 dark:text-amber-200">
-                        % Descuento
-                      </Label>
-                      <div className="relative">
-                        <Input
-                          id="pctDescuento"
-                          type="number"
-                          min="0"
-                          max="100"
-                          step="1"
-                          placeholder="0"
-                          className="bg-background pr-7 text-sm"
-                          value={porcentajeDescuento}
-                          onChange={(e) => handlePorcentajeChange(e.target.value)}
-                          onKeyDown={preventInvalidNumberKeys}
-                          disabled={saving}
-                        />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground">%</span>
-                      </div>
+                <div className="mt-2.5 p-3 rounded-xl bg-amber-50/80 border border-amber-200/80 space-y-2 animate-fade-in-up">
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <Label className="text-[11px] font-semibold text-amber-900">% Descuento</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="100"
+                        placeholder="10"
+                        className="bg-white rounded-lg h-8 text-xs font-bold"
+                        value={porcentajeDescuento}
+                        onChange={(e) => handlePorcentajeChange(e.target.value)}
+                        disabled={saving}
+                      />
                     </div>
-
-                    <div className="space-y-1.5">
-                      <Label htmlFor="impFinal" className="text-xs font-semibold text-emerald-900 dark:text-emerald-200">
-                        Importe final
-                      </Label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-emerald-600">$</span>
-                        <Input
-                          id="impFinal"
-                          type="number"
-                          min="0"
-                          step="any"
-                          placeholder="0"
-                          className="bg-background pl-7 text-sm font-bold text-emerald-600"
-                          value={importeFinal}
-                          onChange={(e) => handleImporteFinalChange(e.target.value)}
-                          onKeyDown={preventInvalidNumberKeys}
-                          disabled={saving}
-                        />
+                    <div>
+                      <Label className="text-[11px] font-semibold text-emerald-900">Importe Final</Label>
+                      <div className="h-8 flex items-center px-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-xs font-black text-emerald-700">
+                        ${importeFinal ? parseFloat(importeFinal).toLocaleString("es-AR") : "0"}
                       </div>
                     </div>
                   </div>
-
-                  {pagoForm.monto && importeFinal && (
-                    <div className="flex justify-between items-center text-[11px] text-amber-900 dark:text-amber-300 font-medium pt-1.5 border-t border-amber-500/20">
-                      <span>Ahorro del cliente:</span>
-                      <span className="font-bold text-emerald-700 dark:text-emerald-400">
-                        ${Math.max(0, (parseFloat(pagoForm.monto) || 0) - (parseFloat(importeFinal) || 0)).toLocaleString("es-AR")}
-                      </span>
-                    </div>
-                  )}
                 </div>
               )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="inputNota">Nota personalizada <span className="text-gray-400 font-normal text-xs">(opcional)</span></Label>
+            {/* Nota */}
+            <div className="space-y-1">
+              <Label className="text-xs font-semibold text-gray-700">Nota personalizada (opcional)</Label>
               <Input
-                id="inputNota"
-                placeholder="Ej: Pago en efectivo en recepción, abonó mitad y mitad..."
+                placeholder="Ej: Pago en recepción, se le descontó $500..."
                 value={pagoForm.nota}
                 onChange={(e) => setPagoForm((p) => ({ ...p, nota: e.target.value }))}
                 disabled={saving}
+                className="rounded-xl text-xs"
               />
-              <div className="p-2.5 rounded-lg bg-muted/50 border border-border text-xs text-muted-foreground leading-relaxed">
-                <span className="font-semibold text-foreground">Nota que se registrará: </span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-                  Cuota {periodoSeleccionado?.nombreMes}{clienteSeleccionado?.planNombre ? ` - Plan ${clienteSeleccionado.planNombre}` : ""}
-                </span>
-                {pagoForm.nota.trim() && (
-                  <span className="text-foreground font-medium"> | {pagoForm.nota.trim()}</span>
-                )}
-                {aplicaDescuento && porcentajeDescuento && (
-                  <span className="text-amber-600 dark:text-amber-400 font-medium">
-                    {" "}| Desc. {porcentajeDescuento}% (Base: ${parseFloat(pagoForm.monto || "0").toLocaleString("es-AR")} → Final: ${parseFloat(importeFinal || "0").toLocaleString("es-AR")})
-                  </span>
-                )}
-              </div>
             </div>
           </div>
 
-          <DialogFooter className="mt-6">
-            <Button type="button" variant="outline" onClick={() => setModalOpen(false)} disabled={saving}>
+          <DialogFooter className="mt-6 gap-2 sm:gap-0">
+            <Button type="button" variant="outline" onClick={() => setModalOpen(false)} disabled={saving} className="rounded-xl text-xs">
               Cancelar
             </Button>
-            <Button type="button" onClick={handleRegistrarPago} loading={saving}>
-              {saving ? "Registrando..." : "Registrar pago"}
+            <Button type="button" onClick={handleRegistrarPago} loading={saving} className="rounded-xl text-xs font-bold">
+              {saving ? "Registrando..." : "Confirmar Cobro"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Modal Plantillas WhatsApp ── */}
+      <Dialog open={waModalOpen} onOpenChange={setWaModalOpen}>
+        <DialogContent className="max-w-md p-6">
+          <DialogHeader>
+            <DialogTitle className="text-base font-bold flex items-center gap-2">
+              <MessageCircle className="w-5 h-5 text-emerald-600" />
+              Notificación por WhatsApp
+            </DialogTitle>
+            <DialogDescription className="text-xs">
+              Elegí el tipo de mensaje para enviar a <span className="font-bold text-gray-900">{clienteWa?.nombre}</span> ({clienteWa?.telefono}).
+            </DialogDescription>
+          </DialogHeader>
+
+          {clienteWa && (
+            <div className="space-y-3 mt-3">
+              {/* Opción 1: Recordatorio Amigable */}
+              <div className="p-3.5 rounded-xl border border-gray-200 hover:border-emerald-400 bg-white hover:bg-emerald-50/20 transition-all space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-amber-600" />
+                    1. Recordatorio Cordial (Cuota del Mes)
+                  </span>
+                </div>
+                <p className="text-[11px] text-gray-500 italic leading-relaxed">
+                  "Hola {clienteWa.nombre.split(" ")[0]}! Te escribimos desde {settings.nombreGimnasio || "el gimnasio"} para recordarte que tenés disponible la cuota de este mes..."
+                </p>
+                <div className="pt-1">
+                  <Button asChild size="sm" className="w-full rounded-lg bg-emerald-600 hover:bg-emerald-700 text-xs font-bold">
+                    <a href={obtenerMensajesWhatsApp(clienteWa).recordatorio!} target="_blank" rel="noopener noreferrer">
+                      Enviar Recordatorio Cordial
+                    </a>
+                  </Button>
+                </div>
+              </div>
+
+              {/* Opción 2: Aviso de Regularización */}
+              <div className="p-3.5 rounded-xl border border-rose-200 hover:border-rose-400 bg-rose-50/30 transition-all space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-rose-800 flex items-center gap-1.5">
+                    <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
+                    2. Aviso de Regularización (Deuda Vencida)
+                  </span>
+                </div>
+                <p className="text-[11px] text-gray-600 italic leading-relaxed">
+                  "Hola {clienteWa.nombre.split(" ")[0]}! Nos comunicamos desde {settings.nombreGimnasio || "el gimnasio"} para informarte que tenés cuotas pendientes de pago..."
+                </p>
+                <div className="pt-1">
+                  <Button asChild size="sm" variant="destructive" className="w-full rounded-lg text-xs font-bold">
+                    <a href={obtenerMensajesWhatsApp(clienteWa).regularizacion!} target="_blank" rel="noopener noreferrer">
+                      Enviar Aviso de Regularización
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="mt-3">
+            <Button type="button" variant="ghost" size="sm" onClick={() => setWaModalOpen(false)} className="text-xs">
+              Cerrar
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -10,4 +10,7 @@ public class PagoResponse
     public string? Nota { get; set; }
     public int PeriodoMes { get; set; }
     public int PeriodoAnio { get; set; }
+    public string? UserId { get; set; }
+    public string? ClienteTelefono { get; set; }
+    public string? PlanNombre { get; set; }
 }

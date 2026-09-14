@@ -1,5 +1,21 @@
-import { useEffect, useState } from "react";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { useEffect, useState, useMemo } from "react";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  Copy,
+  TrendingUp,
+  Percent,
+  Search,
+  LayoutGrid,
+  Table as TableIcon,
+  Users,
+  Calendar,
+  DollarSign,
+  Sparkles,
+  ArrowRight,
+  RotateCcw,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,67 +23,127 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 import {
-  Table, TableBody, TableCell, TableHead,
-  TableHeader, TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import {
-  Dialog, DialogContent, DialogDescription,
-  DialogFooter, DialogHeader, DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { apiFetch } from "@/lib/api";
 
-type Plan = {
+export type Plan = {
   id: number;
   nombre: string;
   precio: number;
   duracionEnDias: number;
   activo: boolean;
+  sociosActivos?: number;
 };
 
-const emptyForm = { nombre: "", precio: "", duracionEnDias: "" };
-
-function TableRowSkeleton() {
-  return (
-    <TableRow>
-      <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-      <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-      <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-      <TableCell><Skeleton className="h-5 w-14 rounded-lg" /></TableCell>
-      <TableCell>
-        <div className="flex justify-end gap-2">
-          <Skeleton className="h-8 w-8 rounded-md" />
-          <Skeleton className="h-8 w-8 rounded-md" />
-        </div>
-      </TableCell>
-    </TableRow>
-  );
-}
+const emptyForm = { nombre: "", precio: "", duracionEnDias: "30" };
 
 export default function PlanesAdmin() {
   const [planes, setPlanes] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
+  // Vista: 'cards' | 'table'
+  const [vista, setVista] = useState<"cards" | "table">("cards");
+
+  // Filtros
+  const [busqueda, setBusqueda] = useState("");
+  const [filtroEstado, setFiltroEstado] = useState<"todos" | "activos" | "inactivos">("activos");
+
   // Modal crear / editar
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Plan | null>(null);
   const [form, setForm] = useState(emptyForm);
 
-  // Modal eliminar
+  // Modal eliminar / desactivar
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState<Plan | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
+  // Modal Ajuste Masivo de Precios (Herramienta Anti-Inflación)
+  const [ajusteModalOpen, setAjusteModalOpen] = useState(false);
+  const [porcentajeAjuste, setPorcentajeAjuste] = useState("15");
+  const [redondearACien, setRedondearACien] = useState(true);
+  const [ajustando, setAjustando] = useState(false);
+
   const { toast } = useToast();
 
+  const cargarPlanes = async () => {
+    setLoading(true);
+    try {
+      const res = await apiFetch("/api/planes");
+      const data = await res.json();
+      setPlanes(Array.isArray(data) ? data : []);
+    } catch {
+      toast({
+        variant: "destructive",
+        title: "Error al cargar",
+        description: "No se pudieron obtener los planes del gimnasio.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    apiFetch("/api/planes")
-      .then((r) => r.json())
-      .then((data) => setPlanes(data))
-      .finally(() => setLoading(false));
+    cargarPlanes();
   }, []);
 
-  // ── Abrir modal ────────────────────────────────────────────────────────────
+  // ── Métricas de Negocio de Planes ────────────────────────
+  const metricas = useMemo(() => {
+    const planesActivos = planes.filter((p) => p.activo);
+    const totalSociosConPlan = planes.reduce((acc, p) => acc + (p.sociosActivos ?? 0), 0);
+    const mrrEstimado = planesActivos.reduce(
+      (acc, p) => acc + (p.sociosActivos ?? 0) * p.precio,
+      0
+    );
+
+    // Plan más popular
+    const planMasPopular = [...planes].sort(
+      (a, b) => (b.sociosActivos ?? 0) - (a.sociosActivos ?? 0)
+    )[0];
+
+    return {
+      totalPlanesActivos: planesActivos.length,
+      totalSociosConPlan,
+      mrrEstimado,
+      planMasPopular: planMasPopular && (planMasPopular.sociosActivos ?? 0) > 0 ? planMasPopular : null,
+    };
+  }, [planes]);
+
+  // ── Filtrado ─────────────────────────────────────────────
+  const planesFiltrados = useMemo(() => {
+    return planes.filter((p) => {
+      const matchEstado =
+        filtroEstado === "todos" ||
+        (filtroEstado === "activos" ? p.activo : !p.activo);
+      const q = busqueda.trim().toLowerCase();
+      const matchBusqueda = !q || p.nombre.toLowerCase().includes(q);
+      return matchEstado && matchBusqueda;
+    });
+  }, [planes, filtroEstado, busqueda]);
+
+  // ── Modales de Crear, Editar, Clonar ──────────────────────
   const openCreate = () => {
     setEditing(null);
     setForm(emptyForm);
@@ -84,222 +160,790 @@ export default function PlanesAdmin() {
     setModalOpen(true);
   };
 
-  // ── Guardar (crear o editar) ───────────────────────────────────────────────
+  const openDuplicate = (p: Plan) => {
+    setEditing(null);
+    setForm({
+      nombre: `${p.nombre} (Copia)`,
+      precio: String(p.precio),
+      duracionEnDias: String(p.duracionEnDias),
+    });
+    setModalOpen(true);
+    toast({
+      title: "Plan duplicado",
+      description: "Modificá el nombre o precio y guardá para crear la variante.",
+    });
+  };
+
   const handleSave = async () => {
+    if (!form.nombre.trim()) {
+      toast({ variant: "destructive", title: "El nombre es obligatorio" });
+      return;
+    }
+    const precioNum = parseFloat(form.precio);
+    if (isNaN(precioNum) || precioNum < 0) {
+      toast({ variant: "destructive", title: "El precio debe ser un número válido" });
+      return;
+    }
+    const duracionNum = parseInt(form.duracionEnDias);
+    if (isNaN(duracionNum) || duracionNum <= 0) {
+      toast({ variant: "destructive", title: "La duración debe ser mayor a 0 días" });
+      return;
+    }
+
     setSaving(true);
     const body = {
-      nombre: form.nombre,
-      precio: parseFloat(form.precio),
-      duracionEnDias: parseInt(form.duracionEnDias),
+      nombre: form.nombre.trim(),
+      precio: precioNum,
+      duracionEnDias: duracionNum,
       activo: true,
-      gymId: "00000000-0000-0000-0000-000000000000", // placeholder SaaS
     };
 
     try {
       if (editing) {
         const res = await apiFetch(`/api/planes/${editing.id}`, {
           method: "PUT",
-          body: JSON.stringify({ ...body, id: editing.id }),
+          body: JSON.stringify({ ...body, id: editing.id, activo: editing.activo }),
         });
         if (!res.ok) throw new Error();
-        setPlanes((prev) =>
-          prev.map((p) =>
-            p.id === editing.id
-              ? { ...p, ...body, id: editing.id }
-              : p
-          )
-        );
-        toast({ variant: "success", title: "Plan actualizado" });
+        toast({ variant: "success", title: "Plan actualizado correctamente" });
       } else {
         const res = await apiFetch("/api/planes", {
           method: "POST",
           body: JSON.stringify(body),
         });
         if (!res.ok) throw new Error();
-        const nuevo = await res.json();
-        setPlanes((prev) => [...prev, nuevo]);
-        toast({ variant: "success", title: "Plan creado" });
+        toast({ variant: "success", title: "Plan creado con éxito" });
       }
       setModalOpen(false);
+      cargarPlanes();
     } catch {
-      toast({ variant: "destructive", title: "No se pudo guardar", description: "Intentá nuevamente." });
+      toast({
+        variant: "destructive",
+        title: "Error al guardar",
+        description: "Revisá los datos e intentá nuevamente.",
+      });
     } finally {
       setSaving(false);
     }
   };
 
-  // ── Eliminar (soft delete) ─────────────────────────────────────────────────
-  const handleDelete = async () => {
+  // ── Desactivar / Reactivar Plan ──────────────────────────
+  const handleDeleteOrToggle = async () => {
     if (!deleting) return;
     setDeleteLoading(true);
     try {
-      const res = await apiFetch(`/api/planes/${deleting.id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error();
-      setPlanes((prev) =>
-        prev.map((p) => (p.id === deleting.id ? { ...p, activo: false } : p))
-      );
+      if (deleting.activo) {
+        // Desactivar
+        const res = await apiFetch(`/api/planes/${deleting.id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error();
+        toast({ variant: "success", title: "Plan desactivado" });
+      } else {
+        // Reactivar
+        const res = await apiFetch(`/api/planes/${deleting.id}`, {
+          method: "PUT",
+          body: JSON.stringify({ ...deleting, activo: true }),
+        });
+        if (!res.ok) throw new Error();
+        toast({ variant: "success", title: "Plan reactivado" });
+      }
       setDeleteOpen(false);
       setDeleting(null);
-      toast({ variant: "success", title: "Plan desactivado" });
+      cargarPlanes();
     } catch {
-      toast({ variant: "destructive", title: "No se pudo desactivar" });
+      toast({ variant: "destructive", title: "No se pudo actualizar el estado del plan" });
     } finally {
       setDeleteLoading(false);
     }
   };
 
+  // ── Ajuste Masivo de Precios (Anti-Inflación) ────────────
+  const handleAjusteMasivo = async () => {
+    const pct = parseFloat(porcentajeAjuste);
+    if (isNaN(pct) || pct === 0) {
+      toast({ variant: "destructive", title: "Ingresá un porcentaje válido distinto de 0" });
+      return;
+    }
+
+    setAjustando(true);
+    try {
+      const res = await apiFetch("/api/planes/ajuste-masivo", {
+        method: "POST",
+        body: JSON.stringify({
+          porcentaje: pct,
+          redondearACien,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Error al aplicar ajuste");
+      }
+
+      toast({
+        variant: "success",
+        title: "¡Precios actualizados!",
+        description: `Se aplicó un ${pct}% de aumento a los planes activos.`,
+      });
+      setAjusteModalOpen(false);
+      cargarPlanes();
+    } catch (e: unknown) {
+      toast({
+        variant: "destructive",
+        title: "Error en el ajuste masivo",
+        description: e instanceof Error ? e.message : "Intentá nuevamente.",
+      });
+    } finally {
+      setAjustando(false);
+    }
+  };
+
+  // Previsualización de aumento en vivo para el modal
+  const simulacionAjuste = useMemo(() => {
+    const pct = parseFloat(porcentajeAjuste) || 0;
+    const activos = planes.filter((p) => p.activo);
+    return activos.map((p) => {
+      let nuevo = p.precio * (1 + pct / 100);
+      if (redondearACien) {
+        nuevo = Math.round(nuevo / 100) * 100;
+      } else {
+        nuevo = Math.round(nuevo * 100) / 100;
+      }
+      return {
+        ...p,
+        nuevoPrecio: Math.max(0, nuevo),
+        diferencia: Math.max(0, nuevo) - p.precio,
+      };
+    });
+  }, [planes, porcentajeAjuste, redondearACien]);
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-black">Planes</h1>
-        <Button onClick={openCreate}>
-          <Plus className="h-4 w-4 mr-2" />
-          Nuevo Plan
-        </Button>
+    <div className="space-y-8 pb-12">
+      {/* ── Encabezado Principal ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900">Planes y Tarifas</h1>
+            <Badge variant="outline" className="text-xs font-semibold px-2.5 py-0.5 rounded-full border-gray-200 bg-gray-50 text-gray-700">
+              Catálogo Comercial
+            </Badge>
+          </div>
+          <p className="text-xs sm:text-sm text-gray-500 mt-1">
+            Gestión de membresías, precios, ajuste masivo por inflación y control de suscriptores activos.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {/* Botón Ajuste Masivo */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setAjusteModalOpen(true)}
+            className="rounded-xl border-amber-300 bg-amber-50/60 hover:bg-amber-100 text-amber-900 text-xs font-bold shadow-xs"
+          >
+            <Percent className="w-3.5 h-3.5 mr-1.5 text-amber-600" />
+            Ajuste Masivo de Precios
+          </Button>
+
+          {/* Botón Nuevo Plan */}
+          <Button
+            size="sm"
+            onClick={openCreate}
+            className="rounded-xl text-xs font-bold shadow-xs"
+          >
+            <Plus className="w-4 h-4 mr-1.5" />
+            Nuevo Plan
+          </Button>
+        </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nombre</TableHead>
-              <TableHead>Precio</TableHead>
-              <TableHead>Duración</TableHead>
-              <TableHead>Estado</TableHead>
-              <TableHead className="text-right">Acciones</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
+      {/* ── Métricas del Catálogo (Cards) ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        {/* Planes Activos */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
+          <div className="flex items-center justify-center gap-2">
+            <div className="w-6 h-6 rounded-lg bg-slate-100 text-slate-700 border border-slate-200/60 flex items-center justify-center">
+              <Sparkles className="w-3.5 h-3.5" />
+            </div>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Planes Activos</span>
+          </div>
+          <div className="my-1">
             {loading ? (
-              Array.from({ length: 4 }).map((_, i) => <TableRowSkeleton key={i} />)
-            ) : planes.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center text-gray-500 py-8 font-normal">
-                  No hay planes creados
-                </TableCell>
-              </TableRow>
+              <Skeleton className="h-8 w-20 rounded mx-auto" />
             ) : (
-              planes.map((p, i) => (
-                <TableRow
-                  key={p.id}
-                  className="hover:bg-gray-50 transition-colors animate-fade-in-up"
-                  style={{ animationDelay: `${i * 40}ms` }}
-                >
-                  <TableCell className="font-medium">{p.nombre}</TableCell>
-                  <TableCell>${p.precio.toLocaleString("es-AR")}</TableCell>
-                  <TableCell>{p.duracionEnDias} días</TableCell>
-                  <TableCell>
-                    <Badge variant={p.activo ? "success" : "danger"}>
+              <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+                {metricas.totalPlanesActivos}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500 font-medium truncate w-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
+            <span>Opciones para venta</span>
+          </div>
+        </div>
+
+        {/* Socios Inscriptos */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
+          <div className="flex items-center justify-center gap-2">
+            <div className="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 border border-blue-200/60 flex items-center justify-center">
+              <Users className="w-3.5 h-3.5" />
+            </div>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Socios con Plan</span>
+          </div>
+          <div className="my-1">
+            {loading ? (
+              <Skeleton className="h-8 w-24 rounded mx-auto" />
+            ) : (
+              <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+                {metricas.totalSociosConPlan}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-blue-700 font-medium truncate w-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
+            <span>Membresías vigentes</span>
+          </div>
+        </div>
+
+        {/* MRR Estimado */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
+          <div className="flex items-center justify-center gap-2">
+            <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200/60 flex items-center justify-center">
+              <DollarSign className="w-3.5 h-3.5" />
+            </div>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">MRR Proyectado</span>
+          </div>
+          <div className="my-1">
+            {loading ? (
+              <Skeleton className="h-8 w-28 rounded mx-auto" />
+            ) : (
+              <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+                ${metricas.mrrEstimado.toLocaleString("es-AR")}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-emerald-700 font-medium truncate w-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+            <span>Facturación recurrente mensual</span>
+          </div>
+        </div>
+
+        {/* Plan Más Popular */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
+          <div className="flex items-center justify-center gap-2">
+            <div className="w-6 h-6 rounded-lg bg-amber-50 text-amber-600 border border-amber-200/60 flex items-center justify-center">
+              <TrendingUp className="w-3.5 h-3.5" />
+            </div>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Más Elegido</span>
+          </div>
+          <div className="my-1 max-w-full px-1">
+            {loading ? (
+              <Skeleton className="h-8 w-32 rounded mx-auto" />
+            ) : metricas.planMasPopular && (metricas.planMasPopular.sociosActivos ?? 0) > 0 ? (
+              <p className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-tight truncate text-center" title={metricas.planMasPopular.nombre}>
+                {metricas.planMasPopular.nombre}
+              </p>
+            ) : (
+              <p className="text-xl sm:text-2xl font-black text-slate-400 tracking-tight leading-tight truncate text-center">
+                {planes.length > 0 ? planes[0]?.nombre : "—"}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center justify-center gap-1.5 text-[11px] font-medium truncate w-full">
+            {metricas.planMasPopular && (metricas.planMasPopular.sociosActivos ?? 0) > 0 ? (
+              <>
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                <span className="text-amber-700">{metricas.planMasPopular.sociosActivos ?? 0} socios inscriptos</span>
+              </>
+            ) : (
+              <>
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0" />
+                <span className="text-slate-400">Aún sin inscripciones</span>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Barra de Control: Búsqueda, Filtros y Vista Dual ── */}
+      <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5 w-full sm:w-auto flex-wrap">
+          {/* Buscador */}
+          <div className="relative w-full sm:w-60">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
+            <Input
+              placeholder="Buscar plan por nombre..."
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+              className="pl-8 rounded-xl h-9 text-xs"
+            />
+          </div>
+
+          {/* Filtro Estado */}
+          <Select
+            value={filtroEstado}
+            onValueChange={(val: "todos" | "activos" | "inactivos") => setFiltroEstado(val)}
+          >
+            <SelectTrigger className="w-[145px] rounded-xl h-9 text-xs font-medium">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="activos" className="text-xs">Solo Activos</SelectItem>
+              <SelectItem value="inactivos" className="text-xs">Solo Inactivos</SelectItem>
+              <SelectItem value="todos" className="text-xs">Todos los planes</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Selector de Modo de Vista (Cards vs Table) */}
+        <div className="flex items-center gap-1 bg-gray-100/80 p-1 rounded-xl border border-gray-200 self-end sm:self-auto">
+          <button
+            type="button"
+            onClick={() => setVista("cards")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              vista === "cards"
+                ? "bg-white text-gray-900 shadow-xs"
+                : "text-gray-500 hover:text-gray-800"
+            }`}
+          >
+            <LayoutGrid className="w-3.5 h-3.5" />
+            <span>Tarjetas</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setVista("table")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              vista === "table"
+                ? "bg-white text-gray-900 shadow-xs"
+                : "text-gray-500 hover:text-gray-800"
+            }`}
+          >
+            <TableIcon className="w-3.5 h-3.5" />
+            <span>Tabla</span>
+          </button>
+        </div>
+      </div>
+
+      {/* ── Contenido: Vista Tarjetas o Vista Tabla ── */}
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} className="h-64 rounded-2xl" />
+          ))}
+        </div>
+      ) : planesFiltrados.length === 0 ? (
+        <div className="py-16 text-center text-xs text-gray-400 bg-white rounded-2xl border border-gray-200">
+          No se encontraron planes con los filtros actuales.
+        </div>
+      ) : vista === "cards" ? (
+        /* ── VISTA TARJETAS (Pricing Cards) ── */
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {planesFiltrados.map((p) => {
+            const esMasPopular = metricas.planMasPopular?.id === p.id;
+            return (
+              <div
+                key={p.id}
+                className={`bg-white rounded-2xl border transition-all duration-200 shadow-xs flex flex-col justify-between overflow-hidden relative group hover:shadow-md ${
+                  !p.activo ? "opacity-60 bg-gray-50/50 border-gray-200" : esMasPopular ? "border-amber-400 ring-2 ring-amber-400/10" : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                {/* Badge flotante si es el más popular */}
+                {esMasPopular && p.activo && (
+                  <div className="absolute top-3 right-3">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300">
+                      <Sparkles className="w-3 h-3 text-amber-600" />
+                      Más Elegido
+                    </span>
+                  </div>
+                )}
+
+                <div className="p-6 space-y-4">
+                  <div>
+                    <Badge
+                      variant={p.activo ? "success" : "secondary"}
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-full mb-2"
+                    >
+                      {p.activo ? "Activo para venta" : "Desactivado"}
+                    </Badge>
+                    <h3 className="text-lg font-black text-gray-900 group-hover:text-primary transition-colors">
+                      {p.nombre}
+                    </h3>
+                  </div>
+
+                  {/* Precio y Duración */}
+                  <div className="pt-2 border-t border-gray-100">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl font-black text-gray-900 tracking-tight">
+                        ${p.precio.toLocaleString("es-AR")}
+                      </span>
+                      <span className="text-xs text-gray-500 font-medium">
+                        / {p.duracionEnDias} días
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Estadísticas de socios inscriptos */}
+                  <div className="bg-gray-50/80 rounded-xl p-3 border border-gray-100 space-y-1.5 text-xs">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-500 flex items-center gap-1.5">
+                        <Users className="w-3.5 h-3.5 text-gray-400" />
+                        Socios activos:
+                      </span>
+                      <span className="font-bold text-gray-900">
+                        {p.sociosActivos ?? 0} socios
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-500 flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                        Vigencia:
+                      </span>
+                      <span className="font-semibold text-gray-700">
+                        {p.duracionEnDias === 30 ? "1 Mes" : p.duracionEnDias === 90 ? "Trimestral" : `${p.duracionEnDias} días`}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Acciones de la Tarjeta */}
+                <div className="px-6 py-3 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openEdit(p)}
+                    className="flex-1 rounded-xl text-xs font-semibold h-8 border-gray-200 hover:bg-white"
+                  >
+                    <Pencil className="w-3.5 h-3.5 mr-1 text-gray-600" />
+                    Editar
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => openDuplicate(p)}
+                    className="rounded-xl text-xs font-medium h-8 text-gray-500 hover:text-gray-800"
+                    title="Duplicar como nuevo plan"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setDeleting(p);
+                      setDeleteOpen(true);
+                    }}
+                    className={`rounded-xl text-xs font-medium h-8 ${
+                      p.activo
+                        ? "text-rose-600 hover:text-rose-700 hover:bg-rose-50"
+                        : "text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                    }`}
+                    title={p.activo ? "Desactivar" : "Reactivar"}
+                  >
+                    {p.activo ? <Trash2 className="w-3.5 h-3.5" /> : <RotateCcw className="w-3.5 h-3.5" />}
+                  </Button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        /* ── VISTA TABLA ADMINISTRATIVA ── */
+        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-xs">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-gray-50/70 border-b border-gray-100 text-[11px] uppercase tracking-wider text-gray-400 font-bold">
+                <TableHead className="py-3 px-4">Nombre del Plan</TableHead>
+                <TableHead className="py-3 px-4">Precio Actual</TableHead>
+                <TableHead className="py-3 px-4">Duración</TableHead>
+                <TableHead className="py-3 px-4">Socios Activos</TableHead>
+                <TableHead className="py-3 px-4">Estado</TableHead>
+                <TableHead className="text-right py-3 px-4">Acciones</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {planesFiltrados.map((p) => (
+                <TableRow key={p.id} className="hover:bg-gray-50/80 transition-colors">
+                  <TableCell className="py-3.5 px-4 font-bold text-gray-900 text-xs">
+                    {p.nombre}
+                  </TableCell>
+                  <TableCell className="py-3.5 px-4 font-black text-gray-900 text-xs">
+                    ${p.precio.toLocaleString("es-AR")}
+                  </TableCell>
+                  <TableCell className="py-3.5 px-4 text-gray-600 text-xs font-medium">
+                    {p.duracionEnDias} días
+                  </TableCell>
+                  <TableCell className="py-3.5 px-4">
+                    <span className="inline-flex items-center gap-1 font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full text-[11px]">
+                      <Users className="w-3 h-3" />
+                      {p.sociosActivos ?? 0}
+                    </span>
+                  </TableCell>
+                  <TableCell className="py-3.5 px-4">
+                    <Badge variant={p.activo ? "success" : "secondary"} className="text-[10px] font-bold">
                       {p.activo ? "Activo" : "Inactivo"}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="py-3.5 px-4 text-right">
                     <div className="inline-flex items-center gap-1">
                       <Button
-                        type="button" variant="ghost" size="icon"
-                        className="h-8 w-8"
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 rounded-lg text-gray-500 hover:text-gray-900"
                         onClick={() => openEdit(p)}
-                        aria-label="Editar"
+                        title="Editar plan"
                       >
-                        <Pencil className="h-4 w-4" />
+                        <Pencil className="h-3.5 w-3.5" />
                       </Button>
                       <Button
-                        type="button" variant="ghost" size="icon"
-                        className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50"
-                        onClick={() => { setDeleting(p); setDeleteOpen(true); }}
-                        disabled={!p.activo}
-                        aria-label="Desactivar"
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 rounded-lg text-gray-500 hover:text-gray-900"
+                        onClick={() => openDuplicate(p)}
+                        title="Duplicar plan"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Copy className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className={`h-8 w-8 rounded-lg ${
+                          p.activo
+                            ? "text-rose-600 hover:text-rose-700 hover:bg-rose-50"
+                            : "text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                        }`}
+                        onClick={() => {
+                          setDeleting(p);
+                          setDeleteOpen(true);
+                        }}
+                        title={p.activo ? "Desactivar" : "Reactivar"}
+                      >
+                        {p.activo ? <Trash2 className="h-3.5 w-3.5" /> : <RotateCcw className="h-3.5 w-3.5" />}
                       </Button>
                     </div>
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
 
-      {/* ── Modal crear / editar ── */}
+      {/* ── Modal Crear / Editar Plan ── */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md p-6">
           <DialogHeader>
-            <DialogTitle>{editing ? "Editar plan" : "Nuevo plan"}</DialogTitle>
-            <DialogDescription>
-              {editing ? "Modificá los datos del plan." : "Completá los datos para crear un nuevo plan."}
+            <DialogTitle className="text-base font-bold flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-primary" />
+              {editing ? "Editar Plan" : "Nuevo Plan de Membresía"}
+            </DialogTitle>
+            <DialogDescription className="text-xs">
+              {editing ? "Actualizá la tarifa o vigencia del plan." : "Creá una nueva opción de membresía para ofrecer en recepción."}
             </DialogDescription>
           </DialogHeader>
 
           <div className="mt-4 space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="nombre">Nombre</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="nombre" className="text-xs font-semibold text-gray-700">Nombre del Plan</Label>
               <Input
                 id="nombre"
-                placeholder="Ej: Plan Mensual"
+                placeholder="Ej: Pase Libre Musculación, Pase 3 Días..."
                 value={form.nombre}
                 onChange={(e) => setForm((p) => ({ ...p, nombre: e.target.value }))}
                 disabled={saving}
+                className="rounded-xl text-xs"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="precio">Precio</Label>
-              <Input
-                id="precio"
-                type="number"
-                min="0"
-                placeholder="Ej: 5000"
-                value={form.precio}
-                onChange={(e) => setForm((p) => ({ ...p, precio: e.target.value }))}
-                disabled={saving}
-              />
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="precio" className="text-xs font-semibold text-gray-700">Precio ($)</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400">$</span>
+                  <Input
+                    id="precio"
+                    type="number"
+                    min="0"
+                    placeholder="25000"
+                    className="pl-7 rounded-xl text-xs font-bold"
+                    value={form.precio}
+                    onChange={(e) => setForm((p) => ({ ...p, precio: e.target.value }))}
+                    disabled={saving}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="duracion" className="text-xs font-semibold text-gray-700">Duración (Días)</Label>
+                <Input
+                  id="duracion"
+                  type="number"
+                  min="1"
+                  placeholder="30"
+                  className="rounded-xl text-xs"
+                  value={form.duracionEnDias}
+                  onChange={(e) => setForm((p) => ({ ...p, duracionEnDias: e.target.value }))}
+                  disabled={saving}
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="duracion">Duración (días)</Label>
-              <Input
-                id="duracion"
-                type="number"
-                min="1"
-                placeholder="Ej: 30"
-                value={form.duracionEnDias}
-                onChange={(e) => setForm((p) => ({ ...p, duracionEnDias: e.target.value }))}
-                disabled={saving}
-              />
+
+            {/* Accesos rápidos de duración */}
+            <div className="flex items-center gap-1.5 pt-1">
+              <span className="text-[11px] text-gray-400">Atajos:</span>
+              <button
+                type="button"
+                onClick={() => setForm((f) => ({ ...f, duracionEnDias: "30" }))}
+                className="px-2 py-0.5 text-[10px] font-bold rounded bg-gray-100 hover:bg-gray-200 text-gray-700"
+              >
+                1 Mes (30d)
+              </button>
+              <button
+                type="button"
+                onClick={() => setForm((f) => ({ ...f, duracionEnDias: "90" }))}
+                className="px-2 py-0.5 text-[10px] font-bold rounded bg-gray-100 hover:bg-gray-200 text-gray-700"
+              >
+                Trimestre (90d)
+              </button>
+              <button
+                type="button"
+                onClick={() => setForm((f) => ({ ...f, duracionEnDias: "365" }))}
+                className="px-2 py-0.5 text-[10px] font-bold rounded bg-gray-100 hover:bg-gray-200 text-gray-700"
+              >
+                Anual (365d)
+              </button>
             </div>
           </div>
 
-          <DialogFooter className="mt-6">
-            <Button type="button" variant="outline" onClick={() => setModalOpen(false)} disabled={saving}>
+          <DialogFooter className="mt-6 gap-2 sm:gap-0">
+            <Button type="button" variant="outline" onClick={() => setModalOpen(false)} disabled={saving} className="rounded-xl text-xs">
               Cancelar
             </Button>
-            <Button
-              type="button"
-              onClick={handleSave}
-              disabled={!form.nombre || !form.precio || !form.duracionEnDias}
-              loading={saving}
-            >
-              {saving ? "Guardando..." : "Guardar"}
+            <Button type="button" onClick={handleSave} loading={saving} className="rounded-xl text-xs font-bold">
+              {saving ? "Guardando..." : "Guardar Plan"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* ── Modal confirmar desactivar ── */}
-      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <DialogContent>
+      {/* ── Modal Ajuste Masivo de Precios ── */}
+      <Dialog open={ajusteModalOpen} onOpenChange={setAjusteModalOpen}>
+        <DialogContent className="max-w-lg p-6">
           <DialogHeader>
-            <DialogTitle>Desactivar plan</DialogTitle>
-            <DialogDescription>
-              ¿Estás seguro de que querés desactivar{" "}
-              <span className="font-medium text-gray-900">{deleting?.nombre}</span>?
+            <DialogTitle className="text-base font-bold flex items-center gap-2">
+              <Percent className="w-5 h-5 text-amber-600" />
+              Ajuste Masivo de Tarifas
+            </DialogTitle>
+            <DialogDescription className="text-xs">
+              Incrementá los precios de todos los planes activos con un porcentaje general y redondeo cómodo para mostrador.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="mt-6">
-            <Button type="button" variant="outline" onClick={() => setDeleteOpen(false)} disabled={deleteLoading}>
+
+          <div className="mt-4 space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold text-gray-700">% de Aumento</Label>
+                <div className="relative">
+                  <Input
+                    type="number"
+                    step="0.5"
+                    min="-50"
+                    max="100"
+                    placeholder="15"
+                    className="pr-7 rounded-xl text-sm font-bold"
+                    value={porcentajeAjuste}
+                    onChange={(e) => setPorcentajeAjuste(e.target.value)}
+                    disabled={ajustando}
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">%</span>
+                </div>
+              </div>
+
+              <div className="space-y-1.5 flex flex-col justify-end">
+                <label className="flex items-center gap-2 p-2.5 rounded-xl bg-gray-50 border border-gray-200 cursor-pointer select-none text-xs font-semibold text-gray-700">
+                  <input
+                    type="checkbox"
+                    checked={redondearACien}
+                    onChange={(e) => setRedondearACien(e.target.checked)}
+                    disabled={ajustando}
+                    className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
+                  />
+                  <span>Redondear a centenas ($100)</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Simulación en vivo */}
+            <div className="space-y-1.5">
+              <span className="text-xs font-bold text-gray-700 uppercase tracking-wide">
+                Simulación de Precios Nuevos ({simulacionAjuste.length} planes activos)
+              </span>
+              <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-xl divide-y divide-gray-100 text-xs">
+                {simulacionAjuste.map((p) => (
+                  <div key={p.id} className="p-2.5 flex items-center justify-between bg-white hover:bg-gray-50">
+                    <span className="font-semibold text-gray-800">{p.nombre}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-400 line-through">${p.precio.toLocaleString("es-AR")}</span>
+                      <ArrowRight className="w-3 h-3 text-gray-400" />
+                      <span className="font-black text-emerald-700">${p.nuevoPrecio.toLocaleString("es-AR")}</span>
+                      <span className="text-[10px] text-amber-700 font-bold bg-amber-50 px-1.5 py-0.5 rounded">
+                        (+${p.diferencia.toLocaleString("es-AR")})
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="mt-6 gap-2 sm:gap-0">
+            <Button type="button" variant="outline" onClick={() => setAjusteModalOpen(false)} disabled={ajustando} className="rounded-xl text-xs">
               Cancelar
             </Button>
-            <Button type="button" variant="destructive" onClick={handleDelete} loading={deleteLoading}>
-              {deleteLoading ? "Desactivando..." : "Desactivar"}
+            <Button type="button" onClick={handleAjusteMasivo} loading={ajustando} className="rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white">
+              {ajustando ? "Actualizando..." : "Confirmar Aumento Masivo"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Modal Confirmar Desactivar / Reactivar ── */}
+      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <DialogContent className="max-w-md p-6">
+          <DialogHeader>
+            <DialogTitle className="text-base font-bold">
+              {deleting?.activo ? "Desactivar Plan" : "Reactivar Plan"}
+            </DialogTitle>
+            <DialogDescription className="text-xs">
+              {deleting?.activo ? (
+                <>
+                  ¿Estás seguro de que querés desactivar{" "}
+                  <span className="font-bold text-gray-900">{deleting?.nombre}</span>? Ya no estará disponible para nuevos socios en recepción.
+                </>
+              ) : (
+                <>
+                  ¿Querés volver a activar{" "}
+                  <span className="font-bold text-gray-900">{deleting?.nombre}</span> para que vuelva a figurar en venta?
+                </>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="mt-6 gap-2 sm:gap-0">
+            <Button type="button" variant="outline" onClick={() => setDeleteOpen(false)} disabled={deleteLoading} className="rounded-xl text-xs">
+              Cancelar
+            </Button>
+            <Button
+              type="button"
+              variant={deleting?.activo ? "destructive" : "default"}
+              onClick={handleDeleteOrToggle}
+              loading={deleteLoading}
+              className="rounded-xl text-xs font-bold"
+            >
+              {deleteLoading ? "Procesando..." : deleting?.activo ? "Desactivar" : "Reactivar"}
             </Button>
           </DialogFooter>
         </DialogContent>

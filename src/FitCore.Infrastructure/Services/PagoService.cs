@@ -125,7 +125,10 @@ public class PagoService
         return new PagoResponse
         {
             Id = pago.Id,
+            UserId = pago.UserId,
             ClienteNombre = $"{user.Nombre} {user.Apellido}",
+            ClienteTelefono = user.Telefono,
+            PlanNombre = membresia?.Plan?.Nombre,
             Monto = pago.Monto,
             Metodo = pago.Metodo,
             Fecha = pago.Fecha,
@@ -140,11 +143,15 @@ public class PagoService
         return await _context.Pagos
             .AsNoTracking()
             .Include(p => p.User)
+            .Include(p => p.Membresia).ThenInclude(m => m.Plan)
             .OrderByDescending(p => p.Fecha)
             .Select(p => new PagoResponse
             {
                 Id = p.Id,
-                ClienteNombre = $"{p.User.Nombre} {p.User.Apellido}",
+                UserId = p.UserId,
+                ClienteNombre = p.User != null ? $"{p.User.Nombre} {p.User.Apellido}" : "Cliente Desconocido",
+                ClienteTelefono = p.User != null ? p.User.Telefono : null,
+                PlanNombre = p.Membresia != null && p.Membresia.Plan != null ? p.Membresia.Plan.Nombre : null,
                 Monto = p.Monto,
                 Metodo = p.Metodo,
                 Fecha = p.Fecha,

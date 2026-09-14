@@ -941,125 +941,197 @@ export default function Clientes() {
         </div>
 
         {/* ── Métricas y KPIs de Cabecera (Interactivos) ── */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
           {/* Total Socios */}
           <button
             type="button"
             onClick={() => setFiltroRapido("todos")}
-            className={`p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer ${
+            className={`col-span-2 sm:col-span-1 lg:col-span-1 p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer h-[116px] flex flex-col justify-between relative overflow-hidden shadow-xs hover:shadow-md group ${
               filtroRapido === "todos"
-                ? "bg-gray-900 text-white border-gray-900 shadow-md scale-[1.02]"
-                : "bg-white border-gray-200/80 hover:border-gray-300 hover:bg-gray-50/50"
+                ? "border-slate-800 ring-2 ring-slate-800/10 bg-slate-50/60 shadow-sm"
+                : "border-slate-200/80 bg-white hover:border-slate-300 hover:bg-slate-50/30"
             }`}
           >
+            {filtroRapido === "todos" && (
+              <div className="absolute top-0 left-0 right-0 h-1 bg-slate-800" />
+            )}
             <div className="flex items-center justify-between">
-              <span className={`text-xs font-bold uppercase tracking-wider ${filtroRapido === "todos" ? "text-gray-300" : "text-gray-500"}`}>
+              <span className={`text-[11px] font-bold uppercase tracking-wider ${
+                filtroRapido === "todos" ? "text-slate-900" : "text-slate-500"
+              }`}>
                 Socios Totales
               </span>
-              <Users className={`h-4 w-4 ${filtroRapido === "todos" ? "text-gray-300" : "text-gray-400"}`} />
+              <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 ${
+                filtroRapido === "todos"
+                  ? "bg-slate-900 text-white shadow-xs"
+                  : "bg-slate-100 text-slate-700 border border-slate-200/60"
+              }`}>
+                <Users className="h-4 w-4" />
+              </div>
             </div>
-            <p className="text-2xl font-black mt-2 tracking-tight">
-              {loading ? <Skeleton className="h-8 w-12" /> : metrics.total}
-            </p>
-            <p className={`text-[11px] mt-0.5 font-medium ${filtroRapido === "todos" ? "text-gray-300" : "text-gray-400"}`}>
-              {metrics.activos} activos · {metrics.inactivos} inactivos
-            </p>
+            <div>
+              <p className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+                {loading ? <Skeleton className="h-7 w-12" /> : metrics.total}
+              </p>
+              <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium mt-1.5 truncate">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                <span>{metrics.activos} activos</span>
+                <span className="text-slate-300">·</span>
+                <span>{metrics.inactivos} inactivos</span>
+              </div>
+            </div>
           </button>
 
           {/* Cuota Al Día */}
           <button
             type="button"
             onClick={() => setFiltroRapido(filtroRapido === "alDia" ? "todos" : "alDia")}
-            className={`p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer ${
+            className={`p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer h-[116px] flex flex-col justify-between relative overflow-hidden shadow-xs hover:shadow-md group ${
               filtroRapido === "alDia"
-                ? "bg-emerald-600 text-white border-emerald-600 shadow-md scale-[1.02]"
-                : "bg-white border-gray-200/80 hover:border-emerald-200 hover:bg-emerald-50/30"
+                ? "border-emerald-500 ring-2 ring-emerald-500/15 bg-emerald-50/30 shadow-sm"
+                : "border-slate-200/80 bg-white hover:border-emerald-200 hover:bg-emerald-50/20"
             }`}
           >
+            {filtroRapido === "alDia" && (
+              <div className="absolute top-0 left-0 right-0 h-1 bg-emerald-500" />
+            )}
             <div className="flex items-center justify-between">
-              <span className={`text-xs font-bold uppercase tracking-wider ${filtroRapido === "alDia" ? "text-emerald-100" : "text-emerald-700"}`}>
+              <span className={`text-[11px] font-bold uppercase tracking-wider ${
+                filtroRapido === "alDia" ? "text-emerald-800" : "text-slate-500"
+              }`}>
                 Al Día
               </span>
-              <ShieldCheck className={`h-4 w-4 ${filtroRapido === "alDia" ? "text-emerald-100" : "text-emerald-600"}`} />
+              <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 ${
+                filtroRapido === "alDia"
+                  ? "bg-emerald-600 text-white shadow-xs"
+                  : "bg-emerald-50 text-emerald-600 border border-emerald-200/60"
+              }`}>
+                <ShieldCheck className="h-4 w-4" />
+              </div>
             </div>
-            <p className="text-2xl font-black mt-2 tracking-tight">
-              {loading ? <Skeleton className="h-8 w-12" /> : metrics.alDia}
-            </p>
-            <p className={`text-[11px] mt-0.5 font-medium ${filtroRapido === "alDia" ? "text-emerald-100" : "text-gray-400"}`}>
-              Vigencia mayor a 7 días
-            </p>
+            <div>
+              <p className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+                {loading ? <Skeleton className="h-7 w-12" /> : metrics.alDia}
+              </p>
+              <div className="flex items-center gap-1.5 text-[11px] text-emerald-700 font-medium mt-1.5 truncate">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                <span>Vigencia &gt; 7 días</span>
+              </div>
+            </div>
           </button>
 
           {/* Por Vencer (7 días) */}
           <button
             type="button"
             onClick={() => setFiltroRapido(filtroRapido === "porVencer" ? "todos" : "porVencer")}
-            className={`p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer ${
+            className={`p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer h-[116px] flex flex-col justify-between relative overflow-hidden shadow-xs hover:shadow-md group ${
               filtroRapido === "porVencer"
-                ? "bg-amber-500 text-white border-amber-500 shadow-md scale-[1.02]"
-                : "bg-white border-gray-200/80 hover:border-amber-200 hover:bg-amber-50/30"
+                ? "border-amber-500 ring-2 ring-amber-500/15 bg-amber-50/30 shadow-sm"
+                : "border-slate-200/80 bg-white hover:border-amber-200 hover:bg-amber-50/20"
             }`}
           >
+            {filtroRapido === "porVencer" && (
+              <div className="absolute top-0 left-0 right-0 h-1 bg-amber-500" />
+            )}
             <div className="flex items-center justify-between">
-              <span className={`text-xs font-bold uppercase tracking-wider ${filtroRapido === "porVencer" ? "text-amber-100" : "text-amber-700"}`}>
+              <span className={`text-[11px] font-bold uppercase tracking-wider ${
+                filtroRapido === "porVencer" ? "text-amber-800" : "text-slate-500"
+              }`}>
                 Vence Pronto
               </span>
-              <Clock className={`h-4 w-4 ${filtroRapido === "porVencer" ? "text-amber-100" : "text-amber-500"}`} />
+              <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 ${
+                filtroRapido === "porVencer"
+                  ? "bg-amber-500 text-white shadow-xs"
+                  : "bg-amber-50 text-amber-600 border border-amber-200/60"
+              }`}>
+                <Clock className="h-4 w-4" />
+              </div>
             </div>
-            <p className="text-2xl font-black mt-2 tracking-tight">
-              {loading ? <Skeleton className="h-8 w-12" /> : metrics.porVencer}
-            </p>
-            <p className={`text-[11px] mt-0.5 font-medium ${filtroRapido === "porVencer" ? "text-amber-100" : "text-gray-400"}`}>
-              Próximos 7 días
-            </p>
+            <div>
+              <p className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+                {loading ? <Skeleton className="h-7 w-12" /> : metrics.porVencer}
+              </p>
+              <div className="flex items-center gap-1.5 text-[11px] text-amber-700 font-medium mt-1.5 truncate">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                <span>Próximos 7 días</span>
+              </div>
+            </div>
           </button>
 
           {/* Vencidos / Sin Plan */}
           <button
             type="button"
             onClick={() => setFiltroRapido(filtroRapido === "vencidos" ? "todos" : "vencidos")}
-            className={`p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer ${
+            className={`p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer h-[116px] flex flex-col justify-between relative overflow-hidden shadow-xs hover:shadow-md group ${
               filtroRapido === "vencidos"
-                ? "bg-rose-600 text-white border-rose-600 shadow-md scale-[1.02]"
-                : "bg-white border-gray-200/80 hover:border-rose-200 hover:bg-rose-50/30"
+                ? "border-rose-500 ring-2 ring-rose-500/15 bg-rose-50/30 shadow-sm"
+                : "border-slate-200/80 bg-white hover:border-rose-200 hover:bg-rose-50/20"
             }`}
           >
+            {filtroRapido === "vencidos" && (
+              <div className="absolute top-0 left-0 right-0 h-1 bg-rose-500" />
+            )}
             <div className="flex items-center justify-between">
-              <span className={`text-xs font-bold uppercase tracking-wider ${filtroRapido === "vencidos" ? "text-rose-100" : "text-rose-700"}`}>
+              <span className={`text-[11px] font-bold uppercase tracking-wider ${
+                filtroRapido === "vencidos" ? "text-rose-800" : "text-slate-500"
+              }`}>
                 Vencidos / Mora
               </span>
-              <AlertCircle className={`h-4 w-4 ${filtroRapido === "vencidos" ? "text-rose-100" : "text-rose-500"}`} />
+              <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 ${
+                filtroRapido === "vencidos"
+                  ? "bg-rose-600 text-white shadow-xs"
+                  : "bg-rose-50 text-rose-600 border border-rose-200/60"
+              }`}>
+                <AlertCircle className="h-4 w-4" />
+              </div>
             </div>
-            <p className="text-2xl font-black mt-2 tracking-tight">
-              {loading ? <Skeleton className="h-8 w-12" /> : metrics.vencidos}
-            </p>
-            <p className={`text-[11px] mt-0.5 font-medium ${filtroRapido === "vencidos" ? "text-rose-100" : "text-gray-400"}`}>
-              Requiere cobro
-            </p>
+            <div>
+              <p className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+                {loading ? <Skeleton className="h-7 w-12" /> : metrics.vencidos}
+              </p>
+              <div className="flex items-center gap-1.5 text-[11px] text-rose-700 font-medium mt-1.5 truncate">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+                <span>Requiere cobro</span>
+              </div>
+            </div>
           </button>
 
           {/* Apto Médico Vencido */}
           <button
             type="button"
             onClick={() => setFiltroRapido(filtroRapido === "aptoVencido" ? "todos" : "aptoVencido")}
-            className={`p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer col-span-2 sm:col-span-1 ${
+            className={`p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer h-[116px] flex flex-col justify-between relative overflow-hidden shadow-xs hover:shadow-md group ${
               filtroRapido === "aptoVencido"
-                ? "bg-purple-600 text-white border-purple-600 shadow-md scale-[1.02]"
-                : "bg-white border-gray-200/80 hover:border-purple-200 hover:bg-purple-50/30"
+                ? "border-purple-500 ring-2 ring-purple-500/15 bg-purple-50/30 shadow-sm"
+                : "border-slate-200/80 bg-white hover:border-purple-200 hover:bg-purple-50/20"
             }`}
           >
+            {filtroRapido === "aptoVencido" && (
+              <div className="absolute top-0 left-0 right-0 h-1 bg-purple-500" />
+            )}
             <div className="flex items-center justify-between">
-              <span className={`text-xs font-bold uppercase tracking-wider ${filtroRapido === "aptoVencido" ? "text-purple-100" : "text-purple-700"}`}>
+              <span className={`text-[11px] font-bold uppercase tracking-wider ${
+                filtroRapido === "aptoVencido" ? "text-purple-800" : "text-slate-500"
+              }`}>
                 Apto Vencido
               </span>
-              <HeartPulse className={`h-4 w-4 ${filtroRapido === "aptoVencido" ? "text-purple-100" : "text-purple-500"}`} />
+              <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 ${
+                filtroRapido === "aptoVencido"
+                  ? "bg-purple-600 text-white shadow-xs"
+                  : "bg-purple-50 text-purple-600 border border-purple-200/60"
+              }`}>
+                <HeartPulse className="h-4 w-4" />
+              </div>
             </div>
-            <p className="text-2xl font-black mt-2 tracking-tight">
-              {loading ? <Skeleton className="h-8 w-12" /> : metrics.aptoVencido}
-            </p>
-            <p className={`text-[11px] mt-0.5 font-medium ${filtroRapido === "aptoVencido" ? "text-purple-100" : "text-gray-400"}`}>
-              Alerta sanitaria
-            </p>
+            <div>
+              <p className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+                {loading ? <Skeleton className="h-7 w-12" /> : metrics.aptoVencido}
+              </p>
+              <div className="flex items-center gap-1.5 text-[11px] text-purple-700 font-medium mt-1.5 truncate">
+                <span className="w-1.5 h-1.5 rounded-full bg-purple-500 shrink-0" />
+                <span>Alerta sanitaria</span>
+              </div>
+            </div>
           </button>
         </div>
 
