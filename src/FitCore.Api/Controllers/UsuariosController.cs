@@ -49,10 +49,42 @@ public class UsuariosController : ControllerBase
             .Where(m => userIds.Contains(m.UserId) && m.Activa && m.FechaFin >= hoy)
             .ToListAsync();
 
+        // Traer total aportado (pagos acumulados) por usuario
+        var pagosPorUsuario = await _context.Pagos
+            .AsNoTracking()
+            .Where(p => userIds.Contains(p.UserId))
+            .GroupBy(p => p.UserId)
+            .Select(g => new { UserId = g.Key, TotalMonto = g.Sum(p => p.Monto) })
+            .ToDictionaryAsync(x => x.UserId, x => x.TotalMonto);
+
+        // Traer métricas de asistencia por usuario
+        var hace30Dias = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-30));
+        var asistenciasStats = await _context.Asistencias
+            .AsNoTracking()
+            .Where(a => userIds.Contains(a.UserId))
+            .GroupBy(a => a.UserId)
+            .Select(g => new
+            {
+                UserId = g.Key,
+                Total = g.Count(),
+                Ultimos30Dias = g.Count(a => a.Fecha >= hace30Dias),
+                Ultima = g.Max(a => (DateOnly?)a.Fecha)
+            })
+            .ToDictionaryAsync(x => x.UserId);
+
         var result = usuarios.Select(u =>
         {
             var mem = membresiasActivas.FirstOrDefault(m => m.UserId == u.Id);
-            return ToDto(u, mem);
+            pagosPorUsuario.TryGetValue(u.Id, out var totalPagado);
+            asistenciasStats.TryGetValue(u.Id, out var asis);
+            return ToDto(
+                u,
+                mem,
+                totalPagado,
+                asis?.Total ?? 0,
+                asis?.Ultimos30Dias ?? 0,
+                asis?.Ultima
+            );
         });
 
         return Ok(result);
@@ -72,7 +104,28 @@ public class UsuariosController : ControllerBase
             .Where(m => m.UserId == id && m.Activa && m.FechaFin >= hoy)
             .FirstOrDefaultAsync();
 
-        return Ok(ToDto(user, mem));
+        var totalPagado = await _context.Pagos
+            .AsNoTracking()
+            .Where(p => p.UserId == id)
+            .SumAsync(p => (decimal?)p.Monto) ?? 0;
+
+        var hace30Dias = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-30));
+        var totalAsistencias = await _context.Asistencias
+            .AsNoTracking()
+            .Where(a => a.UserId == id)
+            .CountAsync();
+
+        var asistenciasUltimos30Dias = await _context.Asistencias
+            .AsNoTracking()
+            .Where(a => a.UserId == id && a.Fecha >= hace30Dias)
+            .CountAsync();
+
+        var ultimaAsistencia = await _context.Asistencias
+            .AsNoTracking()
+            .Where(a => a.UserId == id)
+            .MaxAsync(a => (DateOnly?)a.Fecha);
+
+        return Ok(ToDto(user, mem, totalPagado, totalAsistencias, asistenciasUltimos30Dias, ultimaAsistencia));
     }
 
     // GET api/usuarios/activos/count?categoria=Cliente
@@ -130,6 +183,10 @@ public class UsuariosController : ControllerBase
         user.UserName = dto.Email;
         user.Categoria = dto.Categoria;
         user.Activo = dto.Activo;
+        user.AptoMedicoVence = dto.AptoMedicoVence;
+        user.ContactoEmergenciaNombre = dto.ContactoEmergenciaNombre;
+        user.ContactoEmergenciaTelefono = dto.ContactoEmergenciaTelefono;
+        user.ContactoEmergenciaRelacion = dto.ContactoEmergenciaRelacion;
 
         var resultado = await _userManager.UpdateAsync(user);
         if (!resultado.Succeeded)
@@ -165,7 +222,13 @@ public class UsuariosController : ControllerBase
     }
 
     // ── Helper ────────────────────────────────────────────────────────────────
-    private static UsuarioDto ToDto(AppUser u, Membresia? membresiaActiva) => new(
+    private static UsuarioDto ToDto(
+        AppUser u,
+        Membresia? membresiaActiva,
+        decimal totalPagado = 0,
+        int totalAsistencias = 0,
+        int asistenciasUltimos30Dias = 0,
+        DateOnly? ultimaAsistencia = null) => new(
         u.Id,
         u.Nombre,
         u.Apellido,
@@ -177,7 +240,14 @@ public class UsuariosController : ControllerBase
         membresiaActiva?.PlanId,
         membresiaActiva?.Plan?.Nombre,
         membresiaActiva?.FechaFin,
-        u.AptoMedicoVence
+        u.AptoMedicoVence,
+        u.ContactoEmergenciaNombre,
+        u.ContactoEmergenciaTelefono,
+        u.ContactoEmergenciaRelacion,
+        totalPagado,
+        totalAsistencias,
+        asistenciasUltimos30Dias,
+        ultimaAsistencia
     );
 }
 
@@ -195,7 +265,14 @@ public record UsuarioDto(
     int? PlanId,
     string? PlanNombre,
     DateTime? MembresiaVence,
-    DateOnly? AptoMedicoVence
+    DateOnly? AptoMedicoVence,
+    string? ContactoEmergenciaNombre = null,
+    string? ContactoEmergenciaTelefono = null,
+    string? ContactoEmergenciaRelacion = null,
+    decimal TotalPagado = 0,
+    int TotalAsistencias = 0,
+    int AsistenciasUltimos30Dias = 0,
+    DateOnly? UltimaAsistencia = null
 );
 
 public record CreateUsuarioDto(
@@ -213,7 +290,11 @@ public record UpdateUsuarioDto(
     string? Telefono,
     string Email,
     bool Activo,
-    FitCore.Domain.Entities.Categoria Categoria
+    FitCore.Domain.Entities.Categoria Categoria,
+    DateOnly? AptoMedicoVence = null,
+    string? ContactoEmergenciaNombre = null,
+    string? ContactoEmergenciaTelefono = null,
+    string? ContactoEmergenciaRelacion = null
 );
 
 public record UpdateMiPerfilDto(
@@ -223,3 +304,4 @@ public record UpdateMiPerfilDto(
     string? ContactoEmergenciaRelacion,
     DateOnly? AptoMedicoVence
 );
+
