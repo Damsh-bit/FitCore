@@ -16,6 +16,7 @@ import {
   ChevronsRight,
   ShieldAlert,
   Percent,
+  Phone,
 } from "lucide-react";
 import { buildWhatsAppUrl } from "@/lib/utils";
 import { useGymSettings } from "@/context/GymSettingsContext";
@@ -152,15 +153,34 @@ export default function EstadoCuenta() {
   // Modal selector de WhatsApp
   const [waModalOpen, setWaModalOpen] = useState(false);
   const [clienteWa, setClienteWa] = useState<EstadoCuenta | null>(null);
+  const [telefonoModal, setTelefonoModal] = useState("");
+  const [guardandoTel, setGuardandoTel] = useState(false);
+  const [centroRecordatoriosOpen, setCentroRecordatoriosOpen] = useState(false);
 
   const cargar = async () => {
     setLoading(true);
     try {
-      const [data, planesData] = await Promise.all([
+      const [data, planesData, usuariosData] = await Promise.all([
         apiFetch("/api/pagos/estado-cuenta").then((r) => r.json()),
         apiFetch("/api/planes").then((r) => r.json()).catch(() => []),
+        apiFetch("/api/usuarios?categoria=Cliente").then((r) => r.json()).catch(() => []),
       ]);
-      setClientes(Array.isArray(data) ? data : []);
+
+      const telMap = new Map<string, string>();
+      if (Array.isArray(usuariosData)) {
+        usuariosData.forEach((u: { id: string; telefono?: string }) => {
+          if (u.telefono && u.telefono.trim()) {
+            telMap.set(u.id, u.telefono.trim());
+          }
+        });
+      }
+
+      const merged = (Array.isArray(data) ? data : []).map((item: EstadoCuenta) => ({
+        ...item,
+        telefono: (item.telefono && item.telefono.trim()) ? item.telefono.trim() : (telMap.get(item.userId) || null),
+      }));
+
+      setClientes(merged);
       if (Array.isArray(planesData)) {
         setPlanes(planesData);
       }
@@ -457,20 +477,102 @@ export default function EstadoCuenta() {
   };
 
   // ── Generador de Mensajes Inteligentes de WhatsApp ────────
-  const obtenerMensajesWhatsApp = (c: EstadoCuenta) => {
+  const obtenerMensajesWhatsApp = (c: EstadoCuenta, telefonoPersonalizado?: string) => {
     const gym = settings.nombreGimnasio || "el gimnasio";
     const primerNombre = c.nombre.split(" ")[0];
     const impagos = c.periodos.filter((p) => !p.pagado).map((p) => p.nombreMes);
+    const tel = telefonoPersonalizado !== undefined ? telefonoPersonalizado : c.telefono;
 
     const msjRecordatorioMes = `Hola ${primerNombre}! 👋 Te escribimos desde *${gym}* para recordarte que tenés disponible la cuota de este mes para abonar. ¡Te esperamos para seguir entrenando! 💪`;
 
     const msjRegularizacionDeuda = `Hola ${primerNombre}! 👋 Nos comunicamos desde *${gym}* para informarte que tenés cuotas pendientes de pago (${impagos.join(", ")}). Te pedimos que pases por recepción para regularizar tu cuenta y mantener tu acceso habilitado. Si ya abonaste, por favor envianos tu comprobante. ¡Muchas gracias! 🙏`;
 
     return {
-      recordatorio: buildWhatsAppUrl(c.telefono, msjRecordatorioMes),
-      regularizacion: buildWhatsAppUrl(c.telefono, msjRegularizacionDeuda),
+      recordatorio: buildWhatsAppUrl(tel, msjRecordatorioMes),
+      regularizacion: buildWhatsAppUrl(tel, msjRegularizacionDeuda),
     };
   };
+
+  const abrirModalWa = async (c: EstadoCuenta) => {
+    setClienteWa(c);
+    const tel = (c.telefono && c.telefono.trim()) ? c.telefono.trim() : "";
+    setTelefonoModal(tel);
+    setWaModalOpen(true);
+
+    if (!tel) {
+      try {
+        const res = await apiFetch(`/api/usuarios/${c.userId}`);
+        if (res.ok) {
+          const u = await res.json();
+          if (u.telefono && u.telefono.trim()) {
+            setTelefonoModal(u.telefono.trim());
+            setClientes((prev) =>
+              prev.map((it) =>
+                it.userId === c.userId ? { ...it, telefono: u.telefono.trim() } : it
+              )
+            );
+          }
+        }
+      } catch {
+        // Silencioso
+      }
+    }
+  };
+
+  const handleGuardarTelefono = async (userId: string, nuevoTelefono: string) => {
+    if (!nuevoTelefono.trim()) return;
+    setGuardandoTel(true);
+    try {
+      const uRes = await apiFetch(`/api/usuarios/${userId}`);
+      if (uRes.ok) {
+        const u = await uRes.json();
+        const putRes = await apiFetch(`/api/usuarios/${userId}`, {
+          method: "PUT",
+          body: JSON.stringify({
+            nombre: u.nombre,
+            apellido: u.apellido,
+            telefono: nuevoTelefono.trim(),
+            email: u.email,
+            activo: u.activo,
+            categoria: u.categoria,
+            aptoMedicoVence: u.aptoMedicoVence,
+            contactoEmergenciaNombre: u.contactoEmergenciaNombre,
+            contactoEmergenciaTelefono: u.contactoEmergenciaTelefono,
+            contactoEmergenciaRelacion: u.contactoEmergenciaRelacion,
+          }),
+        });
+        if (putRes.ok) {
+          setClientes((prev) =>
+            prev.map((item) =>
+              item.userId === userId ? { ...item, telefono: nuevoTelefono.trim() } : item
+            )
+          );
+          if (clienteWa && clienteWa.userId === userId) {
+            setClienteWa({ ...clienteWa, telefono: nuevoTelefono.trim() });
+          }
+          toast({
+            variant: "success",
+            title: "Teléfono guardado",
+            description: "Se actualizó el teléfono en la ficha del socio.",
+          });
+        }
+      }
+    } catch {
+      toast({
+        variant: "destructive",
+        title: "No se pudo guardar el teléfono",
+        description: "Intentá de nuevo más tarde.",
+      });
+    } finally {
+      setGuardandoTel(false);
+    }
+  };
+
+  const clientesConDeudaOPendiente = useMemo(() => {
+    return clientes.filter(
+      (c) => c.estadoGeneral === "ConDeuda" || c.estadoGeneral === "PendienteMesActual"
+    );
+  }, [clientes]);
 
   return (
     <div className="space-y-8 pb-12">
@@ -488,7 +590,16 @@ export default function EstadoCuenta() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            size="sm"
+            onClick={() => setCentroRecordatoriosOpen(true)}
+            className="rounded-xl shadow-xs text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5"
+          >
+            <MessageCircle className="w-3.5 h-3.5" />
+            Centro de Recordatorios WhatsApp ({clientesConDeudaOPendiente.length})
+          </Button>
+
           <Button
             variant="outline"
             size="sm"
@@ -843,18 +954,19 @@ export default function EstadoCuenta() {
 
                     {/* Acción Rápida: WhatsApp inteligente */}
                     <TableCell className="py-3.5 px-4 text-right">
-                      {debeRecordar && c.telefono ? (
+                      {debeRecordar ? (
                         <button
                           type="button"
-                          onClick={() => {
-                            setClienteWa(c);
-                            setWaModalOpen(true);
-                          }}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-colors"
-                          title="Gestionar recordatorio de pago"
+                          onClick={() => abrirModalWa(c)}
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold transition-all shadow-2xs cursor-pointer ${
+                            c.telefono
+                              ? "text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100"
+                              : "text-amber-800 bg-amber-50 border border-amber-200 hover:bg-amber-100"
+                          }`}
+                          title={c.telefono ? "Enviar recordatorio por WhatsApp" : "Enviar recordatorio (ingresar teléfono)"}
                         >
-                          <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
-                          <span>WhatsApp</span>
+                          <MessageCircle className={`w-3.5 h-3.5 ${c.telefono ? "text-emerald-600" : "text-amber-600"}`} />
+                          <span>{c.telefono ? "Recordar WhatsApp" : "Recordar"}</span>
                         </button>
                       ) : (
                         <span className="text-gray-300 text-xs">—</span>
@@ -1076,12 +1188,55 @@ export default function EstadoCuenta() {
               Notificación por WhatsApp
             </DialogTitle>
             <DialogDescription className="text-xs">
-              Elegí el tipo de mensaje para enviar a <span className="font-bold text-gray-900">{clienteWa?.nombre}</span> ({clienteWa?.telefono}).
+              Elegí el tipo de mensaje para enviar a <span className="font-bold text-gray-900">{clienteWa?.nombre}</span>.
             </DialogDescription>
           </DialogHeader>
 
           {clienteWa && (
-            <div className="space-y-3 mt-3">
+            <div className="space-y-4 mt-2">
+              {/* Campo de Teléfono */}
+              <div className="space-y-1.5 bg-gray-50/80 p-3 rounded-xl border border-gray-200">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="wa-phone" className="text-xs font-semibold text-gray-700 flex items-center gap-1">
+                    <Phone className="w-3 h-3 text-emerald-600" />
+                    Teléfono del Destinatario
+                  </Label>
+                  <button
+                    type="button"
+                    onClick={() => setTelefonoModal("+54 9 11 6002-1513")}
+                    className="text-[11px] font-bold text-emerald-700 hover:underline cursor-pointer"
+                  >
+                    Usar mi N° de prueba
+                  </button>
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    id="wa-phone"
+                    value={telefonoModal}
+                    onChange={(e) => setTelefonoModal(e.target.value)}
+                    placeholder="Ej: +54 9 11 6002-1513 o 1160021513"
+                    className="text-xs h-9 bg-white"
+                  />
+                  {telefonoModal.trim() && telefonoModal !== clienteWa.telefono && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleGuardarTelefono(clienteWa.userId, telefonoModal)}
+                      disabled={guardandoTel}
+                      className="text-[11px] h-9 whitespace-nowrap rounded-lg border-gray-300 hover:bg-gray-100"
+                    >
+                      {guardandoTel ? "Guardando..." : "Guardar en ficha"}
+                    </Button>
+                  )}
+                </div>
+                {!clienteWa.telefono && !telefonoModal.trim() && (
+                  <p className="text-[11px] text-amber-600 font-medium">
+                    ⚠️ Este socio no tiene teléfono cargado. Ingresá uno o hacé clic en "Usar mi N° de prueba" para habilitar el envío.
+                  </p>
+                )}
+              </div>
+
               {/* Opción 1: Recordatorio Amigable */}
               <div className="p-3.5 rounded-xl border border-gray-200 hover:border-emerald-400 bg-white hover:bg-emerald-50/20 transition-all space-y-1.5">
                 <div className="flex items-center justify-between">
@@ -1094,11 +1249,21 @@ export default function EstadoCuenta() {
                   "Hola {clienteWa.nombre.split(" ")[0]}! Te escribimos desde {settings.nombreGimnasio || "el gimnasio"} para recordarte que tenés disponible la cuota de este mes..."
                 </p>
                 <div className="pt-1">
-                  <Button asChild size="sm" className="w-full rounded-lg bg-emerald-600 hover:bg-emerald-700 text-xs font-bold">
-                    <a href={obtenerMensajesWhatsApp(clienteWa).recordatorio!} target="_blank" rel="noopener noreferrer">
-                      Enviar Recordatorio Cordial
-                    </a>
-                  </Button>
+                  {obtenerMensajesWhatsApp(clienteWa, telefonoModal).recordatorio ? (
+                    <Button asChild size="sm" className="w-full rounded-lg bg-emerald-600 hover:bg-emerald-700 text-xs font-bold">
+                      <a
+                        href={obtenerMensajesWhatsApp(clienteWa, telefonoModal).recordatorio!}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Enviar Recordatorio Cordial
+                      </a>
+                    </Button>
+                  ) : (
+                    <Button size="sm" disabled className="w-full rounded-lg text-xs font-bold opacity-60">
+                      Ingresá un teléfono arriba
+                    </Button>
+                  )}
                 </div>
               </div>
 
@@ -1114,11 +1279,21 @@ export default function EstadoCuenta() {
                   "Hola {clienteWa.nombre.split(" ")[0]}! Nos comunicamos desde {settings.nombreGimnasio || "el gimnasio"} para informarte que tenés cuotas pendientes de pago..."
                 </p>
                 <div className="pt-1">
-                  <Button asChild size="sm" variant="destructive" className="w-full rounded-lg text-xs font-bold">
-                    <a href={obtenerMensajesWhatsApp(clienteWa).regularizacion!} target="_blank" rel="noopener noreferrer">
-                      Enviar Aviso de Regularización
-                    </a>
-                  </Button>
+                  {obtenerMensajesWhatsApp(clienteWa, telefonoModal).regularizacion ? (
+                    <Button asChild size="sm" variant="destructive" className="w-full rounded-lg text-xs font-bold">
+                      <a
+                        href={obtenerMensajesWhatsApp(clienteWa, telefonoModal).regularizacion!}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Enviar Aviso de Regularización
+                      </a>
+                    </Button>
+                  ) : (
+                    <Button size="sm" disabled variant="destructive" className="w-full rounded-lg text-xs font-bold opacity-60">
+                      Ingresá un teléfono arriba
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
@@ -1126,6 +1301,86 @@ export default function EstadoCuenta() {
 
           <DialogFooter className="mt-3">
             <Button type="button" variant="ghost" size="sm" onClick={() => setWaModalOpen(false)} className="text-xs">
+              Cerrar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Modal Centro de Recordatorios de WhatsApp ── */}
+      <Dialog open={centroRecordatoriosOpen} onOpenChange={setCentroRecordatoriosOpen}>
+        <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col p-6">
+          <DialogHeader>
+            <DialogTitle className="text-base font-bold flex items-center gap-2">
+              <MessageCircle className="w-5 h-5 text-emerald-600" />
+              Centro de Recordatorios por WhatsApp
+            </DialogTitle>
+            <DialogDescription className="text-xs">
+              Listado de todos los socios con cuota pendiente o deuda vencida ({clientesConDeudaOPendiente.length} socios).
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex-1 overflow-y-auto space-y-2.5 my-3 pr-1 max-h-[55vh]">
+            {clientesConDeudaOPendiente.length === 0 ? (
+              <div className="text-center py-10 text-gray-400 text-xs">
+                ¡Excelente! No hay socios con cuotas pendientes ni deudas en este momento.
+              </div>
+            ) : (
+              clientesConDeudaOPendiente.map((c) => {
+                const esDeuda = c.estadoGeneral === "ConDeuda";
+                return (
+                  <div
+                    key={c.userId}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border border-gray-200 bg-white hover:border-gray-300 transition-all shadow-2xs"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <PersonaAvatar seed={c.userId} size={36} />
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="font-bold text-xs text-gray-900 truncate">{c.nombre}</p>
+                          <span
+                            className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                              esDeuda
+                                ? "bg-rose-100 text-rose-700"
+                                : "bg-amber-100 text-amber-800"
+                            }`}
+                          >
+                            {esDeuda ? "Deuda Vencida" : "Pendiente este mes"}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-gray-500 truncate">
+                          {c.planNombre || "Sin plan"} · {c.telefono || "⚠️ Sin teléfono guardado"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          setCentroRecordatoriosOpen(false);
+                          abrirModalWa(c);
+                        }}
+                        className="rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 h-8"
+                      >
+                        <MessageCircle className="w-3.5 h-3.5" />
+                        Enviar Recordatorio
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setCentroRecordatoriosOpen(false)}
+              className="text-xs rounded-xl"
+            >
               Cerrar
             </Button>
           </DialogFooter>
