@@ -56,10 +56,10 @@ interface CompraFutura {
 }
 
 const TIPO_COLOR: Record<string, string> = {
-  Ingreso: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  Egreso: "bg-rose-50 text-rose-700 border-rose-200",
-  Inversion: "bg-blue-50 text-blue-700 border-blue-200",
-  Compra: "bg-amber-50 text-amber-700 border-amber-200",
+  Ingreso: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/60",
+  Egreso: "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800/60",
+  Inversion: "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800/60",
+  Compra: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/60",
 };
 
 const PRIORIDAD_COLOR: Record<string, string> = {
@@ -244,10 +244,10 @@ export default function Contabilidad() {
   return (
     <div className="space-y-6 max-w-7xl">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight flex items-center gap-3">
-          <Wallet className="w-7 h-7 text-orange-600" /> Gestión Contable
+        <h1 className="text-2xl sm:text-3xl font-black text-foreground tracking-tight flex items-center gap-3">
+          <Wallet className="w-7 h-7 text-orange-600 dark:text-orange-500" /> Gestión Contable
         </h1>
-        <p className="text-sm text-gray-500 font-medium mt-1">
+        <p className="text-sm text-muted-foreground font-medium mt-1">
           Ingresos, egresos, inversiones y compras del gimnasio — todo en un solo lugar.
         </p>
       </div>
@@ -263,27 +263,27 @@ export default function Contabilidad() {
         </div>
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 animate-fade-in-up">
-          <div className={`rounded-2xl p-4 border ${resumen && resumen.balance >= 0 ? "bg-emerald-50 border-emerald-200" : "bg-rose-50 border-rose-200"}`}>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-500">Balance del Mes</p>
-            <p className={`text-xl font-black mt-0.5 ${resumen && resumen.balance >= 0 ? "text-emerald-700" : "text-rose-700"}`}>
+          <div className={`rounded-2xl p-4 border ${resumen && resumen.balance >= 0 ? "bg-emerald-500/10 border-emerald-500/20" : "bg-rose-500/10 border-rose-500/20"}`}>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Balance del Mes</p>
+            <p className={`text-xl font-black mt-0.5 ${resumen && resumen.balance >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
               {money(resumen?.balance ?? 0)}
             </p>
           </div>
-          <div className="bg-white border border-gray-200/80 rounded-2xl p-4">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1"><TrendingUp className="w-3 h-3 text-emerald-600" /> Ingresos</p>
-            <p className="text-xl font-black text-gray-900 mt-0.5">{money(resumen?.totalIngresos ?? 0)}</p>
+          <div className="bg-card border border-border rounded-2xl p-4">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1"><TrendingUp className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /> Ingresos</p>
+            <p className="text-xl font-black text-foreground mt-0.5">{money(resumen?.totalIngresos ?? 0)}</p>
           </div>
-          <div className="bg-white border border-gray-200/80 rounded-2xl p-4">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1"><TrendingDown className="w-3 h-3 text-rose-600" /> Egresos</p>
-            <p className="text-xl font-black text-gray-900 mt-0.5">{money(resumen?.totalEgresos ?? 0)}</p>
+          <div className="bg-card border border-border rounded-2xl p-4">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1"><TrendingDown className="w-3 h-3 text-rose-600 dark:text-rose-400" /> Egresos</p>
+            <p className="text-xl font-black text-foreground mt-0.5">{money(resumen?.totalEgresos ?? 0)}</p>
           </div>
-          <div className="bg-white border border-gray-200/80 rounded-2xl p-4">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1"><PiggyBank className="w-3 h-3 text-blue-600" /> Inversiones</p>
-            <p className="text-xl font-black text-gray-900 mt-0.5">{money(resumen?.totalInversiones ?? 0)}</p>
+          <div className="bg-card border border-border rounded-2xl p-4">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1"><PiggyBank className="w-3 h-3 text-blue-600 dark:text-blue-400" /> Inversiones</p>
+            <p className="text-xl font-black text-foreground mt-0.5">{money(resumen?.totalInversiones ?? 0)}</p>
           </div>
-          <div className="bg-white border border-gray-200/80 rounded-2xl p-4">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1"><ShoppingCart className="w-3 h-3 text-amber-600" /> Compras</p>
-            <p className="text-xl font-black text-gray-900 mt-0.5">{money(resumen?.totalCompras ?? 0)}</p>
+          <div className="bg-card border border-border rounded-2xl p-4">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1"><ShoppingCart className="w-3 h-3 text-amber-600 dark:text-amber-400" /> Compras</p>
+            <p className="text-xl font-black text-foreground mt-0.5">{money(resumen?.totalCompras ?? 0)}</p>
           </div>
         </div>
       )}
@@ -292,21 +292,21 @@ export default function Contabilidad() {
       {loading && !resumen ? (
         <Skeleton className="h-52 w-full rounded-2xl" />
       ) : resumen && (
-        <div className="bg-white border border-gray-200/80 rounded-2xl p-5 animate-fade-in-up">
-          <h2 className="text-sm font-bold text-gray-900 mb-4">Ingresos vs. Egresos — últimos 6 meses</h2>
+        <div className="bg-card border border-border rounded-2xl p-5 animate-fade-in-up">
+          <h2 className="text-sm font-bold text-foreground mb-4">Ingresos vs. Egresos — últimos 6 meses</h2>
           <div className="h-52 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={resumen.serieMensual} margin={{ top: 8, right: 4, left: -16, bottom: 0 }} barGap={2}>
-                <CartesianGrid vertical={false} stroke="#f1f1f2" />
+                <CartesianGrid vertical={false} stroke="hsl(var(--border))" />
                 <XAxis
                   dataKey="mes"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 10, fontWeight: 700, fill: "#9ca3af" }}
+                  tick={{ fontSize: 10, fontWeight: 700, fill: "hsl(var(--muted-foreground))" }}
                 />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: "#9ca3af" }} width={32} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: "hsl(var(--muted-foreground))" }} width={32} />
                 <Tooltip
-                  cursor={{ fill: "#f9fafb" }}
+                  cursor={{ fill: "hsl(var(--muted)/0.5)" }}
                   content={(props) => <ChartTooltip {...(props as object)} formatter={money} />}
                 />
                 <Legend
@@ -314,10 +314,10 @@ export default function Contabilidad() {
                   height={28}
                   iconType="square"
                   iconSize={9}
-                  formatter={(value) => <span className="text-[11px] font-semibold text-gray-500">{value}</span>}
+                  formatter={(value) => <span className="text-[11px] font-semibold text-muted-foreground">{value}</span>}
                 />
-                <Bar dataKey="ingresos" name="Ingresos" fill="#34d399" radius={[4, 4, 0, 0]} maxBarSize={22} />
-                <Bar dataKey="egresos" name="Egresos" fill="#fb7185" radius={[4, 4, 0, 0]} maxBarSize={22} />
+                <Bar dataKey="ingresos" name="Ingresos" fill="#10b981" radius={[4, 4, 0, 0]} maxBarSize={22} />
+                <Bar dataKey="egresos" name="Egresos" fill="#f43f5e" radius={[4, 4, 0, 0]} maxBarSize={22} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -326,15 +326,15 @@ export default function Contabilidad() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* ── Nuevo movimiento ── */}
-        <form onSubmit={handleAgregarMovimiento} className="bg-white border border-gray-200/80 rounded-2xl p-5 space-y-4 h-fit">
-          <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
-            <Plus className="w-4 h-4 text-orange-600" />
-            <h2 className="text-sm font-bold text-gray-900">Nuevo Movimiento</h2>
+        <form onSubmit={handleAgregarMovimiento} className="bg-card border border-border rounded-2xl p-5 space-y-4 h-fit">
+          <div className="flex items-center gap-2 pb-2 border-b border-border">
+            <Plus className="w-4 h-4 text-orange-600 dark:text-orange-500" />
+            <h2 className="text-sm font-bold text-foreground">Nuevo Movimiento</h2>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-gray-700">Tipo</Label>
+              <Label className="text-xs font-bold text-foreground">Tipo</Label>
               <Select value={tipo} onValueChange={setTipo}>
                 <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -346,34 +346,34 @@ export default function Contabilidad() {
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-gray-700">Categoría</Label>
+              <Label className="text-xs font-bold text-foreground">Categoría</Label>
               <Input placeholder="Ej: Alquiler, Limpieza" value={categoria} onChange={(e) => setCategoria(e.target.value)} className="rounded-xl" />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs font-bold text-gray-700">Descripción</Label>
+            <Label className="text-xs font-bold text-foreground">Descripción</Label>
             <Input placeholder="Ej: Alquiler del local - septiembre" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} required className="rounded-xl" />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-gray-700">Monto</Label>
+              <Label className="text-xs font-bold text-foreground">Monto</Label>
               <Input type="number" step="0.01" min="0.01" placeholder="0.00" value={monto} onChange={(e) => setMonto(e.target.value)} required className="rounded-xl" />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-gray-700">Fecha</Label>
+              <Label className="text-xs font-bold text-foreground">Fecha</Label>
               <Input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} required className="rounded-xl" />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-gray-700">Proveedor (opcional)</Label>
+              <Label className="text-xs font-bold text-foreground">Proveedor (opcional)</Label>
               <Input placeholder="Ej: Inmobiliaria XYZ" value={proveedor} onChange={(e) => setProveedor(e.target.value)} className="rounded-xl" />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-gray-700">Nota (opcional)</Label>
+              <Label className="text-xs font-bold text-foreground">Nota (opcional)</Label>
               <Input placeholder="Detalle adicional" value={nota} onChange={(e) => setNota(e.target.value)} className="rounded-xl" />
             </div>
           </div>
@@ -384,10 +384,10 @@ export default function Contabilidad() {
         </form>
 
         {/* ── Compras futuras ── */}
-        <div className="bg-white border border-gray-200/80 rounded-2xl p-5 space-y-4">
-          <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
-            <ListChecks className="w-4 h-4 text-orange-600" />
-            <h2 className="text-sm font-bold text-gray-900">Compras Futuras</h2>
+        <div className="bg-card border border-border rounded-2xl p-5 space-y-4">
+          <div className="flex items-center gap-2 pb-2 border-b border-border">
+            <ListChecks className="w-4 h-4 text-orange-600 dark:text-orange-500" />
+            <h2 className="text-sm font-bold text-foreground">Compras Futuras</h2>
           </div>
 
           <form onSubmit={handleAgregarCompraFutura} className="flex flex-col gap-2">
@@ -414,7 +414,7 @@ export default function Contabilidad() {
             </div>
             <div className="flex gap-2">
               <Input type="date" value={cfFecha} onChange={(e) => setCfFecha(e.target.value)} className="rounded-xl" />
-              <Button type="submit" loading={guardandoCf} className="rounded-xl bg-black hover:bg-black/90 text-white font-bold text-xs shrink-0 px-4">
+              <Button type="submit" loading={guardandoCf} className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs shrink-0 px-4">
                 Agregar
               </Button>
             </div>
@@ -422,44 +422,44 @@ export default function Contabilidad() {
 
           <div className="space-y-2 max-h-[280px] overflow-y-auto pr-1">
             {comprasPendientes.length === 0 && comprasResueltas.length === 0 ? (
-              <p className="text-xs text-gray-400 text-center py-6">No hay compras futuras planificadas.</p>
+              <p className="text-xs text-muted-foreground text-center py-6">No hay compras futuras planificadas.</p>
             ) : (
               [...comprasPendientes, ...comprasResueltas].map((c, i) => (
                 <div
                   key={c.id}
-                  className="flex items-center justify-between gap-2 p-2.5 rounded-xl border border-gray-100 hover:bg-gray-50 animate-fade-in-up"
+                  className="flex items-center justify-between gap-2 p-2.5 rounded-xl border border-border hover:bg-muted/50 animate-fade-in-up"
                   style={{ animationDelay: `${Math.min(i, 10) * 30}ms` }}
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <p className={`text-xs font-bold text-gray-900 truncate ${c.estado !== "Pendiente" ? "line-through text-gray-400" : ""}`}>
+                      <p className={`text-xs font-bold text-foreground truncate ${c.estado !== "Pendiente" ? "line-through text-muted-foreground" : ""}`}>
                         {c.descripcion}
                       </p>
                       <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md shrink-0 ${PRIORIDAD_COLOR[c.prioridad]}`}>
                         {c.prioridad}
                       </span>
                     </div>
-                    <p className="text-[11px] text-gray-400 mt-0.5">
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
                       {money(c.montoEstimado)} {c.fechaEstimada && `· ${c.fechaEstimada}`}
                     </p>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
                     {c.estado === "Pendiente" ? (
                       <>
-                        <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-emerald-600 hover:bg-emerald-50" onClick={() => handleCambiarEstadoCompra(c, "Comprada")} aria-label="Marcar comprada">
+                        <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10" onClick={() => handleCambiarEstadoCompra(c, "Comprada")} aria-label="Marcar comprada">
                           <CheckCircle2 className="h-4 w-4" />
                         </Button>
-                        <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-gray-400 hover:bg-gray-100" onClick={() => handleCambiarEstadoCompra(c, "Cancelada")} aria-label="Cancelar">
+                        <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:bg-muted" onClick={() => handleCambiarEstadoCompra(c, "Cancelada")} aria-label="Cancelar">
                           <XCircle className="h-4 w-4" />
                         </Button>
                       </>
                     ) : (
                       <Badge variant="outline" className="text-[9px] gap-1">
-                        {c.estado === "Comprada" ? <CheckCircle2 className="w-3 h-3 text-emerald-600" /> : <Clock className="w-3 h-3 text-gray-400" />}
+                        {c.estado === "Comprada" ? <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /> : <Clock className="w-3 h-3 text-muted-foreground" />}
                         {c.estado}
                       </Badge>
                     )}
-                    <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-red-500 hover:bg-red-50" onClick={() => handleEliminarCompra(c.id)} aria-label="Eliminar">
+                    <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-rose-500 hover:bg-rose-500/10" onClick={() => handleEliminarCompra(c.id)} aria-label="Eliminar">
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -471,9 +471,9 @@ export default function Contabilidad() {
       </div>
 
       {/* ── Historial de movimientos ── */}
-      <div className="bg-white border border-gray-200/80 rounded-2xl overflow-hidden">
-        <div className="p-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <h2 className="text-sm font-bold text-gray-900">Historial de Movimientos</h2>
+      <div className="bg-card border border-border rounded-2xl overflow-hidden">
+        <div className="p-5 border-b border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <h2 className="text-sm font-bold text-foreground">Historial de Movimientos</h2>
           <Select value={filtroTipo} onValueChange={setFiltroTipo}>
             <SelectTrigger className="rounded-xl w-full sm:w-44"><SelectValue /></SelectTrigger>
             <SelectContent>
@@ -489,13 +489,13 @@ export default function Contabilidad() {
         {loading ? (
           <div className="p-5 space-y-2">{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-12 w-full rounded-xl" />)}</div>
         ) : movimientos.length === 0 ? (
-          <p className="text-sm text-gray-400 text-center py-10">No hay movimientos registrados todavía.</p>
+          <p className="text-sm text-muted-foreground text-center py-10">No hay movimientos registrados todavía.</p>
         ) : (
-          <div className="divide-y divide-gray-100 max-h-[400px] overflow-y-auto">
+          <div className="divide-y divide-border max-h-[400px] overflow-y-auto">
             {movimientos.map((m, i) => (
               <div
                 key={m.id}
-                className="p-3.5 flex items-center justify-between gap-3 hover:bg-gray-50/60 animate-fade-in-up"
+                className="p-3.5 flex items-center justify-between gap-3 hover:bg-muted/50 animate-fade-in-up"
                 style={{ animationDelay: `${Math.min(i, 12) * 25}ms` }}
               >
                 <div className="flex items-center gap-3 min-w-0">
@@ -503,15 +503,15 @@ export default function Contabilidad() {
                     {m.tipo}
                   </span>
                   <div className="min-w-0">
-                    <p className="text-xs font-bold text-gray-900 truncate">{m.descripcion}</p>
-                    <p className="text-[10px] text-gray-400 truncate">
+                    <p className="text-xs font-bold text-foreground truncate">{m.descripcion}</p>
+                    <p className="text-[10px] text-muted-foreground truncate">
                       {m.fecha} · {m.categoria} {m.proveedor && `· ${m.proveedor}`}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-sm font-black text-gray-900">{money(m.monto)}</span>
-                  <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-red-500 hover:bg-red-50" onClick={() => handleEliminarMovimiento(m.id)} aria-label="Eliminar">
+                  <span className="text-sm font-black text-foreground">{money(m.monto)}</span>
+                  <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-rose-500 hover:bg-rose-500/10" onClick={() => handleEliminarMovimiento(m.id)} aria-label="Eliminar">
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
                 </div>

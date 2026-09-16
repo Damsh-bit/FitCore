@@ -537,92 +537,92 @@ export default function Pagos() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
           {/* Total Hoy */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
+          <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
             <div className="flex items-center justify-center gap-2">
-              <div className="w-6 h-6 rounded-lg bg-slate-900 text-white flex items-center justify-center shadow-xs">
+              <div className="w-6 h-6 rounded-lg bg-foreground text-background flex items-center justify-center shadow-xs">
                 <DollarSign className="w-3.5 h-3.5" />
               </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Recaudado Hoy</span>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Recaudado Hoy</span>
             </div>
             <div className="my-1">
               {pagosLoading ? (
                 <Skeleton className="h-8 w-32 rounded mx-auto" />
               ) : (
-                <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+                <p className="text-2xl sm:text-[28px] font-black text-foreground tracking-tight leading-none">
                   {formatMonto(metricasHoy.totalHoy)}
                 </p>
               )}
             </div>
-            <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500 font-medium truncate w-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-slate-900 shrink-0" />
+            <div className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground font-medium truncate w-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-foreground shrink-0" />
               <span>Mes: {formatMonto(metricasHoy.totalMes)}</span>
             </div>
           </div>
 
           {/* Efectivo en Cajón */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
+          <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
             <div className="flex items-center justify-center gap-2">
-              <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200/60 flex items-center justify-center">
+              <div className="w-6 h-6 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center">
                 <Banknote className="w-3.5 h-3.5" />
               </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Efectivo en Cajón</span>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Efectivo en Cajón</span>
             </div>
             <div className="my-1">
               {pagosLoading ? (
                 <Skeleton className="h-8 w-28 rounded mx-auto" />
               ) : (
-                <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+                <p className="text-2xl sm:text-[28px] font-black text-foreground tracking-tight leading-none">
                   {formatMonto(metricasHoy.efectivo)}
                 </p>
               )}
             </div>
-            <div className="flex items-center justify-center gap-1.5 text-[11px] text-emerald-700 font-medium truncate w-full">
+            <div className="flex items-center justify-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium truncate w-full">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
               <span>Físico a rendir en mostrador</span>
             </div>
           </div>
 
           {/* Transferencias / Mercado Pago */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
+          <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
             <div className="flex items-center justify-center gap-2">
-              <div className="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 border border-blue-200/60 flex items-center justify-center">
+              <div className="w-6 h-6 rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/20 flex items-center justify-center">
                 <Smartphone className="w-3.5 h-3.5" />
               </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Transferencias / MP</span>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Transferencias / MP</span>
             </div>
             <div className="my-1">
               {pagosLoading ? (
                 <Skeleton className="h-8 w-28 rounded mx-auto" />
               ) : (
-                <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+                <p className="text-2xl sm:text-[28px] font-black text-foreground tracking-tight leading-none">
                   {formatMonto(metricasHoy.transferencia)}
                 </p>
               )}
             </div>
-            <div className="flex items-center justify-center gap-1.5 text-[11px] text-blue-700 font-medium truncate w-full">
+            <div className="flex items-center justify-center gap-1.5 text-[11px] text-blue-600 dark:text-blue-400 font-medium truncate w-full">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
               <span>Bancos y billeteras virtuales</span>
             </div>
           </div>
 
           {/* Tarjetas Débito / Crédito */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
+          <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
             <div className="flex items-center justify-center gap-2">
-              <div className="w-6 h-6 rounded-lg bg-purple-50 text-purple-600 border border-purple-200/60 flex items-center justify-center">
+              <div className="w-6 h-6 rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/20 flex items-center justify-center">
                 <CreditCard className="w-3.5 h-3.5" />
               </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Tarjetas (POS)</span>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Tarjetas (POS)</span>
             </div>
             <div className="my-1">
               {pagosLoading ? (
                 <Skeleton className="h-8 w-28 rounded mx-auto" />
               ) : (
-                <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+                <p className="text-2xl sm:text-[28px] font-black text-foreground tracking-tight leading-none">
                   {formatMonto(metricasHoy.tarjetas)}
                 </p>
               )}
             </div>
-            <div className="flex items-center justify-center gap-1.5 text-[11px] text-purple-700 font-medium truncate w-full">
+            <div className="flex items-center justify-center gap-1.5 text-[11px] text-purple-600 dark:text-purple-400 font-medium truncate w-full">
               <span className="w-1.5 h-1.5 rounded-full bg-purple-500 shrink-0" />
               <span>Débito y crédito en terminal</span>
             </div>
@@ -631,14 +631,14 @@ export default function Pagos() {
       </div>
 
       {/* ── Formulario de Cobro en Mostrador ── */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6 shadow-xs space-y-5">
-        <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs space-y-5">
+        <div className="flex items-center justify-between border-b border-border pb-3">
           <div>
-            <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
+            <h2 className="text-base font-bold text-foreground flex items-center gap-2">
               <Receipt className="w-4 h-4 text-primary" />
               Registrar Cobro en Mostrador
             </h2>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               Autocompleta valores del plan, aplica descuentos e imprime o envía comprobante al instante.
             </p>
           </div>
@@ -786,7 +786,7 @@ export default function Pagos() {
                       className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all text-left flex items-center justify-between ${
                         isSelected
                           ? "border-primary bg-primary/10 text-primary shadow-xs"
-                          : "border-gray-200 bg-white hover:bg-gray-50 text-gray-700"
+                          : "border-border bg-card hover:bg-muted text-foreground"
                       }`}
                     >
                       <span>{m}</span>
@@ -800,36 +800,36 @@ export default function Pagos() {
 
           {/* Columna 3: Monto, Descuentos y Confirmación */}
           <div className="space-y-3">
-            <Label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+            <Label className="text-xs font-bold text-foreground uppercase tracking-wider">
               3. Importe y Confirmación
             </Label>
 
             {/* Monto base */}
             <div className="space-y-1">
-              <label className="text-xs font-medium text-gray-600">Monto Base a Cobrar</label>
+              <label className="text-xs font-medium text-muted-foreground">Monto Base a Cobrar</label>
               <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400">$</span>
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-muted-foreground">$</span>
                 <input
                   type="text"
                   inputMode="decimal"
                   placeholder="0.00"
                   value={form.monto}
                   onChange={(e) => handleMontoChange(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl pl-8 pr-3 py-2 text-base font-black text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="w-full border border-border rounded-xl pl-8 pr-3 py-2 text-base font-black text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
               </div>
             </div>
 
             {/* Toggle de Descuento */}
-            <div className="p-3 rounded-xl bg-gray-50/70 border border-gray-200/70 space-y-2">
+            <div className="p-3 rounded-xl bg-muted/50 border border-border space-y-2">
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={aplicaDescuento}
                   onChange={(e) => handleToggleDescuento(e.target.checked)}
-                  className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
+                  className="rounded border-border text-primary focus:ring-primary h-4 w-4"
                 />
-                <span className="text-xs font-bold text-gray-700 flex items-center gap-1">
+                <span className="text-xs font-bold text-foreground flex items-center gap-1">
                   <Percent className="w-3.5 h-3.5 text-amber-600" />
                   Aplicar Descuento / Promo
                 </span>
@@ -838,7 +838,7 @@ export default function Pagos() {
               {aplicaDescuento && (
                 <div className="grid grid-cols-2 gap-2 pt-1 animate-fade-in-up">
                   <div>
-                    <label className="text-[11px] text-gray-500">% Descuento</label>
+                    <label className="text-[11px] text-muted-foreground">% Descuento</label>
                     <div className="relative">
                       <input
                         type="number"
@@ -847,14 +847,14 @@ export default function Pagos() {
                         placeholder="10"
                         value={porcentajeDescuento}
                         onChange={(e) => handlePctChange(e.target.value)}
-                        className="w-full border border-gray-200 rounded-lg pr-6 pl-2.5 py-1 text-xs font-bold text-gray-900 bg-white"
+                        className="w-full border border-border rounded-lg pr-6 pl-2.5 py-1 text-xs font-bold text-foreground bg-background"
                       />
-                      <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-bold">%</span>
+                      <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground font-bold">%</span>
                     </div>
                   </div>
                   <div>
-                    <label className="text-[11px] text-gray-500">Monto Final</label>
-                    <div className="text-xs font-black text-emerald-700 py-1 px-2 rounded-lg bg-emerald-50 border border-emerald-200">
+                    <label className="text-[11px] text-muted-foreground">Monto Final</label>
+                    <div className="text-xs font-black text-emerald-600 dark:text-emerald-400 py-1 px-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                       ${montoFinal ? parseFloat(montoFinal).toLocaleString("es-AR") : "0"}
                     </div>
                   </div>
@@ -864,18 +864,18 @@ export default function Pagos() {
 
             {/* Nota opcional */}
             <div className="space-y-1">
-              <label className="text-xs font-medium text-gray-600">Nota / Observación</label>
+              <label className="text-xs font-medium text-muted-foreground">Nota / Observación</label>
               <input
                 type="text"
                 placeholder="Ej: Abonó en recepción, comprobante bancario..."
                 value={form.nota}
                 onChange={(e) => setForm((f) => ({ ...f, nota: e.target.value }))}
-                className="w-full border border-gray-200 rounded-xl px-3 py-1.5 text-xs text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="w-full border border-border rounded-xl px-3 py-1.5 text-xs text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
             </div>
 
             {error && (
-              <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-xs font-semibold text-rose-700">
+              <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs font-semibold text-rose-600 dark:text-rose-400">
                 {error}
               </div>
             )}
@@ -902,11 +902,11 @@ export default function Pagos() {
       </div>
 
       {/* ── Tabla de Historial Operativo ── */}
-      <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-xs space-y-4 p-5">
+      <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-xs space-y-4 p-5">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h2 className="text-base font-bold text-gray-900">Historial de Cobros</h2>
-            <p className="text-xs text-gray-500">
+            <h2 className="text-base font-bold text-foreground">Historial de Cobros</h2>
+            <p className="text-xs text-muted-foreground">
               Mostrando {pagosFiltrados.length} cobros registrados.
             </p>
           </div>

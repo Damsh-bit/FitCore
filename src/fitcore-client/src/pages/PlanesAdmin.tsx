@@ -322,12 +322,12 @@ export default function PlanesAdmin() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-gray-900">Planes y Tarifas</h1>
-            <Badge variant="outline" className="text-xs font-semibold px-2.5 py-0.5 rounded-full border-gray-200 bg-gray-50 text-gray-700">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">Planes y Tarifas</h1>
+            <Badge variant="outline" className="text-xs font-semibold px-2.5 py-0.5 rounded-full border-border bg-muted text-muted-foreground">
               Catálogo Comercial
             </Badge>
           </div>
-          <p className="text-xs sm:text-sm text-gray-500 mt-1">
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             Gestión de membresías, precios, ajuste masivo por inflación y control de suscriptores activos.
           </p>
         </div>
@@ -338,9 +338,9 @@ export default function PlanesAdmin() {
             variant="outline"
             size="sm"
             onClick={() => setAjusteModalOpen(true)}
-            className="rounded-xl border-amber-300 bg-amber-50/60 hover:bg-amber-100 text-amber-900 text-xs font-bold shadow-xs"
+            className="rounded-xl border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 text-xs font-bold shadow-xs"
           >
-            <Percent className="w-3.5 h-3.5 mr-1.5 text-amber-600" />
+            <Percent className="w-3.5 h-3.5 mr-1.5 text-amber-600 dark:text-amber-400" />
             Ajuste Masivo de Precios
           </Button>
 
@@ -359,91 +359,91 @@ export default function PlanesAdmin() {
       {/* ── Métricas del Catálogo (Cards) ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         {/* Planes Activos */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
+        <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
           <div className="flex items-center justify-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-slate-100 text-slate-700 border border-slate-200/60 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-lg bg-muted text-muted-foreground border border-border flex items-center justify-center">
               <Sparkles className="w-3.5 h-3.5" />
             </div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Planes Activos</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Planes Activos</span>
           </div>
           <div className="my-1">
             {loading ? (
               <Skeleton className="h-8 w-20 rounded mx-auto" />
             ) : (
-              <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+              <p className="text-2xl sm:text-[28px] font-black text-foreground tracking-tight leading-none">
                 {metricas.totalPlanesActivos}
               </p>
             )}
           </div>
-          <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500 font-medium truncate w-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground font-medium truncate w-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 shrink-0" />
             <span>Opciones para venta</span>
           </div>
         </div>
 
         {/* Socios Inscriptos */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
+        <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
           <div className="flex items-center justify-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 border border-blue-200/60 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 flex items-center justify-center">
               <Users className="w-3.5 h-3.5" />
             </div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Socios con Plan</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Socios con Plan</span>
           </div>
           <div className="my-1">
             {loading ? (
               <Skeleton className="h-8 w-24 rounded mx-auto" />
             ) : (
-              <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+              <p className="text-2xl sm:text-[28px] font-black text-foreground tracking-tight leading-none">
                 {metricas.totalSociosConPlan}
               </p>
             )}
           </div>
-          <div className="flex items-center justify-center gap-1.5 text-[11px] text-blue-700 font-medium truncate w-full">
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-blue-600 dark:text-blue-400 font-medium truncate w-full">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
             <span>Membresías vigentes</span>
           </div>
         </div>
 
         {/* MRR Estimado */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
+        <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
           <div className="flex items-center justify-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200/60 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center">
               <DollarSign className="w-3.5 h-3.5" />
             </div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">MRR Proyectado</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">MRR Proyectado</span>
           </div>
           <div className="my-1">
             {loading ? (
               <Skeleton className="h-8 w-28 rounded mx-auto" />
             ) : (
-              <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+              <p className="text-2xl sm:text-[28px] font-black text-foreground tracking-tight leading-none">
                 ${metricas.mrrEstimado.toLocaleString("es-AR")}
               </p>
             )}
           </div>
-          <div className="flex items-center justify-center gap-1.5 text-[11px] text-emerald-700 font-medium truncate w-full">
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium truncate w-full">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
             <span>Facturación recurrente mensual</span>
           </div>
         </div>
 
         {/* Plan Más Popular */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
+        <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
           <div className="flex items-center justify-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-amber-50 text-amber-600 border border-amber-200/60 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center justify-center">
               <TrendingUp className="w-3.5 h-3.5" />
             </div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Más Elegido</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Más Elegido</span>
           </div>
           <div className="my-1 max-w-full px-1">
             {loading ? (
               <Skeleton className="h-8 w-32 rounded mx-auto" />
             ) : metricas.planMasPopular && (metricas.planMasPopular.sociosActivos ?? 0) > 0 ? (
-              <p className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-tight truncate text-center" title={metricas.planMasPopular.nombre}>
+              <p className="text-xl sm:text-2xl font-black text-foreground tracking-tight leading-tight truncate text-center" title={metricas.planMasPopular.nombre}>
                 {metricas.planMasPopular.nombre}
               </p>
             ) : (
-              <p className="text-xl sm:text-2xl font-black text-slate-400 tracking-tight leading-tight truncate text-center">
+              <p className="text-xl sm:text-2xl font-black text-muted-foreground/50 tracking-tight leading-tight truncate text-center">
                 {planes.length > 0 ? planes[0]?.nombre : "—"}
               </p>
             )}
@@ -452,12 +452,12 @@ export default function PlanesAdmin() {
             {metricas.planMasPopular && (metricas.planMasPopular.sociosActivos ?? 0) > 0 ? (
               <>
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
-                <span className="text-amber-700">{metricas.planMasPopular.sociosActivos ?? 0} socios inscriptos</span>
+                <span className="text-amber-600 dark:text-amber-400">{metricas.planMasPopular.sociosActivos ?? 0} socios inscriptos</span>
               </>
             ) : (
               <>
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0" />
-                <span className="text-slate-400">Aún sin inscripciones</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30 shrink-0" />
+                <span className="text-muted-foreground">Aún sin inscripciones</span>
               </>
             )}
           </div>
@@ -465,11 +465,11 @@ export default function PlanesAdmin() {
       </div>
 
       {/* ── Barra de Control: Búsqueda, Filtros y Vista Dual ── */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="bg-card rounded-2xl border border-border p-4 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 w-full sm:w-auto flex-wrap">
           {/* Buscador */}
           <div className="relative w-full sm:w-60">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <Input
               placeholder="Buscar plan por nombre..."
               value={busqueda}
@@ -495,14 +495,14 @@ export default function PlanesAdmin() {
         </div>
 
         {/* Selector de Modo de Vista (Cards vs Table) */}
-        <div className="flex items-center gap-1 bg-gray-100/80 p-1 rounded-xl border border-gray-200 self-end sm:self-auto">
+        <div className="flex items-center gap-1 bg-muted p-1 rounded-xl border border-border self-end sm:self-auto">
           <button
             type="button"
             onClick={() => setVista("cards")}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
               vista === "cards"
-                ? "bg-white text-gray-900 shadow-xs"
-                : "text-gray-500 hover:text-gray-800"
+                ? "bg-card text-foreground shadow-xs"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             <LayoutGrid className="w-3.5 h-3.5" />
@@ -513,8 +513,8 @@ export default function PlanesAdmin() {
             onClick={() => setVista("table")}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
               vista === "table"
-                ? "bg-white text-gray-900 shadow-xs"
-                : "text-gray-500 hover:text-gray-800"
+                ? "bg-card text-foreground shadow-xs"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             <TableIcon className="w-3.5 h-3.5" />
@@ -531,7 +531,7 @@ export default function PlanesAdmin() {
           ))}
         </div>
       ) : planesFiltrados.length === 0 ? (
-        <div className="py-16 text-center text-xs text-gray-400 bg-white rounded-2xl border border-gray-200">
+        <div className="py-16 text-center text-xs text-muted-foreground bg-card rounded-2xl border border-border">
           No se encontraron planes con los filtros actuales.
         </div>
       ) : vista === "cards" ? (
@@ -542,15 +542,15 @@ export default function PlanesAdmin() {
             return (
               <div
                 key={p.id}
-                className={`bg-white rounded-2xl border transition-all duration-200 shadow-xs flex flex-col justify-between overflow-hidden relative group hover:shadow-md ${
-                  !p.activo ? "opacity-60 bg-gray-50/50 border-gray-200" : esMasPopular ? "border-amber-400 ring-2 ring-amber-400/10" : "border-gray-200 hover:border-gray-300"
+                className={`bg-card rounded-2xl border transition-all duration-200 shadow-xs flex flex-col justify-between overflow-hidden relative group hover:shadow-md ${
+                  !p.activo ? "opacity-60 bg-muted/40 border-border" : esMasPopular ? "border-amber-500/80 ring-2 ring-amber-500/20" : "border-border hover:border-muted-foreground/30"
                 }`}
               >
                 {/* Badge flotante si es el más popular */}
                 {esMasPopular && p.activo && (
                   <div className="absolute top-3 right-3">
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300">
-                      <Sparkles className="w-3 h-3 text-amber-600" />
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                      <Sparkles className="w-3 h-3 text-amber-500" />
                       Más Elegido
                     </span>
                   </div>
@@ -564,40 +564,40 @@ export default function PlanesAdmin() {
                     >
                       {p.activo ? "Activo para venta" : "Desactivado"}
                     </Badge>
-                    <h3 className="text-lg font-black text-gray-900 group-hover:text-primary transition-colors">
+                    <h3 className="text-lg font-black text-foreground group-hover:text-primary transition-colors">
                       {p.nombre}
                     </h3>
                   </div>
 
                   {/* Precio y Duración */}
-                  <div className="pt-2 border-t border-gray-100">
+                  <div className="pt-2 border-t border-border">
                     <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-black text-gray-900 tracking-tight">
+                      <span className="text-3xl font-black text-foreground tracking-tight">
                         ${p.precio.toLocaleString("es-AR")}
                       </span>
-                      <span className="text-xs text-gray-500 font-medium">
+                      <span className="text-xs text-muted-foreground font-medium">
                         / {p.duracionEnDias} días
                       </span>
                     </div>
                   </div>
 
                   {/* Estadísticas de socios inscriptos */}
-                  <div className="bg-gray-50/80 rounded-xl p-3 border border-gray-100 space-y-1.5 text-xs">
+                  <div className="bg-muted/40 rounded-xl p-3 border border-border space-y-1.5 text-xs">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-500 flex items-center gap-1.5">
-                        <Users className="w-3.5 h-3.5 text-gray-400" />
+                      <span className="text-muted-foreground flex items-center gap-1.5">
+                        <Users className="w-3.5 h-3.5 text-muted-foreground" />
                         Socios activos:
                       </span>
-                      <span className="font-bold text-gray-900">
+                      <span className="font-bold text-foreground">
                         {p.sociosActivos ?? 0} socios
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-500 flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                      <span className="text-muted-foreground flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
                         Vigencia:
                       </span>
-                      <span className="font-semibold text-gray-700">
+                      <span className="font-semibold text-foreground">
                         {p.duracionEnDias === 30 ? "1 Mes" : p.duracionEnDias === 90 ? "Trimestral" : `${p.duracionEnDias} días`}
                       </span>
                     </div>
@@ -605,14 +605,14 @@ export default function PlanesAdmin() {
                 </div>
 
                 {/* Acciones de la Tarjeta */}
-                <div className="px-6 py-3 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between gap-2">
+                <div className="px-6 py-3 bg-muted/30 border-t border-border flex items-center justify-between gap-2">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => openEdit(p)}
-                    className="flex-1 rounded-xl text-xs font-semibold h-8 border-gray-200 hover:bg-white"
+                    className="flex-1 rounded-xl text-xs font-semibold h-8 border-border hover:bg-muted"
                   >
-                    <Pencil className="w-3.5 h-3.5 mr-1 text-gray-600" />
+                    <Pencil className="w-3.5 h-3.5 mr-1 text-muted-foreground" />
                     Editar
                   </Button>
 
@@ -620,7 +620,7 @@ export default function PlanesAdmin() {
                     variant="ghost"
                     size="sm"
                     onClick={() => openDuplicate(p)}
-                    className="rounded-xl text-xs font-medium h-8 text-gray-500 hover:text-gray-800"
+                    className="rounded-xl text-xs font-medium h-8 text-muted-foreground hover:text-foreground"
                     title="Duplicar como nuevo plan"
                   >
                     <Copy className="w-3.5 h-3.5" />
@@ -635,8 +635,8 @@ export default function PlanesAdmin() {
                     }}
                     className={`rounded-xl text-xs font-medium h-8 ${
                       p.activo
-                        ? "text-rose-600 hover:text-rose-700 hover:bg-rose-50"
-                        : "text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                        ? "text-rose-600 dark:text-rose-400 hover:text-rose-700 hover:bg-rose-500/10"
+                        : "text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 hover:bg-emerald-500/10"
                     }`}
                     title={p.activo ? "Desactivar" : "Reactivar"}
                   >
@@ -649,10 +649,10 @@ export default function PlanesAdmin() {
         </div>
       ) : (
         /* ── VISTA TABLA ADMINISTRATIVA ── */
-        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-xs">
+        <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-xs">
           <Table>
             <TableHeader>
-              <TableRow className="bg-gray-50/70 border-b border-gray-100 text-[11px] uppercase tracking-wider text-gray-400 font-bold">
+              <TableRow className="bg-muted/40 border-b border-border text-[11px] uppercase tracking-wider text-muted-foreground font-bold">
                 <TableHead className="py-3 px-4">Nombre del Plan</TableHead>
                 <TableHead className="py-3 px-4">Precio Actual</TableHead>
                 <TableHead className="py-3 px-4">Duración</TableHead>
@@ -663,18 +663,18 @@ export default function PlanesAdmin() {
             </TableHeader>
             <TableBody>
               {planesFiltrados.map((p) => (
-                <TableRow key={p.id} className="hover:bg-gray-50/80 transition-colors">
-                  <TableCell className="py-3.5 px-4 font-bold text-gray-900 text-xs">
+                <TableRow key={p.id} className="hover:bg-muted/50 transition-colors">
+                  <TableCell className="py-3.5 px-4 font-bold text-foreground text-xs">
                     {p.nombre}
                   </TableCell>
-                  <TableCell className="py-3.5 px-4 font-black text-gray-900 text-xs">
+                  <TableCell className="py-3.5 px-4 font-black text-foreground text-xs">
                     ${p.precio.toLocaleString("es-AR")}
                   </TableCell>
-                  <TableCell className="py-3.5 px-4 text-gray-600 text-xs font-medium">
+                  <TableCell className="py-3.5 px-4 text-muted-foreground text-xs font-medium">
                     {p.duracionEnDias} días
                   </TableCell>
                   <TableCell className="py-3.5 px-4">
-                    <span className="inline-flex items-center gap-1 font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full text-[11px]">
+                    <span className="inline-flex items-center gap-1 font-bold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full text-[11px]">
                       <Users className="w-3 h-3" />
                       {p.sociosActivos ?? 0}
                     </span>
@@ -690,7 +690,7 @@ export default function PlanesAdmin() {
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 rounded-lg text-gray-500 hover:text-gray-900"
+                        className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground"
                         onClick={() => openEdit(p)}
                         title="Editar plan"
                       >
@@ -700,7 +700,7 @@ export default function PlanesAdmin() {
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 rounded-lg text-gray-500 hover:text-gray-900"
+                        className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground"
                         onClick={() => openDuplicate(p)}
                         title="Duplicar plan"
                       >
@@ -712,8 +712,8 @@ export default function PlanesAdmin() {
                         size="icon"
                         className={`h-8 w-8 rounded-lg ${
                           p.activo
-                            ? "text-rose-600 hover:text-rose-700 hover:bg-rose-50"
-                            : "text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                            ? "text-rose-600 dark:text-rose-400 hover:text-rose-700 hover:bg-rose-500/10"
+                            : "text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 hover:bg-emerald-500/10"
                         }`}
                         onClick={() => {
                           setDeleting(p);
@@ -747,7 +747,7 @@ export default function PlanesAdmin() {
 
           <div className="mt-4 space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="nombre" className="text-xs font-semibold text-gray-700">Nombre del Plan</Label>
+              <Label htmlFor="nombre" className="text-xs font-semibold text-foreground">Nombre del Plan</Label>
               <Input
                 id="nombre"
                 placeholder="Ej: Pase Libre Musculación, Pase 3 Días..."
@@ -760,9 +760,9 @@ export default function PlanesAdmin() {
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label htmlFor="precio" className="text-xs font-semibold text-gray-700">Precio ($)</Label>
+                <Label htmlFor="precio" className="text-xs font-semibold text-foreground">Precio ($)</Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400">$</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-muted-foreground">$</span>
                   <Input
                     id="precio"
                     type="number"
@@ -777,7 +777,7 @@ export default function PlanesAdmin() {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="duracion" className="text-xs font-semibold text-gray-700">Duración (Días)</Label>
+                <Label htmlFor="duracion" className="text-xs font-semibold text-foreground">Duración (Días)</Label>
                 <Input
                   id="duracion"
                   type="number"
@@ -793,25 +793,25 @@ export default function PlanesAdmin() {
 
             {/* Accesos rápidos de duración */}
             <div className="flex items-center gap-1.5 pt-1">
-              <span className="text-[11px] text-gray-400">Atajos:</span>
+              <span className="text-[11px] text-muted-foreground">Atajos:</span>
               <button
                 type="button"
                 onClick={() => setForm((f) => ({ ...f, duracionEnDias: "30" }))}
-                className="px-2 py-0.5 text-[10px] font-bold rounded bg-gray-100 hover:bg-gray-200 text-gray-700"
+                className="px-2 py-0.5 text-[10px] font-bold rounded bg-muted hover:bg-muted/80 text-foreground transition-colors"
               >
                 1 Mes (30d)
               </button>
               <button
                 type="button"
                 onClick={() => setForm((f) => ({ ...f, duracionEnDias: "90" }))}
-                className="px-2 py-0.5 text-[10px] font-bold rounded bg-gray-100 hover:bg-gray-200 text-gray-700"
+                className="px-2 py-0.5 text-[10px] font-bold rounded bg-muted hover:bg-muted/80 text-foreground transition-colors"
               >
                 Trimestre (90d)
               </button>
               <button
                 type="button"
                 onClick={() => setForm((f) => ({ ...f, duracionEnDias: "365" }))}
-                className="px-2 py-0.5 text-[10px] font-bold rounded bg-gray-100 hover:bg-gray-200 text-gray-700"
+                className="px-2 py-0.5 text-[10px] font-bold rounded bg-muted hover:bg-muted/80 text-foreground transition-colors"
               >
                 Anual (365d)
               </button>
@@ -834,7 +834,7 @@ export default function PlanesAdmin() {
         <DialogContent className="max-w-lg p-6">
           <DialogHeader>
             <DialogTitle className="text-base font-bold flex items-center gap-2">
-              <Percent className="w-5 h-5 text-amber-600" />
+              <Percent className="w-5 h-5 text-amber-500" />
               Ajuste Masivo de Tarifas
             </DialogTitle>
             <DialogDescription className="text-xs">
@@ -845,7 +845,7 @@ export default function PlanesAdmin() {
           <div className="mt-4 space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-gray-700">% de Aumento</Label>
+                <Label className="text-xs font-semibold text-foreground">% de Aumento</Label>
                 <div className="relative">
                   <Input
                     type="number"
@@ -858,18 +858,18 @@ export default function PlanesAdmin() {
                     onChange={(e) => setPorcentajeAjuste(e.target.value)}
                     disabled={ajustando}
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">%</span>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground">%</span>
                 </div>
               </div>
 
               <div className="space-y-1.5 flex flex-col justify-end">
-                <label className="flex items-center gap-2 p-2.5 rounded-xl bg-gray-50 border border-gray-200 cursor-pointer select-none text-xs font-semibold text-gray-700">
+                <label className="flex items-center gap-2 p-2.5 rounded-xl bg-muted/50 border border-border cursor-pointer select-none text-xs font-semibold text-foreground">
                   <input
                     type="checkbox"
                     checked={redondearACien}
                     onChange={(e) => setRedondearACien(e.target.checked)}
                     disabled={ajustando}
-                    className="rounded border-gray-300 text-primary focus:ring-primary h-4 w-4"
+                    className="rounded border-border text-primary focus:ring-primary h-4 w-4"
                   />
                   <span>Redondear a centenas ($100)</span>
                 </label>
@@ -878,18 +878,18 @@ export default function PlanesAdmin() {
 
             {/* Simulación en vivo */}
             <div className="space-y-1.5">
-              <span className="text-xs font-bold text-gray-700 uppercase tracking-wide">
+              <span className="text-xs font-bold text-foreground uppercase tracking-wide">
                 Simulación de Precios Nuevos ({simulacionAjuste.length} planes activos)
               </span>
-              <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-xl divide-y divide-gray-100 text-xs">
+              <div className="max-h-48 overflow-y-auto border border-border rounded-xl divide-y divide-border text-xs">
                 {simulacionAjuste.map((p) => (
-                  <div key={p.id} className="p-2.5 flex items-center justify-between bg-white hover:bg-gray-50">
-                    <span className="font-semibold text-gray-800">{p.nombre}</span>
+                  <div key={p.id} className="p-2.5 flex items-center justify-between bg-card hover:bg-muted/50">
+                    <span className="font-semibold text-foreground">{p.nombre}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-gray-400 line-through">${p.precio.toLocaleString("es-AR")}</span>
-                      <ArrowRight className="w-3 h-3 text-gray-400" />
-                      <span className="font-black text-emerald-700">${p.nuevoPrecio.toLocaleString("es-AR")}</span>
-                      <span className="text-[10px] text-amber-700 font-bold bg-amber-50 px-1.5 py-0.5 rounded">
+                      <span className="text-muted-foreground line-through">${p.precio.toLocaleString("es-AR")}</span>
+                      <ArrowRight className="w-3 h-3 text-muted-foreground" />
+                      <span className="font-black text-emerald-600 dark:text-emerald-400">${p.nuevoPrecio.toLocaleString("es-AR")}</span>
+                      <span className="text-[10px] text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10 px-1.5 py-0.5 rounded">
                         (+${p.diferencia.toLocaleString("es-AR")})
                       </span>
                     </div>
@@ -921,12 +921,12 @@ export default function PlanesAdmin() {
               {deleting?.activo ? (
                 <>
                   ¿Estás seguro de que querés desactivar{" "}
-                  <span className="font-bold text-gray-900">{deleting?.nombre}</span>? Ya no estará disponible para nuevos socios en recepción.
+                  <span className="font-bold text-foreground">{deleting?.nombre}</span>? Ya no estará disponible para nuevos socios en recepción.
                 </>
               ) : (
                 <>
                   ¿Querés volver a activar{" "}
-                  <span className="font-bold text-gray-900">{deleting?.nombre}</span> para que vuelva a figurar en venta?
+                  <span className="font-bold text-foreground">{deleting?.nombre}</span> para que vuelva a figurar en venta?
                 </>
               )}
             </DialogDescription>

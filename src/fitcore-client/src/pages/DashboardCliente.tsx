@@ -108,14 +108,14 @@ export default function DashboardCliente() {
   return (
     <div className="space-y-8 max-w-6xl">
       {/* ── 1. Header de bienvenida ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white border border-gray-200/80 rounded-3xl p-6 sm:p-8 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-card border border-border rounded-3xl p-6 sm:p-8 shadow-xs">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-foreground tracking-tight">
               ¡Hola, {user?.nombre || "Atleta"}!
             </h1>
           </div>
-          <p className="text-sm text-gray-500 font-medium">
+          <p className="text-sm text-muted-foreground font-medium">
             {settings.mensajeBienvenida || "Bienvenido a tu panel de FitCore. Tu constancia forja tus resultados."}
           </p>
         </div>
@@ -126,7 +126,7 @@ export default function DashboardCliente() {
             variant="outline"
             className="rounded-2xl text-xs font-semibold h-11 px-4 cursor-pointer"
           >
-            <Calendar className="w-4 h-4 mr-2 text-gray-500" />
+            <Calendar className="w-4 h-4 mr-2 text-muted-foreground" />
             Mis Asistencias
           </Button>
           <Button
@@ -210,57 +210,57 @@ export default function DashboardCliente() {
       {/* ── 3. Métricas rápidas del Socio ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Entrenamientos del mes */}
-        <div className="bg-white border border-gray-200/80 rounded-3xl p-6 shadow-xs flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center shrink-0">
+        <div className="bg-card border border-border rounded-3xl p-6 shadow-xs flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-orange-500/15 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
             <Flame className="w-7 h-7" />
           </div>
           <div className="min-w-0">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Asistencias del Mes</p>
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Asistencias del Mes</p>
             {loading ? (
               <Skeleton className="h-7 w-16 rounded mt-0.5" />
             ) : (
-              <p className="text-2xl font-black text-gray-900 mt-0.5 animate-fade-in-up">
-                {asistenciasMes.length} <span className="text-xs font-medium text-gray-500">visitas</span>
+              <p className="text-2xl font-black text-foreground mt-0.5 animate-fade-in-up">
+                {asistenciasMes.length} <span className="text-xs font-medium text-muted-foreground">visitas</span>
               </p>
             )}
-            <p className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1 mt-1">
+            <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 mt-1">
               <TrendingUp className="w-3.5 h-3.5" /> ¡Excelente constancia!
             </p>
           </div>
         </div>
 
         {/* Última visita */}
-        <div className="bg-white border border-gray-200/80 rounded-3xl p-6 shadow-xs flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+        <div className="bg-card border border-border rounded-3xl p-6 shadow-xs flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
             <Calendar className="w-7 h-7" />
           </div>
           <div className="min-w-0">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Último Entrenamiento</p>
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Último Entrenamiento</p>
             {loading ? (
               <Skeleton className="h-6 w-24 rounded mt-0.5" />
             ) : (
-              <p className="text-lg font-bold text-gray-900 mt-0.5 truncate animate-fade-in-up">
+              <p className="text-lg font-bold text-foreground mt-0.5 truncate animate-fade-in-up">
                 {ultimaAsistencia ? `${ultimaAsistencia.fecha}` : "Aún sin registros"}
               </p>
             )}
-            <p className="text-[11px] text-gray-500 mt-1">
+            <p className="text-[11px] text-muted-foreground mt-1">
               {loading ? "" : ultimaAsistencia ? `Ingreso: ${ultimaAsistencia.horaIngreso.slice(0, 5)} hs` : "¡Vení a entrenar hoy!"}
             </p>
           </div>
         </div>
 
         {/* Sede y Equipamiento */}
-        <div className="bg-white border border-gray-200/80 rounded-3xl p-6 shadow-xs flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+        <div className="bg-card border border-border rounded-3xl p-6 shadow-xs flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
             <Dumbbell className="w-7 h-7" />
           </div>
           <div className="min-w-0">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Sala de Musculación</p>
-            <p className="text-base font-bold text-gray-900 mt-0.5 truncate">
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Sala de Musculación</p>
+            <p className="text-base font-bold text-foreground mt-0.5 truncate">
               {membresia?.planNombre || "Pase Libre"}
             </p>
-            <p className="text-[11px] text-gray-500 mt-1 flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5 text-gray-400" /> {settings.nombreGimnasio ?? "Tu gimnasio"}
+            <p className="text-[11px] text-muted-foreground mt-1 flex items-center gap-1">
+              <MapPin className="w-3.5 h-3.5 text-muted-foreground" /> {settings.nombreGimnasio ?? "Tu gimnasio"}
             </p>
           </div>
         </div>
@@ -269,35 +269,35 @@ export default function DashboardCliente() {
       {/* ── 4. Grilla de 2 Columnas: Horarios / Concurrencia de Sala y Novedades ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Horarios y Concurrencia de Sala de Musculación */}
-        <div className="lg:col-span-7 bg-white border border-gray-200/80 rounded-3xl p-6 sm:p-7 shadow-xs space-y-6">
+        <div className="lg:col-span-7 bg-card border border-border rounded-3xl p-6 sm:p-7 shadow-xs space-y-6">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-orange-600" />
-                <h3 className="text-base font-bold text-gray-900">Horarios de Referencia</h3>
+                <h3 className="text-base font-bold text-foreground">Horarios de Referencia</h3>
               </div>
-              <p className="text-xs text-gray-400">Confirmá el horario vigente con recepción — puede variar por sede o temporada</p>
+              <p className="text-xs text-muted-foreground">Confirmá el horario vigente con recepción — puede variar por sede o temporada</p>
             </div>
           </div>
 
           {/* Horarios habituales de apertura */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="p-3.5 rounded-2xl bg-gray-50/70 border border-gray-100">
-              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Lunes a Viernes</p>
-              <p className="text-sm font-black text-gray-900 mt-0.5">07:00 — 23:00 hs</p>
-              <p className="text-[10px] text-gray-500 mt-0.5">Horario corrido</p>
+            <div className="p-3.5 rounded-2xl bg-muted/50 border border-border">
+              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Lunes a Viernes</p>
+              <p className="text-sm font-black text-foreground mt-0.5">07:00 — 23:00 hs</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Horario corrido</p>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-gray-50/70 border border-gray-100">
-              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Sábados</p>
-              <p className="text-sm font-black text-gray-900 mt-0.5">09:00 — 20:00 hs</p>
-              <p className="text-[10px] text-gray-500 mt-0.5">Tarde completa</p>
+            <div className="p-3.5 rounded-2xl bg-muted/50 border border-border">
+              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Sábados</p>
+              <p className="text-sm font-black text-foreground mt-0.5">09:00 — 20:00 hs</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Tarde completa</p>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-gray-50/70 border border-gray-100">
-              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Domingos y Feriados</p>
-              <p className="text-sm font-black text-gray-900 mt-0.5">09:00 — 14:00 hs</p>
-              <p className="text-[10px] text-gray-500 mt-0.5">Turno mañana</p>
+            <div className="p-3.5 rounded-2xl bg-muted/50 border border-border">
+              <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Domingos y Feriados</p>
+              <p className="text-sm font-black text-foreground mt-0.5">09:00 — 14:00 hs</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">Turno mañana</p>
             </div>
           </div>
 
@@ -305,43 +305,43 @@ export default function DashboardCliente() {
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4 text-orange-600" />
-              <h4 className="text-xs font-bold text-gray-900 uppercase tracking-wider">
+              <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">
                 Franjas horarias orientativas
               </h4>
             </div>
-            <p className="text-[11px] text-gray-400 -mt-2">
+            <p className="text-[11px] text-muted-foreground -mt-2">
               Guía general de referencia — la afluencia real puede variar según el día.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <div className="p-3 rounded-2xl bg-emerald-50/50 border border-emerald-100/70 flex items-center justify-between">
+              <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-mono font-bold text-emerald-900">10:00 - 16:30 hs</span>
-                  <p className="text-[11px] text-emerald-700/90 font-semibold">Tranquilo • Bancos y racks libres</p>
+                  <span className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-300">10:00 - 16:30 hs</span>
+                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">Tranquilo • Bancos y racks libres</p>
                 </div>
                 <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
               </div>
 
-              <div className="p-3 rounded-2xl bg-blue-50/50 border border-blue-100/70 flex items-center justify-between">
+              <div className="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-mono font-bold text-blue-900">07:00 - 09:30 hs</span>
-                  <p className="text-[11px] text-blue-700/90 font-semibold">Moderado • Flujo dinámico</p>
+                  <span className="text-xs font-mono font-bold text-blue-700 dark:text-blue-300">07:00 - 09:30 hs</span>
+                  <p className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold">Moderado • Flujo dinámico</p>
                 </div>
                 <span className="h-2.5 w-2.5 rounded-full bg-blue-500" />
               </div>
 
-              <div className="p-3 rounded-2xl bg-orange-50/60 border border-orange-200/80 flex items-center justify-between">
+              <div className="p-3 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-mono font-bold text-orange-900">18:00 - 20:30 hs</span>
-                  <p className="text-[11px] text-orange-700 font-semibold">Horario Pico 🔥 • Mayor concurrencia</p>
+                  <span className="text-xs font-mono font-bold text-orange-700 dark:text-orange-300">18:00 - 20:30 hs</span>
+                  <p className="text-[11px] text-orange-600 dark:text-orange-400 font-semibold">Horario Pico 🔥 • Mayor concurrencia</p>
                 </div>
                 <span className="h-2.5 w-2.5 rounded-full bg-orange-500 animate-pulse" />
               </div>
 
-              <div className="p-3 rounded-2xl bg-purple-50/50 border border-purple-100/70 flex items-center justify-between">
+              <div className="p-3 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-mono font-bold text-purple-900">20:30 - 23:00 hs</span>
-                  <p className="text-[11px] text-purple-700/90 font-semibold">Descomprimiendo • Espacio disponible</p>
+                  <span className="text-xs font-mono font-bold text-purple-700 dark:text-purple-300">20:30 - 23:00 hs</span>
+                  <p className="text-[11px] text-purple-600 dark:text-purple-400 font-semibold">Descomprimiendo • Espacio disponible</p>
                 </div>
                 <span className="h-2.5 w-2.5 rounded-full bg-purple-500" />
               </div>
@@ -349,7 +349,7 @@ export default function DashboardCliente() {
           </div>
 
           {/* Normas de convivencia en sala tradicional */}
-          <div className="pt-4 border-t border-gray-100 flex flex-wrap items-center gap-x-6 gap-y-2 text-[11px] text-gray-500">
+          <div className="pt-4 border-t border-border flex flex-wrap items-center gap-x-6 gap-y-2 text-[11px] text-muted-foreground">
             <span className="flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Toalla obligatoria sobre bancos
             </span>
@@ -363,29 +363,29 @@ export default function DashboardCliente() {
         </div>
 
         {/* Novedades y Anuncios del Gym */}
-        <div className="lg:col-span-5 bg-white border border-gray-200/80 rounded-3xl p-6 sm:p-7 shadow-xs flex flex-col justify-between">
+        <div className="lg:col-span-5 bg-card border border-border rounded-3xl p-6 sm:p-7 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <Bell className="w-4 h-4 text-orange-600" />
-              <h3 className="text-base font-bold text-gray-900">Tips para tu Entrenamiento</h3>
+              <h3 className="text-base font-bold text-foreground">Tips para tu Entrenamiento</h3>
             </div>
-            <p className="text-xs text-gray-400 mb-5">Consejos generales — consultá con recepción por avisos puntuales del gimnasio</p>
+            <p className="text-xs text-muted-foreground mb-5">Consejos generales — consultá con recepción por avisos puntuales del gimnasio</p>
 
             <div className="space-y-3.5">
               {tips.map((t) => (
-                <div key={t.id} className="p-4 rounded-2xl border border-gray-100 bg-gray-50/50 space-y-1.5">
-                  <Badge className="bg-zinc-100 text-zinc-700 hover:bg-zinc-100 text-[10px] font-bold border-0">
+                <div key={t.id} className="p-4 rounded-2xl border border-border bg-muted/40 space-y-1.5">
+                  <Badge className="bg-muted text-muted-foreground hover:bg-muted text-[10px] font-bold border-0">
                     {t.tag}
                   </Badge>
-                  <h4 className="text-xs font-bold text-gray-900">{t.titulo}</h4>
-                  <p className="text-xs text-gray-500 leading-relaxed">{t.detalle}</p>
+                  <h4 className="text-xs font-bold text-foreground">{t.titulo}</h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{t.detalle}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="mt-6 pt-5 border-t border-gray-100 flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
+          <div className="mt-6 pt-5 border-t border-border flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
               <Sparkles className="w-4 h-4 text-amber-500" />
               <span>¿Armado de rutina? Consultá a los profes en sala.</span>
             </div>

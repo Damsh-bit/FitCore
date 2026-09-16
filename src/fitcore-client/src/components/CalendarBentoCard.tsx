@@ -128,11 +128,11 @@ export default function CalendarBentoCard({ className, delay, onSelectDate, sele
   const seleccionadoStr = selectedDate ? toDateOnly(selectedDate) : null;
 
   const getHeatmapClass = (total: number, selected: boolean, esHoy: boolean) => {
-    if (selected) return "bg-indigo-600 text-white shadow-lg shadow-indigo-200";
-    if (esHoy) return "bg-indigo-50 text-indigo-700 font-bold";
-    if (total === 0) return "text-gray-300 hover:bg-gray-50";
-    if (total <= 5) return "bg-emerald-100 text-emerald-700 font-medium hover:bg-emerald-200";
-    if (total <= 15) return "bg-emerald-300 text-emerald-900 font-bold hover:bg-emerald-400";
+    if (selected) return "bg-primary text-primary-foreground shadow-lg";
+    if (esHoy) return "bg-primary/15 text-primary font-bold";
+    if (total === 0) return "text-muted-foreground/50 hover:bg-muted";
+    if (total <= 5) return "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-medium hover:bg-emerald-500/30";
+    if (total <= 15) return "bg-emerald-500/40 text-emerald-700 dark:text-emerald-300 font-bold hover:bg-emerald-500/50";
     return "bg-emerald-500 text-white font-black hover:bg-emerald-600";
   };
 
@@ -141,21 +141,21 @@ export default function CalendarBentoCard({ className, delay, onSelectDate, sele
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <CalendarIcon className="h-3.5 w-3.5 text-primary" />
-          <h3 className="text-xs font-bold text-black">{MESES[mes]} {anio}</h3>
+          <h3 className="text-xs font-bold text-foreground">{MESES[mes]} {anio}</h3>
         </div>
         <div className="flex items-center gap-1">
-          <button onClick={irMesAnterior} className="p-1 hover:bg-gray-100 rounded-lg transition-colors">
-            <ChevronLeft className="h-3 w-3 text-gray-600" />
+          <button onClick={irMesAnterior} className="p-1 hover:bg-muted rounded-lg transition-colors">
+            <ChevronLeft className="h-3 w-3 text-muted-foreground" />
           </button>
-          <button onClick={irMesSiguiente} className="p-1 hover:bg-gray-100 rounded-lg transition-colors">
-            <ChevronRight className="h-3 w-3 text-gray-600" />
+          <button onClick={irMesSiguiente} className="p-1 hover:bg-muted rounded-lg transition-colors">
+            <ChevronRight className="h-3 w-3 text-muted-foreground" />
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-7 mb-1">
         {DIAS_SEMANA.map((d) => (
-          <div key={d} className="text-center text-[9px] font-bold text-gray-300 uppercase tracking-widest">
+          <div key={d} className="text-center text-[9px] font-bold text-muted-foreground/60 uppercase tracking-widest">
             {d}
           </div>
         ))}
@@ -164,7 +164,7 @@ export default function CalendarBentoCard({ className, delay, onSelectDate, sele
       {loading ? (
         <div className="grid grid-cols-7 gap-1 lg:flex-1">
           {Array.from({ length: 35 }).map((_, i) => (
-            <Skeleton key={i} className="aspect-square w-full rounded-xl bg-gray-50" />
+            <Skeleton key={i} className="aspect-square w-full rounded-xl bg-muted" />
           ))}
         </div>
       ) : (
@@ -187,14 +187,14 @@ export default function CalendarBentoCard({ className, delay, onSelectDate, sele
                       className={cn(
                         "relative flex flex-col items-center justify-center aspect-square w-full rounded-xl text-[11px] transition-all duration-200 cursor-pointer",
                         getHeatmapClass(total, esSeleccionado, esHoy),
-                        esHoy && !esSeleccionado && "ring-2 ring-indigo-400 ring-offset-1"
+                        esHoy && !esSeleccionado && "ring-2 ring-primary ring-offset-1 ring-offset-background"
                       )}
                     >
                       <span className="leading-none">{dia.getDate()}</span>
                       {total > 0 && (
                         <span className={cn(
                           "text-[7px] mt-0.5 font-black",
-                          esSeleccionado || total > 15 ? "text-white/80" : "text-gray-400"
+                          esSeleccionado || total > 15 ? "text-white/80" : "text-muted-foreground"
                         )}>
                           {total}
                         </span>
@@ -203,10 +203,10 @@ export default function CalendarBentoCard({ className, delay, onSelectDate, sele
                   </TooltipTrigger>
                   <TooltipContent
                     side="top"
-                    className="rounded-2xl border-none shadow-2xl p-4 bg-white/95 backdrop-blur-xl text-black animate-in fade-in zoom-in-95"
+                    className="rounded-2xl border border-border shadow-2xl p-4 bg-popover text-popover-foreground animate-in fade-in zoom-in-95"
                   >
                     <div className="space-y-3 min-w-[160px]">
-                      <div className="flex justify-between items-center border-b border-gray-100 pb-2">
+                      <div className="flex justify-between items-center border-b border-border pb-2">
                         <p className="text-[10px] font-black uppercase tracking-widest text-primary">
                           {esHoy ? "Asistencias de Hoy" : `Asistencias (${dia.getDate()} de ${MESES[mes]})`}
                         </p>
@@ -218,11 +218,11 @@ export default function CalendarBentoCard({ className, delay, onSelectDate, sele
                         {asistentes && asistentes.length > 0 ? asistentes.slice(0, MAX_TOOLTIP_PREVIEW).map((nombre, idx) => (
                           <div key={idx} className="flex items-center gap-2 group/item">
                             <PersonaAvatar seed={nombre} size={20} />
-                            <span className="text-[11px] font-bold text-gray-700 group-hover/item:text-black transition-colors">{nombre}</span>
+                            <span className="text-[11px] font-bold text-foreground group-hover/item:text-primary transition-colors">{nombre}</span>
                           </div>
                         )) : (
                           <div className="py-4 text-center">
-                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Sin asistencias registradas</p>
+                            <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Sin asistencias registradas</p>
                           </div>
                         )}
                       </div>
@@ -233,7 +233,7 @@ export default function CalendarBentoCard({ className, delay, onSelectDate, sele
                             e.stopPropagation();
                             abrirModalDia(dia);
                           }}
-                          className="w-full py-1.5 rounded-lg bg-gray-50 hover:bg-primary/10 text-[9px] font-black uppercase tracking-widest text-gray-500 hover:text-primary transition-all cursor-pointer"
+                          className="w-full py-1.5 rounded-lg bg-muted hover:bg-primary/10 text-[9px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-all cursor-pointer"
                         >
                           Ver {total > MAX_TOOLTIP_PREVIEW ? `todas (${total})` : "detalle"}
                         </button>
@@ -258,7 +258,7 @@ export default function CalendarBentoCard({ className, delay, onSelectDate, sele
             </DialogDescription>
           </DialogHeader>
 
-          <div className="mt-4 divide-y divide-gray-100 max-h-[60vh] overflow-y-auto">
+          <div className="mt-4 divide-y divide-border max-h-[60vh] overflow-y-auto">
             {loadingDia ? (
               Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="flex items-center justify-between py-3">
@@ -268,17 +268,17 @@ export default function CalendarBentoCard({ className, delay, onSelectDate, sele
               ))
             ) : asistenciasDia.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 text-center gap-2">
-                <Users className="h-5 w-5 text-gray-300" />
-                <p className="text-sm text-gray-400">No hay asistencias registradas para este día</p>
+                <Users className="h-5 w-5 text-muted-foreground" />
+                <p className="text-sm text-muted-foreground">No hay asistencias registradas para este día</p>
               </div>
             ) : (
               asistenciasDia.map((a) => (
                 <div key={a.id} className="flex items-center justify-between py-3">
                   <div className="flex items-center gap-2.5">
                     <PersonaAvatar seed={a.clienteNombre} size={28} />
-                    <span className="text-sm font-medium text-black">{a.clienteNombre}</span>
+                    <span className="text-sm font-medium text-foreground">{a.clienteNombre}</span>
                   </div>
-                  <div className="flex items-center gap-1 text-gray-400">
+                  <div className="flex items-center gap-1 text-muted-foreground">
                     <Clock className="h-3 w-3" />
                     <span className="text-xs">{formatHora(a.horaIngreso)}</span>
                   </div>

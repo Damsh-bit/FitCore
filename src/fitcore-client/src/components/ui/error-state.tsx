@@ -15,11 +15,11 @@ export function ErrorState({
 }) {
   if (compact) {
     return (
-      <div className={cn("flex items-center gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3", className)}>
-        <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
-        <p className="text-xs font-semibold text-rose-700 flex-1">{message}</p>
+      <div className={cn("flex items-center gap-3 rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3", className)}>
+        <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
+        <p className="text-xs font-semibold text-rose-600 dark:text-rose-300 flex-1">{message}</p>
         {onRetry && (
-          <Button type="button" variant="outline" size="sm" className="rounded-lg text-xs h-7 shrink-0 bg-white" onClick={onRetry}>
+          <Button type="button" variant="outline" size="sm" className="rounded-lg text-xs h-7 shrink-0" onClick={onRetry}>
             <RefreshCw className="w-3.5 h-3.5 mr-1" /> Reintentar
           </Button>
         )}
@@ -29,10 +29,10 @@ export function ErrorState({
 
   return (
     <div className={cn("flex flex-col items-center justify-center gap-3 py-12 text-center", className)}>
-      <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center">
+      <div className="w-12 h-12 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center">
         <AlertTriangle className="w-6 h-6" />
       </div>
-      <p className="text-sm text-gray-500 font-medium max-w-xs">{message}</p>
+      <p className="text-sm text-muted-foreground font-medium max-w-xs">{message}</p>
       {onRetry && (
         <Button type="button" variant="outline" size="sm" className="rounded-lg text-xs" onClick={onRetry}>
           <RefreshCw className="w-3.5 h-3.5 mr-1.5" /> Reintentar

@@ -56,13 +56,13 @@ function formatFechaCorta(fecha: string) {
 }
 
 const METODO_CLASS: Record<string, string> = {
-  Efectivo: "bg-emerald-50 text-emerald-700",
-  Débito: "bg-blue-50 text-blue-700",
-  "Tarjeta de Débito": "bg-blue-50 text-blue-700",
-  Crédito: "bg-purple-50 text-purple-700",
-  "Tarjeta de Crédito": "bg-purple-50 text-purple-700",
-  Transferencia: "bg-amber-50 text-amber-700",
-  "Mercado Pago": "bg-cyan-50 text-cyan-700",
+  Efectivo: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
+  Débito: "bg-blue-500/15 text-blue-600 dark:text-blue-400",
+  "Tarjeta de Débito": "bg-blue-500/15 text-blue-600 dark:text-blue-400",
+  Crédito: "bg-purple-500/15 text-purple-600 dark:text-purple-400",
+  "Tarjeta de Crédito": "bg-purple-500/15 text-purple-600 dark:text-purple-400",
+  Transferencia: "bg-amber-500/15 text-amber-600 dark:text-amber-400",
+  "Mercado Pago": "bg-cyan-500/15 text-cyan-600 dark:text-cyan-400",
 };
 
 const TABS: { key: TabKey; label: string; icon: typeof Clock }[] = [
@@ -94,7 +94,7 @@ export default function RecentActivityTabsCard({
   return (
     <BentoCard className={cn("flex flex-col !p-3", className)} delay={delay}>
       <div className="flex items-center justify-between gap-2 mb-2 shrink-0">
-        <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 min-w-0 overflow-x-auto">
+        <div className="flex items-center gap-1 bg-muted rounded-xl p-1 min-w-0 overflow-x-auto">
           {TABS.map((t) => {
             const Icon = t.icon;
             const active = t.key === tab;
@@ -105,7 +105,7 @@ export default function RecentActivityTabsCard({
                 onClick={() => setTab(t.key)}
                 className={cn(
                   "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wide whitespace-nowrap transition-all cursor-pointer shrink-0",
-                  active ? "bg-white text-black shadow-sm" : "text-gray-400 hover:text-gray-600"
+                  active ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 <Icon className="h-3 w-3" />
@@ -115,7 +115,7 @@ export default function RecentActivityTabsCard({
           })}
         </div>
         {count > 0 && (
-          <Badge variant="outline" className="text-[9px] font-bold border-gray-200 text-gray-500 bg-gray-50 shrink-0">
+          <Badge variant="outline" className="text-[9px] font-bold border-border text-muted-foreground bg-muted shrink-0">
             {count}
           </Badge>
         )}
@@ -152,14 +152,14 @@ export default function RecentActivityTabsCard({
                   key={exp.id}
                   type="button"
                   onClick={() => navigate("/clientes")}
-                  className="w-full flex items-center justify-between p-1.5 rounded-lg hover:bg-gray-50 transition-all cursor-pointer text-left animate-fade-in-up"
+                  className="w-full flex items-center justify-between p-1.5 rounded-lg hover:bg-muted transition-all cursor-pointer text-left animate-fade-in-up"
                   style={{ animationDelay: `${Math.min(i, 12) * 40}ms` }}
                 >
                   <div className="flex items-center gap-2 min-w-0">
                     <PersonaAvatar seed={exp.clienteId} size={24} />
                     <div className="min-w-0">
-                      <p className="font-bold text-black truncate text-[11px]">{exp.nombre}</p>
-                      <p className="text-gray-400 truncate text-[9px]">{exp.plan}</p>
+                      <p className="font-bold text-foreground truncate text-[11px]">{exp.nombre}</p>
+                      <p className="text-muted-foreground truncate text-[9px]">{exp.plan}</p>
                     </div>
                   </div>
                   <span className={cn(
@@ -174,29 +174,29 @@ export default function RecentActivityTabsCard({
           )
         ) : tab === "pagos" ? (
           pagos.length === 0 ? (
-            <p className="text-[10px] text-gray-400 py-4 text-center">Sin pagos registrados todavía</p>
+            <p className="text-[10px] text-muted-foreground py-4 text-center">Sin pagos registrados todavía</p>
           ) : (
             pagos.map((pago, i) => (
               <button
                 key={pago.id}
                 type="button"
                 onClick={() => navigate("/pagos")}
-                className="w-full flex items-center justify-between p-1.5 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer text-left animate-fade-in-up"
+                className="w-full flex items-center justify-between p-1.5 rounded-lg hover:bg-muted transition-colors cursor-pointer text-left animate-fade-in-up"
                 style={{ animationDelay: `${i * 40}ms` }}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <PersonaAvatar seed={pago.clienteNombre} size={24} />
                   <div className="min-w-0">
-                    <p className="text-[11px] font-medium text-black truncate">{pago.clienteNombre}</p>
+                    <p className="text-[11px] font-medium text-foreground truncate">{pago.clienteNombre}</p>
                     <div className="flex items-center gap-1 mt-0.5">
-                      <span className={cn("text-[8px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded shrink-0", METODO_CLASS[pago.metodo] ?? "bg-gray-100 text-gray-600")}>
+                      <span className={cn("text-[8px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded shrink-0", METODO_CLASS[pago.metodo] ?? "bg-muted text-muted-foreground")}>
                         {pago.metodo}
                       </span>
-                      <span className="text-[9px] text-gray-400 truncate">{formatFechaCorta(pago.fecha)}</span>
+                      <span className="text-[9px] text-muted-foreground truncate">{formatFechaCorta(pago.fecha)}</span>
                     </div>
                   </div>
                 </div>
-                <span className="text-[11px] font-bold text-emerald-700 shrink-0 ml-2">
+                <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 shrink-0 ml-2">
                   {formatMonto(pago.monto)}
                 </span>
               </button>
@@ -204,7 +204,7 @@ export default function RecentActivityTabsCard({
           )
         ) : (
           clientes.length === 0 ? (
-            <p className="text-[10px] text-gray-400 py-4 text-center">Sin clientes registrados</p>
+            <p className="text-[10px] text-muted-foreground py-4 text-center">Sin clientes registrados</p>
           ) : (
             clientes.slice(0, 8).map((cliente, i) => {
               const fechaStr = cliente.fechaAlta
@@ -215,18 +215,18 @@ export default function RecentActivityTabsCard({
                   key={cliente.id}
                   type="button"
                   onClick={() => navigate("/clientes")}
-                  className="w-full flex items-center justify-between p-1.5 rounded-lg hover:bg-gray-50 transition-colors text-left cursor-pointer animate-fade-in-up"
+                  className="w-full flex items-center justify-between p-1.5 rounded-lg hover:bg-muted transition-colors text-left cursor-pointer animate-fade-in-up"
                   style={{ animationDelay: `${Math.min(i, 12) * 40}ms` }}
                 >
                   <div className="flex items-center gap-2.5">
                     <PersonaAvatar seed={String(cliente.id)} size={24} />
-                    <span className="font-medium text-black text-[11px]">
+                    <span className="font-medium text-foreground text-[11px]">
                       {cliente.nombre} {cliente.apellido || ""}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    {fechaStr && <span className="text-gray-400 font-normal text-[10px]">{fechaStr}</span>}
-                    <div className={cn("h-1.5 w-1.5 rounded-full", cliente.activo ? "bg-emerald-500" : "bg-gray-300")} />
+                    {fechaStr && <span className="text-muted-foreground font-normal text-[10px]">{fechaStr}</span>}
+                    <div className={cn("h-1.5 w-1.5 rounded-full", cliente.activo ? "bg-emerald-500" : "bg-muted-foreground/40")} />
                   </div>
                 </button>
               );
@@ -238,7 +238,7 @@ export default function RecentActivityTabsCard({
       <button
         type="button"
         onClick={() => navigate(ctaTarget)}
-        className="mt-1.5 shrink-0 w-full py-1 rounded-lg bg-gray-50 text-[9px] font-black uppercase tracking-widest text-gray-500 hover:bg-gray-100 hover:text-black transition-all cursor-pointer"
+        className="mt-1.5 shrink-0 w-full py-1 rounded-lg bg-muted text-[9px] font-black uppercase tracking-widest text-muted-foreground hover:bg-muted/80 hover:text-foreground transition-all cursor-pointer"
       >
         {ctaLabel}
       </button>

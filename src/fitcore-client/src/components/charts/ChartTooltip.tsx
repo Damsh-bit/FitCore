@@ -34,9 +34,9 @@ export default function ChartTooltip({
   if (!active || !payload || payload.length === 0) return null;
 
   return (
-    <div className="rounded-xl border border-gray-100 bg-white shadow-lg shadow-black/5 px-3 py-2 min-w-[120px]">
+    <div className="rounded-xl border border-border bg-popover shadow-xl px-3 py-2 min-w-[120px] text-popover-foreground">
       {label != null && (
-        <p className="text-[11px] font-bold text-gray-900 mb-1.5 pb-1.5 border-b border-gray-100">
+        <p className="text-[11px] font-bold text-foreground mb-1.5 pb-1.5 border-b border-border">
           {labelFormatter ? labelFormatter(label) : label}
         </p>
       )}
@@ -48,8 +48,8 @@ export default function ChartTooltip({
             ) : (
               <span className="h-2 w-2 rounded-sm shrink-0" style={{ backgroundColor: entry.color }} />
             )}
-            <span className="text-[11px] text-gray-500">{entry.name}</span>
-            <span className={cn("text-xs font-black text-gray-900 ml-auto tabular-nums")}>
+            <span className="text-[11px] text-muted-foreground">{entry.name}</span>
+            <span className={cn("text-xs font-black text-foreground ml-auto tabular-nums")}>
               {typeof entry.value === "number" && formatter ? formatter(entry.value) : entry.value}
             </span>
           </div>

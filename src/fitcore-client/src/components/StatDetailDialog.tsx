@@ -37,11 +37,11 @@ interface StatDetailDialogProps {
 }
 
 const VARIANT_CLASS: Record<DetailRowVariant, string> = {
-  default: "bg-gray-100 text-gray-600",
-  success: "bg-emerald-100 text-emerald-700",
+  default: "bg-muted text-muted-foreground",
+  success: "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400",
   warning: "bg-amber-500 text-white",
   danger: "bg-rose-500 text-white",
-  muted: "bg-transparent text-gray-400",
+  muted: "bg-transparent text-muted-foreground",
 };
 
 export default function StatDetailDialog({
@@ -65,7 +65,7 @@ export default function StatDetailDialog({
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
 
-        <div className="mt-2 divide-y divide-gray-100 max-h-[60vh] overflow-y-auto">
+        <div className="mt-2 divide-y divide-border max-h-[60vh] overflow-y-auto">
           {loading ? (
             Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="flex items-center justify-between py-3">
@@ -78,8 +78,8 @@ export default function StatDetailDialog({
             ))
           ) : rows.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-center gap-2">
-              <Users className="h-5 w-5 text-gray-300" />
-              <p className="text-sm text-gray-400">{emptyText}</p>
+              <Users className="h-5 w-5 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">{emptyText}</p>
             </div>
           ) : (
             rows.map((row) => (
@@ -87,9 +87,9 @@ export default function StatDetailDialog({
                 <div className="flex items-center gap-2.5 min-w-0">
                   <PersonaAvatar seed={row.avatarSeed ?? String(row.id)} size={28} />
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-black truncate">{row.title}</p>
+                    <p className="text-sm font-medium text-foreground truncate">{row.title}</p>
                     {row.subtitle && (
-                      <p className="text-xs text-gray-400 truncate">{row.subtitle}</p>
+                      <p className="text-xs text-muted-foreground truncate">{row.subtitle}</p>
                     )}
                   </div>
                 </div>

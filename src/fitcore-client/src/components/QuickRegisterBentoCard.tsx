@@ -77,11 +77,11 @@ export default function QuickRegisterBentoCard({
   return (
     <BentoCard className={cn("flex flex-col justify-center !p-3", className)} delay={delay}>
       <div className="flex items-center gap-2 mb-2">
-        <div className="p-1.5 bg-black rounded-lg shadow-sm shadow-black/20 shrink-0">
-          <UserPlus className="h-3 w-3 text-white" />
+        <div className="p-1.5 bg-foreground rounded-lg shadow-sm shrink-0">
+          <UserPlus className="h-3 w-3 text-background" />
         </div>
-        <h3 className="text-xs font-black text-black tracking-tight">Registro Rápido</h3>
-        <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">
+        <h3 className="text-xs font-black text-foreground tracking-tight">Registro Rápido</h3>
+        <span className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest">
           ·{" "}
           {fechaSeleccionada
             ? fechaSeleccionada.toLocaleDateString("es-AR", { day: "numeric", month: "long" })
@@ -97,13 +97,13 @@ export default function QuickRegisterBentoCard({
           disabled={saving}
           placeholder="Buscar cliente..."
           emptyLabel="No hay clientes activos"
-          className="flex-1 [&_input]:h-10 [&_input]:text-[12px] [&_input]:rounded-xl [&_input]:border-gray-100 [&_input]:shadow-sm [&_input]:px-4 [&_input]:pl-9"
+          className="flex-1 [&_input]:h-10 [&_input]:text-[12px] [&_input]:rounded-xl [&_input]:shadow-sm [&_input]:px-4 [&_input]:pl-9"
         />
 
         <Button
           onClick={handleRegistrar}
           disabled={saving || !formClienteId}
-          className="h-10 shrink-0 rounded-xl bg-black text-white hover:bg-black/90 text-[11px] font-black uppercase tracking-widest px-4 shadow-xl shadow-black/10 active:scale-95 transition-all group"
+          className="h-10 shrink-0 rounded-xl bg-foreground text-background hover:bg-foreground/90 text-[11px] font-black uppercase tracking-widest px-4 shadow-md active:scale-95 transition-all group"
         >
           {saving ? "..." : (
             <span className="flex items-center gap-1.5">

@@ -172,29 +172,29 @@ export default function Configuracion() {
   };
 
   if (loading) {
-    return <div className="max-w-3xl text-sm text-gray-400">Cargando configuración...</div>;
+    return <div className="max-w-3xl text-sm text-muted-foreground">Cargando configuración...</div>;
   }
 
   return (
     <div className="space-y-6 max-w-3xl animate-fade-in-up">
       <div>
-        <h1 className="text-2xl font-black text-black tracking-tight">Configuración</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <h1 className="text-2xl font-black text-foreground tracking-tight">Configuración</h1>
+        <p className="text-sm text-muted-foreground mt-1">
           Personalizá la marca, los colores y la comunicación que ven tus socios en la app.
         </p>
       </div>
 
       {/* Navegación por secciones */}
-      <div className="flex gap-2 border-b border-gray-200 overflow-x-auto">
+      <div className="flex gap-2 border-b border-border overflow-x-auto">
         {SECCIONES.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
             onClick={() => setSeccion(id)}
             className={cn(
-              "flex shrink-0 items-center gap-2 whitespace-nowrap px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 -mb-px transition-colors",
+              "flex shrink-0 items-center gap-2 whitespace-nowrap px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 -mb-px transition-colors cursor-pointer",
               seccion === id
-                ? "border-black text-black"
-                : "border-transparent text-gray-400 hover:text-gray-700"
+                ? "border-primary text-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground"
             )}
           >
             <Icon className="h-4 w-4 shrink-0" />
@@ -204,7 +204,7 @@ export default function Configuracion() {
       </div>
 
       {seccion === "marca" && (
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-5">
+        <div className="bg-card border border-border rounded-2xl p-6 space-y-5">
           <div className="space-y-2">
             <Label htmlFor="nombreGimnasio">Nombre comercial del gimnasio</Label>
             <Input
@@ -214,7 +214,7 @@ export default function Configuracion() {
               onChange={(e) => setForm((p) => ({ ...p, nombreGimnasio: e.target.value }))}
               disabled={saving}
             />
-            <p className="text-xs text-gray-400">Reemplaza a "FitCore" en el sidebar y en el login.</p>
+            <p className="text-xs text-muted-foreground">Reemplaza a "FitCore" en el sidebar y en el login.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -222,26 +222,26 @@ export default function Configuracion() {
               <Label>Logo (máx. 700KB)</Label>
               <Input type="file" accept="image/*" onChange={(e) => handleImagen(e, "logoBase64")} disabled={saving} />
               {form.logoBase64 && (
-                <img src={form.logoBase64} alt="preview logo" className="h-16 object-contain mt-1 border border-gray-100 rounded-lg p-1" />
+                <img src={form.logoBase64} alt="preview logo" className="h-16 object-contain mt-1 border border-border rounded-lg p-1 bg-card" />
               )}
             </div>
             <div className="space-y-2">
               <Label>Favicon (máx. 700KB)</Label>
               <Input type="file" accept="image/*" onChange={(e) => handleImagen(e, "faviconBase64")} disabled={saving} />
               {form.faviconBase64 && (
-                <img src={form.faviconBase64} alt="preview favicon" className="h-16 w-16 object-contain mt-1 border border-gray-100 rounded-lg p-1" />
+                <img src={form.faviconBase64} alt="preview favicon" className="h-16 w-16 object-contain mt-1 border border-border rounded-lg p-1 bg-card" />
               )}
             </div>
           </div>
 
-          <p className="text-xs text-gray-400 border-t border-gray-100 pt-4">
+          <p className="text-xs text-muted-foreground border-t border-border pt-4">
             FitCore sigue apareciendo como marca "Powered by FitCore" en el sidebar cuando cargás un logo propio.
           </p>
         </div>
       )}
 
       {seccion === "colores" && (
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-5">
+        <div className="bg-card border border-border rounded-2xl p-6 space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label>Color primario</Label>
@@ -251,9 +251,9 @@ export default function Configuracion() {
                   value={form.colorPrimario}
                   onChange={(e) => setForm((p) => ({ ...p, colorPrimario: e.target.value }))}
                   disabled={saving}
-                  className="h-10 w-14 rounded-lg border border-gray-300 cursor-pointer"
+                  className="h-10 w-14 rounded-lg border border-border bg-card cursor-pointer"
                 />
-                <span className="text-xs text-gray-500 font-mono">{form.colorPrimario}</span>
+                <span className="text-xs text-muted-foreground font-mono">{form.colorPrimario}</span>
               </div>
             </div>
             <div className="space-y-2">
@@ -264,9 +264,9 @@ export default function Configuracion() {
                   value={form.colorSecundario}
                   onChange={(e) => setForm((p) => ({ ...p, colorSecundario: e.target.value }))}
                   disabled={saving}
-                  className="h-10 w-14 rounded-lg border border-gray-300 cursor-pointer"
+                  className="h-10 w-14 rounded-lg border border-border bg-card cursor-pointer"
                 />
-                <span className="text-xs text-gray-500 font-mono">{form.colorSecundario}</span>
+                <span className="text-xs text-muted-foreground font-mono">{form.colorSecundario}</span>
               </div>
             </div>
             <div className="space-y-2">
@@ -277,9 +277,9 @@ export default function Configuracion() {
                   value={form.colorAcento}
                   onChange={(e) => setForm((p) => ({ ...p, colorAcento: e.target.value }))}
                   disabled={saving}
-                  className="h-10 w-14 rounded-lg border border-gray-300 cursor-pointer"
+                  className="h-10 w-14 rounded-lg border border-border bg-card cursor-pointer"
                 />
-                <span className="text-xs text-gray-500 font-mono">{form.colorAcento}</span>
+                <span className="text-xs text-muted-foreground font-mono">{form.colorAcento}</span>
               </div>
             </div>
           </div>
@@ -312,10 +312,10 @@ export default function Configuracion() {
       )}
 
       {seccion === "avatares" && (
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
+        <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
           <div>
-            <p className="text-sm font-semibold text-gray-900">Estilo de avatar</p>
-            <p className="text-xs text-gray-400 mt-0.5">
+            <p className="text-sm font-semibold text-foreground">Estilo de avatar</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
               Se usa para clientes y usuarios que no tienen una foto propia — se ve así en Clientes, Asistencias y el dashboard.
             </p>
           </div>
@@ -330,10 +330,10 @@ export default function Configuracion() {
                   disabled={saving}
                   onClick={() => setForm((p) => ({ ...p, avatarStyle: style.id }))}
                   className={cn(
-                    "flex items-center gap-3 rounded-xl border p-3 text-left transition-colors",
+                    "flex items-center gap-3 rounded-xl border p-3 text-left transition-colors cursor-pointer",
                     seleccionado
-                      ? "border-black bg-gray-50 ring-1 ring-black"
-                      : "border-gray-200 hover:border-gray-300 hover:bg-gray-50/60"
+                      ? "border-primary bg-primary/10 ring-1 ring-primary"
+                      : "border-border hover:border-muted-foreground/30 hover:bg-muted/40"
                   )}
                 >
                   <div className="flex -space-x-2 shrink-0">
@@ -344,15 +344,15 @@ export default function Configuracion() {
                         alt=""
                         width={40}
                         height={40}
-                        className="h-10 w-10 rounded-full ring-2 ring-white bg-gray-50"
+                        className="h-10 w-10 rounded-full ring-2 ring-card bg-muted"
                       />
                     ))}
                   </div>
                   <div className="min-w-0">
-                    <p className={cn("text-sm font-bold truncate", seleccionado ? "text-black" : "text-gray-800")}>
+                    <p className={cn("text-sm font-bold truncate", seleccionado ? "text-foreground" : "text-foreground/80")}>
                       {style.label}
                     </p>
-                    <p className="text-xs text-gray-400 truncate">{style.description}</p>
+                    <p className="text-xs text-muted-foreground truncate">{style.description}</p>
                   </div>
                 </button>
               );
@@ -362,7 +362,7 @@ export default function Configuracion() {
       )}
 
       {seccion === "comunicacion" && (
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-5">
+        <div className="bg-card border border-border rounded-2xl p-6 space-y-5">
           <div className="space-y-2">
             <Label htmlFor="mensajeBienvenida">Mensaje de bienvenida</Label>
             <Textarea
@@ -372,7 +372,7 @@ export default function Configuracion() {
               onChange={(e) => setForm((p) => ({ ...p, mensajeBienvenida: e.target.value }))}
               disabled={saving}
             />
-            <p className="text-xs text-gray-400">Se muestra en el login y en el inicio de los socios.</p>
+            <p className="text-xs text-muted-foreground">Se muestra en el login y en el inicio de los socios.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

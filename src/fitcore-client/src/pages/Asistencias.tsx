@@ -115,11 +115,11 @@ function getDiasDelMes(anio: number, mes: number): (Date | null)[] {
 }
 
 function getHeatmapClass(total: number, selected: boolean, esHoy: boolean) {
-  if (selected) return "bg-black text-white shadow-lg shadow-gray-300";
-  if (esHoy) return "bg-indigo-50 text-indigo-700 font-bold ring-2 ring-indigo-300 ring-offset-1";
-  if (total === 0) return "text-gray-300 hover:bg-gray-50";
-  if (total <= 5) return "bg-emerald-100 text-emerald-700 font-medium hover:bg-emerald-200";
-  if (total <= 15) return "bg-emerald-300 text-emerald-900 font-bold hover:bg-emerald-400";
+  if (selected) return "bg-primary text-primary-foreground shadow-lg shadow-primary/20 font-bold";
+  if (esHoy) return "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-300 font-bold ring-2 ring-indigo-400 dark:ring-indigo-500 ring-offset-1 ring-offset-card";
+  if (total === 0) return "text-muted-foreground/40 hover:bg-muted";
+  if (total <= 5) return "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 font-medium hover:bg-emerald-200 dark:hover:bg-emerald-900/60";
+  if (total <= 15) return "bg-emerald-300 text-emerald-950 dark:bg-emerald-700/60 dark:text-emerald-100 font-bold hover:bg-emerald-400 dark:hover:bg-emerald-600/60";
   return "bg-emerald-500 text-white font-black hover:bg-emerald-600";
 }
 
@@ -305,12 +305,12 @@ export default function Asistencias() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-black">Asistencias</h1>
-        <p className="text-sm text-gray-400 mt-0.5">Registro diario de check-ins y estadísticas de concurrencia</p>
+        <h1 className="text-2xl font-semibold text-foreground">Asistencias</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">Registro diario de check-ins y estadísticas de concurrencia</p>
       </div>
 
       {/* ── Fila de estadísticas ── */}
-      <div className="bg-white border border-gray-200/80 rounded-2xl shadow-xs overflow-hidden">
+      <div className="bg-card border border-border rounded-2xl shadow-xs overflow-hidden">
         <div className="grid grid-cols-2 lg:grid-cols-4">
           <StatTile
             icon={Users}
@@ -318,7 +318,7 @@ export default function Asistencias() {
             value={estadisticas ? estadisticas.totalMes : 0}
             label={`Asistencias en ${MESES[mes]}`}
             loading={loadingEstadisticas}
-            className="border-r border-b border-gray-100 lg:border-b-0"
+            className="border-r border-b border-border lg:border-b-0"
           />
           <StatTile
             icon={Flame}
@@ -326,7 +326,7 @@ export default function Asistencias() {
             value={estadisticas ? estadisticas.promedioPorDiaActivo : 0}
             label="Promedio por día activo"
             loading={loadingEstadisticas}
-            className="border-b border-gray-100 lg:border-b-0 lg:border-r"
+            className="border-b border-border lg:border-b-0 lg:border-r"
           />
           <StatTile
             icon={CalendarCheck2}
@@ -334,7 +334,7 @@ export default function Asistencias() {
             value={estadisticas ? estadisticas.diaPico?.total ?? 0 : 0}
             label={estadisticas?.diaPico ? `Día pico · ${diaPicoLabel}` : "Día pico"}
             loading={loadingEstadisticas}
-            className="border-r border-gray-100"
+            className="border-r border-border"
           />
           <StatTile
             icon={variacionEsPositiva ? TrendingUp : TrendingDown}
@@ -349,39 +349,39 @@ export default function Asistencias() {
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
 
         {/* ── Calendario ── */}
-        <div className="xl:col-span-4 bg-white border border-gray-200/80 rounded-2xl p-6">
+        <div className="xl:col-span-4 bg-card border border-border rounded-2xl p-6">
 
           {/* Navegación */}
           <div className="flex items-center justify-between mb-6">
             <button
               onClick={irMesAnterior}
-              className="p-1.5 rounded-md hover:bg-gray-100 transition-colors"
+              className="p-1.5 rounded-md hover:bg-muted transition-colors"
             >
-              <ChevronLeft className="h-4 w-4 text-gray-600" />
+              <ChevronLeft className="h-4 w-4 text-muted-foreground" />
             </button>
             <div className="flex flex-col items-center">
-              <span className="text-sm font-semibold text-black">
+              <span className="text-sm font-semibold text-foreground">
                 {MESES[mes]} {anio}
               </span>
               <button
                 onClick={irAHoy}
-                className="text-[11px] font-medium text-gray-400 hover:text-black transition-colors mt-0.5"
+                className="text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors mt-0.5"
               >
                 Ir a hoy
               </button>
             </div>
             <button
               onClick={irMesSiguiente}
-              className="p-1.5 rounded-md hover:bg-gray-100 transition-colors"
+              className="p-1.5 rounded-md hover:bg-muted transition-colors"
             >
-              <ChevronRight className="h-4 w-4 text-gray-600" />
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
             </button>
           </div>
 
           {/* Días de la semana */}
           <div className="grid grid-cols-7 mb-2">
             {DIAS_SEMANA.map((d) => (
-              <div key={d} className="text-center text-xs font-medium text-gray-400 py-1">
+              <div key={d} className="text-center text-xs font-medium text-muted-foreground py-1">
                 {d}
               </div>
             ))}
@@ -431,25 +431,25 @@ export default function Asistencias() {
                       </TooltipTrigger>
                       <TooltipContent side="top" className="rounded-xl p-3">
                         <div className="space-y-2 min-w-[140px]">
-                          <div className="flex items-center justify-between gap-3 border-b border-gray-100 pb-1.5">
+                          <div className="flex items-center justify-between gap-3 border-b border-border pb-1.5">
                             <span className="text-xs font-semibold">
                               {dia.toLocaleDateString("es-AR", { day: "numeric", month: "short" })}
                             </span>
-                            <span className="text-xs font-bold text-gray-500">{total} asist.</span>
+                            <span className="text-xs font-bold text-muted-foreground">{total} asist.</span>
                           </div>
                           {asistentes.length > 0 ? (
                             <ul className="space-y-1">
                               {asistentes.slice(0, MAX_TOOLTIP_PREVIEW).map((nombre) => (
-                                <li key={nombre} className="text-xs text-gray-600">{nombre}</li>
+                                <li key={nombre} className="text-xs text-foreground/80">{nombre}</li>
                               ))}
                               {asistentes.length > MAX_TOOLTIP_PREVIEW && (
-                                <li className="text-xs text-gray-400">
+                                <li className="text-xs text-muted-foreground">
                                   +{asistentes.length - MAX_TOOLTIP_PREVIEW} más
                                 </li>
                               )}
                             </ul>
                           ) : (
-                            <p className="text-xs text-gray-400">Sin asistencias</p>
+                            <p className="text-xs text-muted-foreground">Sin asistencias</p>
                           )}
                         </div>
                       </TooltipContent>
@@ -462,33 +462,33 @@ export default function Asistencias() {
 
           {/* Leyenda */}
           <div className="flex items-center justify-center gap-2 mt-4">
-            <span className="text-[11px] text-gray-400">Menos</span>
-            <span className="h-3 w-3 rounded bg-gray-100" />
-            <span className="h-3 w-3 rounded bg-emerald-100" />
-            <span className="h-3 w-3 rounded bg-emerald-300" />
+            <span className="text-[11px] text-muted-foreground">Menos</span>
+            <span className="h-3 w-3 rounded bg-muted" />
+            <span className="h-3 w-3 rounded bg-emerald-100 dark:bg-emerald-950/60" />
+            <span className="h-3 w-3 rounded bg-emerald-300 dark:bg-emerald-700/60" />
             <span className="h-3 w-3 rounded bg-emerald-500" />
-            <span className="text-[11px] text-gray-400">Más</span>
+            <span className="text-[11px] text-muted-foreground">Más</span>
           </div>
         </div>
 
         {/* ── Panel del día ── */}
-        <div className="xl:col-span-5 bg-white border border-gray-200/80 rounded-2xl flex flex-col">
+        <div className="xl:col-span-5 bg-card border border-border rounded-2xl flex flex-col">
           {!diaSeleccionado ? (
             <div className="flex flex-col items-center justify-center h-full py-20 text-center px-6">
-              <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
-                <Users className="h-5 w-5 text-gray-400" />
+              <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
+                <Users className="h-5 w-5 text-muted-foreground" />
               </div>
-              <p className="text-sm font-medium text-gray-600">Seleccioná un día</p>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-sm font-medium text-foreground">Seleccioná un día</p>
+              <p className="text-xs text-muted-foreground mt-1">
                 Tocá cualquier día del calendario para ver o registrar asistencias
               </p>
             </div>
           ) : (
             <>
               {/* Header del panel */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-200 gap-3">
+              <div className="flex items-center justify-between p-6 border-b border-border gap-3">
                 <div>
-                  <h2 className="text-base font-semibold text-black capitalize">
+                  <h2 className="text-base font-semibold text-foreground capitalize">
                     {diaSeleccionado.toLocaleDateString("es-AR", {
                       weekday: "long",
                       day: "numeric",
@@ -498,7 +498,7 @@ export default function Asistencias() {
                   {loadingDia ? (
                     <Skeleton className="h-3 w-20 rounded mt-1" />
                   ) : (
-                    <p className="text-xs text-gray-400 mt-0.5">
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       {`${asistenciasDia.length} asistencia${asistenciasDia.length !== 1 ? "s" : ""}`}
                     </p>
                   )}
@@ -518,7 +518,7 @@ export default function Asistencias() {
               {!loadingDia && asistenciasDia.length > 6 && (
                 <div className="px-6 pt-4">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       value={busqueda}
                       onChange={(e) => setBusqueda(e.target.value)}
@@ -530,7 +530,7 @@ export default function Asistencias() {
               )}
 
               {/* Lista de asistencias */}
-              <div className="divide-y divide-gray-100 max-h-[480px] overflow-y-auto">
+              <div className="divide-y divide-border max-h-[480px] overflow-y-auto">
                 {loadingDia ? (
                   Array.from({ length: 3 }).map((_, i) => (
                     <div key={i} className="flex items-center justify-between px-6 py-4">
@@ -545,34 +545,34 @@ export default function Asistencias() {
                     </div>
                   ))
                 ) : asistenciasDia.length === 0 ? (
-                  <div className="text-center py-12 text-sm text-gray-400">
+                  <div className="text-center py-12 text-sm text-muted-foreground">
                     No hay asistencias registradas para este día
                   </div>
                 ) : asistenciasFiltradas.length === 0 ? (
-                  <div className="text-center py-12 text-sm text-gray-400">
+                  <div className="text-center py-12 text-sm text-muted-foreground">
                     Ningún resultado para "{busqueda}"
                   </div>
                 ) : (
                   asistenciasFiltradas.map((a, i) => (
                     <div
                       key={a.id}
-                      className="flex items-center justify-between px-6 py-3.5 hover:bg-gray-50 transition-colors animate-fade-in-up"
+                      className="flex items-center justify-between px-6 py-3.5 hover:bg-muted/50 transition-colors animate-fade-in-up"
                       style={{ animationDelay: `${Math.min(i, 10) * 30}ms` }}
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <PersonaAvatar seed={a.userId} size={36} />
                         <div className="min-w-0">
-                          <p className="text-sm font-medium text-black truncate">{a.clienteNombre}</p>
+                          <p className="text-sm font-medium text-foreground truncate">{a.clienteNombre}</p>
                           <div className="flex items-center gap-1 mt-0.5">
-                            <Clock className="h-3 w-3 text-gray-400" />
-                            <span className="text-xs text-gray-400">{formatHora(a.horaIngreso)}</span>
+                            <Clock className="h-3 w-3 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground">{formatHora(a.horaIngreso)}</span>
                           </div>
                         </div>
                       </div>
                       <button
                         onClick={() => handleEliminar(a.id)}
                         disabled={deletingId === a.id}
-                        className="p-2 rounded-md text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-40 shrink-0"
+                        className="p-2 rounded-md text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors disabled:opacity-40 shrink-0"
                         aria-label="Eliminar asistencia"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -586,11 +586,11 @@ export default function Asistencias() {
         </div>
 
         {/* ── Top asistentes y actividad semanal ── */}
-        <div className="xl:col-span-3 bg-white border border-gray-200/80 rounded-2xl p-5 flex flex-col gap-6">
+        <div className="xl:col-span-3 bg-card border border-border rounded-2xl p-5 flex flex-col gap-6">
           <div>
             <div className="flex items-center gap-2 mb-3">
               <Trophy className="h-4 w-4 text-amber-500" />
-              <h3 className="text-sm font-semibold text-black">Top asistentes del mes</h3>
+              <h3 className="text-sm font-semibold text-foreground">Top asistentes del mes</h3>
             </div>
 
             {loadingEstadisticas ? (
@@ -603,7 +603,7 @@ export default function Asistencias() {
                 ))}
               </div>
             ) : !estadisticas || estadisticas.topAsistentes.length === 0 ? (
-              <p className="text-xs text-gray-400 py-4 text-center">
+              <p className="text-xs text-muted-foreground py-4 text-center">
                 Sin asistencias registradas este mes
               </p>
             ) : (
@@ -612,29 +612,29 @@ export default function Asistencias() {
                   <li key={persona.userId} className="flex items-center gap-2.5">
                     <span className={cn(
                       "text-[11px] font-black w-4 text-center shrink-0",
-                      idx === 0 ? "text-amber-500" : idx === 1 ? "text-gray-400" : idx === 2 ? "text-orange-400" : "text-gray-300"
+                      idx === 0 ? "text-amber-500" : idx === 1 ? "text-muted-foreground" : idx === 2 ? "text-orange-400" : "text-muted-foreground/50"
                     )}>
                       {idx + 1}
                     </span>
                     <PersonaAvatar seed={persona.userId} size={32} />
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium text-black truncate">{persona.nombre}</p>
-                      <div className="h-1 bg-gray-100 rounded-full mt-1 overflow-hidden">
+                      <p className="text-xs font-medium text-foreground truncate">{persona.nombre}</p>
+                      <div className="h-1 bg-muted rounded-full mt-1 overflow-hidden">
                         <div
-                          className="h-full bg-black rounded-full"
+                          className="h-full bg-primary rounded-full"
                           style={{ width: `${maxTopAsistente > 0 ? (persona.total / maxTopAsistente) * 100 : 0}%` }}
                         />
                       </div>
                     </div>
-                    <span className="text-xs font-bold text-gray-500 shrink-0">{persona.total}</span>
+                    <span className="text-xs font-bold text-muted-foreground shrink-0">{persona.total}</span>
                   </li>
                 ))}
               </ul>
             )}
           </div>
 
-          <div className="border-t border-gray-100 pt-5">
-            <h3 className="text-sm font-semibold text-black mb-3">Actividad por día de la semana</h3>
+          <div className="border-t border-border pt-5">
+            <h3 className="text-sm font-semibold text-foreground mb-3">Actividad por día de la semana</h3>
             {loadingEstadisticas ? (
               <Skeleton className="h-28 w-full rounded" />
             ) : (
@@ -644,21 +644,21 @@ export default function Asistencias() {
                     data={(estadisticas?.porDiaSemana ?? []).map((d) => ({ dia: DIAS_SEMANA[d.diaSemana], total: d.total }))}
                     margin={{ top: 4, right: 0, left: 0, bottom: 0 }}
                   >
-                    <CartesianGrid vertical={false} stroke="#f1f1f2" />
+                    <CartesianGrid vertical={false} stroke="hsl(var(--border))" />
                     <XAxis
                       dataKey="dia"
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fontSize: 10, fontWeight: 600, fill: "#9ca3af" }}
+                      tick={{ fontSize: 10, fontWeight: 600, fill: "hsl(var(--muted-foreground))" }}
                     />
                     <YAxis hide domain={[0, "dataMax"]} />
                     <RechartsTooltip
-                      cursor={{ fill: "#f9fafb" }}
+                      cursor={{ fill: "hsl(var(--muted)/0.5)" }}
                       content={(props) => <ChartTooltip {...(props as object)} formatter={(v) => `${v} asist.`} />}
                     />
                     <Bar dataKey="total" name="Asistencias" radius={[4, 4, 0, 0]} maxBarSize={28}>
                       {(estadisticas?.porDiaSemana ?? []).map((d) => (
-                        <Cell key={d.diaSemana} fill={d.total > 0 ? "#111827" : "#f3f4f6"} />
+                        <Cell key={d.diaSemana} fill={d.total > 0 ? "hsl(var(--primary))" : "hsl(var(--muted))"} />
                       ))}
                     </Bar>
                   </BarChart>

@@ -127,8 +127,8 @@ export default function MiPerfil() {
       return {
         tipo: "pendiente",
         texto: "Certificado Pendiente",
-        colorBadge: "bg-amber-50 text-amber-700 border-amber-200",
-        colorCard: "bg-amber-50/40 border-amber-200/80",
+        colorBadge: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+        colorCard: "bg-amber-500/5 border-amber-500/20",
         descripcion: "No registramos la fecha de vigencia de tu apto médico anual."
       };
     }
@@ -143,24 +143,24 @@ export default function MiPerfil() {
       return {
         tipo: "vencido",
         texto: "Certificado Vencido",
-        colorBadge: "bg-red-50 text-red-700 border-red-200",
-        colorCard: "bg-red-50/40 border-red-200/80",
+        colorBadge: "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20",
+        colorCard: "bg-red-500/5 border-red-500/20",
         descripcion: `Tu apto médico venció hace ${Math.abs(diffDias)} días. Es necesario renovarlo.`
       };
     } else if (diffDias <= 30) {
       return {
         tipo: "por-vencer",
         texto: `Vence pronto (${diffDias} días)`,
-        colorBadge: "bg-orange-50 text-orange-700 border-orange-200",
-        colorCard: "bg-orange-50/40 border-orange-200/80",
+        colorBadge: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20",
+        colorCard: "bg-orange-500/5 border-orange-500/20",
         descripcion: `Tu certificado vencerá en ${diffDias} días. Solicitá turno médico con antelación.`
       };
     } else {
       return {
         tipo: "vigente",
         texto: "Certificado Vigente",
-        colorBadge: "bg-emerald-50 text-emerald-700 border-emerald-200",
-        colorCard: "bg-emerald-50/40 border-emerald-200/80",
+        colorBadge: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+        colorCard: "bg-emerald-500/5 border-emerald-500/20",
         descripcion: `Certificado al día. Válido hasta el ${fechaFin.toLocaleDateString("es-AR", {
           day: "numeric",
           month: "long",
@@ -186,28 +186,28 @@ export default function MiPerfil() {
     <div className="space-y-8 max-w-4xl animate-fade-in-up">
       {/* ── Encabezado ── */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight flex items-center gap-3">
-          <User className="w-8 h-8 text-orange-600" /> Mi Perfil y Ficha de Salud
+        <h1 className="text-2xl sm:text-3xl font-black text-foreground tracking-tight flex items-center gap-3">
+          <User className="w-8 h-8 text-orange-600 dark:text-orange-500" /> Mi Perfil y Ficha de Salud
         </h1>
-        <p className="text-sm text-gray-500 font-medium mt-1">
+        <p className="text-sm text-muted-foreground font-medium mt-1">
           Tus datos se encuentran resguardados en los servidores de FitCore.
         </p>
       </div>
 
       <form onSubmit={handleGuardar} className="space-y-6">
         {/* ── 1. Información Personal ── */}
-        <div className="bg-white border border-gray-200/80 rounded-3xl p-6 sm:p-7 shadow-xs space-y-5">
-          <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+        <div className="bg-card border border-border rounded-3xl p-6 sm:p-7 shadow-xs space-y-5">
+          <div className="flex items-center justify-between pb-3 border-b border-border">
             <div className="flex items-center gap-2">
-              <User className="w-5 h-5 text-orange-600" />
-              <h2 className="text-base font-bold text-gray-900">Datos Personales</h2>
+              <User className="w-5 h-5 text-orange-600 dark:text-orange-500" />
+              <h2 className="text-base font-bold text-foreground">Datos Personales</h2>
             </div>
             <div className="flex items-center gap-2">
-              <Badge className="bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-50 text-xs font-bold">
+              <Badge className="bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20 hover:bg-orange-500/20 text-xs font-bold">
                 {perfil?.categoria || "Cliente"}
               </Badge>
               {perfil?.membresia && (
-                <Badge variant="outline" className="text-xs font-semibold text-gray-600">
+                <Badge variant="outline" className="text-xs font-semibold text-muted-foreground">
                   {perfil.membresia.planNombre}
                 </Badge>
               )}
@@ -216,29 +216,29 @@ export default function MiPerfil() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-xs font-bold text-gray-600">Nombre Completo</Label>
+              <Label className="text-xs font-bold text-muted-foreground">Nombre Completo</Label>
               <Input
                 disabled
                 value={`${perfil?.nombre || ""} ${perfil?.apellido || ""}`.trim()}
-                className="rounded-xl bg-gray-50 text-gray-700 font-medium cursor-not-allowed"
+                className="rounded-xl bg-muted text-foreground/80 font-medium cursor-not-allowed"
               />
-              <p className="text-[11px] text-gray-400">Identidad registrada por recepción.</p>
+              <p className="text-[11px] text-muted-foreground">Identidad registrada por recepción.</p>
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs font-bold text-gray-600 flex items-center gap-1.5">
-                <Mail className="w-3.5 h-3.5 text-gray-400" /> Correo Electrónico
+              <Label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
+                <Mail className="w-3.5 h-3.5 text-muted-foreground" /> Correo Electrónico
               </Label>
               <Input
                 disabled
                 value={perfil?.email || ""}
-                className="rounded-xl bg-gray-50 text-gray-700 font-medium cursor-not-allowed"
+                className="rounded-xl bg-muted text-foreground/80 font-medium cursor-not-allowed"
               />
             </div>
 
             <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="telefono" className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
-                <Phone className="w-3.5 h-3.5 text-orange-600" /> Teléfono / WhatsApp (Sincronizado en BD)
+              <Label htmlFor="telefono" className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                <Phone className="w-3.5 h-3.5 text-orange-600 dark:text-orange-500" /> Teléfono / WhatsApp (Sincronizado en BD)
               </Label>
               <Input
                 id="telefono"
@@ -247,7 +247,7 @@ export default function MiPerfil() {
                 onChange={(e) => setTelefono(e.target.value)}
                 className="rounded-xl max-w-md focus-visible:ring-orange-500"
               />
-              <p className="text-[11px] text-gray-400">
+              <p className="text-[11px] text-muted-foreground">
                 Utilizado para enviarte avisos de vencimiento de cuota y notificaciones importantes.
               </p>
             </div>
@@ -255,20 +255,20 @@ export default function MiPerfil() {
         </div>
 
         {/* ── 2. Contacto de Emergencia ── */}
-        <div className="bg-white border border-gray-200/80 rounded-3xl p-6 sm:p-7 shadow-xs space-y-5">
-          <div className="pb-3 border-b border-gray-100">
+        <div className="bg-card border border-border rounded-3xl p-6 sm:p-7 shadow-xs space-y-5">
+          <div className="pb-3 border-b border-border">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-orange-600" />
-              <h2 className="text-base font-bold text-gray-900">Contacto de Emergencia</h2>
+              <ShieldCheck className="w-5 h-5 text-orange-600 dark:text-orange-500" />
+              <h2 className="text-base font-bold text-foreground">Contacto de Emergencia</h2>
             </div>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Información visible para los entrenadores y recepción ante cualquier eventualidad médica en sala.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label className="text-xs font-bold text-gray-700">Nombre y Apellido</Label>
+              <Label className="text-xs font-bold text-foreground">Nombre y Apellido</Label>
               <Input
                 placeholder="Ej: Laura Martínez"
                 value={contactoEmergencia.nombre}
@@ -280,7 +280,7 @@ export default function MiPerfil() {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs font-bold text-gray-700">Teléfono de Emergencia</Label>
+              <Label className="text-xs font-bold text-foreground">Teléfono de Emergencia</Label>
               <Input
                 placeholder="Ej: +54 9 11 2233-4455"
                 value={contactoEmergencia.telefono}
@@ -292,13 +292,13 @@ export default function MiPerfil() {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs font-bold text-gray-700">Vínculo / Relación</Label>
+              <Label className="text-xs font-bold text-foreground">Vínculo / Relación</Label>
               <select
                 value={contactoEmergencia.relacion}
                 onChange={(e) =>
                   setContactoEmergencia({ ...contactoEmergencia, relacion: e.target.value })
                 }
-                className="w-full h-10 px-3 rounded-xl border border-gray-200 text-xs font-semibold text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
+                className="w-full h-10 px-3 rounded-xl border border-border text-xs font-semibold text-foreground bg-background focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
               >
                 <option value="Familiar">Familiar directo</option>
                 <option value="Pareja">Pareja / Cónyuge</option>
@@ -310,21 +310,21 @@ export default function MiPerfil() {
         </div>
 
         {/* ── 3. Apto Médico y Ficha de Salud ── */}
-        <div className="bg-white border border-gray-200/80 rounded-3xl p-6 sm:p-7 shadow-xs space-y-5">
-          <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+        <div className="bg-card border border-border rounded-3xl p-6 sm:p-7 shadow-xs space-y-5">
+          <div className="flex items-center justify-between pb-3 border-b border-border">
             <div className="flex items-center gap-2">
-              <HeartPulse className="w-5 h-5 text-emerald-600" />
-              <h2 className="text-base font-bold text-gray-900">Apto Físico y Salud</h2>
+              <HeartPulse className="w-5 h-5 text-emerald-600 dark:text-emerald-500" />
+              <h2 className="text-base font-bold text-foreground">Apto Físico y Salud</h2>
             </div>
             <span
               className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${estadoApto.colorBadge}`}
             >
               {estadoApto.tipo === "vigente" ? (
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
               ) : estadoApto.tipo === "por-vencer" ? (
-                <Clock className="w-3.5 h-3.5 text-orange-600" />
+                <Clock className="w-3.5 h-3.5 text-orange-600 dark:text-orange-400" />
               ) : (
-                <AlertCircle className="w-3.5 h-3.5 text-red-600" />
+                <AlertCircle className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
               )}
               {estadoApto.texto}
             </span>
@@ -332,30 +332,30 @@ export default function MiPerfil() {
 
           <div className={`p-4 rounded-2xl border ${estadoApto.colorCard} flex flex-col sm:flex-row sm:items-center justify-between gap-4`}>
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white text-gray-700 flex items-center justify-center shrink-0 border border-gray-200/60 shadow-2xs">
-                <FileText className="w-5 h-5 text-orange-600" />
+              <div className="w-10 h-10 rounded-xl bg-card text-foreground flex items-center justify-center shrink-0 border border-border shadow-2xs">
+                <FileText className="w-5 h-5 text-orange-600 dark:text-orange-500" />
               </div>
               <div>
-                <h3 className="text-xs font-bold text-gray-900">Certificado Médico Anual</h3>
-                <p className="text-xs text-gray-600 mt-0.5">{estadoApto.descripcion}</p>
+                <h3 className="text-xs font-bold text-foreground">Certificado Médico Anual</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">{estadoApto.descripcion}</p>
               </div>
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
-              <Label htmlFor="aptoFecha" className="text-xs font-bold text-gray-700 flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5 text-gray-500" /> Fecha de Vigencia:
+              <Label htmlFor="aptoFecha" className="text-xs font-bold text-foreground flex items-center gap-1">
+                <Calendar className="w-3.5 h-3.5 text-muted-foreground" /> Fecha de Vigencia:
               </Label>
               <Input
                 id="aptoFecha"
                 type="date"
                 value={aptoMedicoVence}
                 onChange={(e) => setAptoMedicoVence(e.target.value)}
-                className="w-40 rounded-xl bg-white text-xs font-semibold"
+                className="w-40 rounded-xl bg-card text-xs font-semibold"
               />
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 flex items-start gap-3 text-xs text-gray-600">
+          <div className="p-4 rounded-2xl bg-muted/50 border border-border flex items-start gap-3 text-xs text-muted-foreground">
             <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
             <p>
               Por normativas legales de gimnasios, el certificado de aptitud física debe ser renovado una vez al año por un médico matriculado. Al renovarlo, podés presentarlo en el mostrador para su sellado.

@@ -120,10 +120,10 @@ export default function Reportes() {
   return (
     <div className="space-y-6 max-w-6xl">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight flex items-center gap-3">
-          <FileSpreadsheet className="w-7 h-7 text-orange-600" /> Reportes
+        <h1 className="text-2xl sm:text-3xl font-black text-foreground tracking-tight flex items-center gap-3">
+          <FileSpreadsheet className="w-7 h-7 text-orange-600 dark:text-orange-500" /> Reportes
         </h1>
-        <p className="text-sm text-gray-500 font-medium mt-1">
+        <p className="text-sm text-muted-foreground font-medium mt-1">
           Generá informes del gimnasio y exportalos a Excel en un clic.
         </p>
       </div>
@@ -139,18 +139,20 @@ export default function Reportes() {
               onClick={() => setTipo(r.key)}
               className={cn(
                 "flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all cursor-pointer",
-                activo ? "border-orange-500 bg-orange-50 ring-2 ring-orange-500/20" : "border-gray-200 bg-white hover:border-gray-300"
+                activo
+                  ? "border-orange-500 bg-orange-500/10 ring-2 ring-orange-500/20"
+                  : "border-border bg-card hover:border-muted-foreground/30"
               )}
             >
-              <Icon className={cn("w-5 h-5", activo ? "text-orange-600" : "text-gray-400")} />
-              <span className={cn("text-xs font-bold text-center", activo ? "text-orange-700" : "text-gray-600")}>{r.label}</span>
+              <Icon className={cn("w-5 h-5", activo ? "text-orange-600 dark:text-orange-400" : "text-muted-foreground")} />
+              <span className={cn("text-xs font-bold text-center", activo ? "text-orange-600 dark:text-orange-400" : "text-foreground/80")}>{r.label}</span>
             </button>
           );
         })}
       </div>
 
       {/* ── Rango de fechas + exportar ── */}
-      <div className="bg-white border border-gray-200/80 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+      <div className="bg-card border border-border rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-3">
         {usaRango ? (
           <>
             <div className="flex items-center gap-1.5 flex-wrap">
@@ -160,15 +162,15 @@ export default function Reportes() {
               <Button type="button" variant="outline" size="sm" className="rounded-lg text-xs" onClick={() => aplicarRango(90)}>90 días</Button>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
-              <Label className="text-xs font-bold text-gray-500 flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> Desde</Label>
+              <Label className="text-xs font-bold text-muted-foreground flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> Desde</Label>
               <Input type="date" value={desde} onChange={(e) => setDesde(e.target.value)} className="rounded-xl h-9 w-36 sm:w-40" />
-              <Label className="text-xs font-bold text-gray-500">Hasta</Label>
+              <Label className="text-xs font-bold text-muted-foreground">Hasta</Label>
               <Input type="date" value={hasta} onChange={(e) => setHasta(e.target.value)} className="rounded-xl h-9 w-36 sm:w-40" />
-              <Button type="button" size="sm" className="rounded-lg text-xs bg-black hover:bg-black/90" onClick={cargar}>Aplicar</Button>
+              <Button type="button" size="sm" className="rounded-lg text-xs" onClick={cargar}>Aplicar</Button>
             </div>
           </>
         ) : (
-          <p className="text-xs text-gray-500 font-medium">Estado actual de morosidad — no requiere rango de fechas.</p>
+          <p className="text-xs text-muted-foreground font-medium">Estado actual de morosidad — no requiere rango de fechas.</p>
         )}
 
         <Button
@@ -183,13 +185,13 @@ export default function Reportes() {
       </div>
 
       {/* ── Resultados ── */}
-      <div className="bg-white border border-gray-200/80 rounded-2xl overflow-hidden">
+      <div className="bg-card border border-border rounded-2xl overflow-hidden">
         {loading ? (
           <div className="p-5 space-y-2">{Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-10 w-full rounded-lg" />)}</div>
         ) : error ? (
           <ErrorState message="No se pudo cargar el reporte. Puede ser un problema de conexión." onRetry={cargar} />
         ) : !datosActuales ? (
-          <p className="text-sm text-gray-400 text-center py-10">No se pudo cargar el reporte.</p>
+          <p className="text-sm text-muted-foreground text-center py-10">No se pudo cargar el reporte.</p>
         ) : (
           <div key={tipo} className="animate-fade-in-up">
             {tipo === "ingresos" ? (
@@ -212,22 +214,22 @@ export default function Reportes() {
 function ReporteIngresos({ datos }: { datos: any }) {
   return (
     <div>
-      <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-        <span className="text-xs font-bold text-gray-500">{datos.cantidad} pagos registrados</span>
-        <span className="text-lg font-black text-emerald-700">{money(datos.total)}</span>
+      <div className="p-4 border-b border-border flex items-center justify-between">
+        <span className="text-xs font-bold text-muted-foreground">{datos.cantidad} pagos registrados</span>
+        <span className="text-lg font-black text-emerald-600 dark:text-emerald-400">{money(datos.total)}</span>
       </div>
       {datos.items.length === 0 ? (
-        <p className="text-sm text-gray-400 text-center py-10">Sin ingresos en el rango seleccionado.</p>
+        <p className="text-sm text-muted-foreground text-center py-10">Sin ingresos en el rango seleccionado.</p>
       ) : (
-        <div className="divide-y divide-gray-100 max-h-[420px] overflow-y-auto">
+        <div className="divide-y divide-border max-h-[420px] overflow-y-auto">
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {datos.items.map((i: any, idx: number) => (
             <div key={idx} className="p-3 flex items-center justify-between text-sm">
               <div className="min-w-0">
-                <p className="font-bold text-gray-900 truncate">{i.cliente}</p>
-                <p className="text-[11px] text-gray-400">{i.fecha} · {i.metodo}</p>
+                <p className="font-bold text-foreground truncate">{i.cliente}</p>
+                <p className="text-[11px] text-muted-foreground">{i.fecha} · {i.metodo}</p>
               </div>
-              <span className="font-black text-gray-900 shrink-0 ml-3">{money(i.monto)}</span>
+              <span className="font-black text-foreground shrink-0 ml-3">{money(i.monto)}</span>
             </div>
           ))}
         </div>
@@ -240,23 +242,23 @@ function ReporteIngresos({ datos }: { datos: any }) {
 function ReporteMorosidad({ datos }: { datos: any }) {
   return (
     <div>
-      <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-        <span className="text-xs font-bold text-gray-500">{datos.cantidad} clientes con deuda</span>
-        <span className="text-lg font-black text-rose-700">{money(datos.totalEstimado)}</span>
+      <div className="p-4 border-b border-border flex items-center justify-between">
+        <span className="text-xs font-bold text-muted-foreground">{datos.cantidad} clientes con deuda</span>
+        <span className="text-lg font-black text-rose-600 dark:text-rose-400">{money(datos.totalEstimado)}</span>
       </div>
       {datos.items.length === 0 ? (
-        <p className="text-sm text-gray-400 text-center py-10">Ningún cliente con deuda. 🎉</p>
+        <p className="text-sm text-muted-foreground text-center py-10">Ningún cliente con deuda. 🎉</p>
       ) : (
-        <div className="divide-y divide-gray-100 max-h-[420px] overflow-y-auto">
+        <div className="divide-y divide-border max-h-[420px] overflow-y-auto">
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {datos.items.map((i: any, idx: number) => (
             <div key={idx} className="p-3 flex items-center justify-between text-sm">
               <div className="min-w-0">
-                <p className="font-bold text-gray-900 truncate">{i.cliente}</p>
-                <p className="text-[11px] text-gray-400">{i.plan ?? "Sin plan"} · vence {i.vence ? new Date(i.vence).toLocaleDateString("es-AR") : "-"}</p>
+                <p className="font-bold text-foreground truncate">{i.cliente}</p>
+                <p className="text-[11px] text-muted-foreground">{i.plan ?? "Sin plan"} · vence {i.vence ? new Date(i.vence).toLocaleDateString("es-AR") : "-"}</p>
               </div>
               <div className="text-right shrink-0 ml-3">
-                <p className="font-black text-rose-700">{money(i.montoEstimado)}</p>
+                <p className="font-black text-rose-600 dark:text-rose-400">{money(i.montoEstimado)}</p>
                 <Badge variant="outline" className="text-[10px] mt-0.5">{i.mesesAdeudados} {i.mesesAdeudados === 1 ? "mes" : "meses"}</Badge>
               </div>
             </div>
@@ -273,17 +275,17 @@ function ReporteOcupacion({ datos }: { datos: any }) {
   const max = Math.max(...datos.porHora.map((p: any) => p.cantidad), 1);
   return (
     <div className="p-5">
-      <p className="text-xs font-bold text-gray-500 mb-4">{datos.totalAsistencias} asistencias totales en el rango</p>
+      <p className="text-xs font-bold text-muted-foreground mb-4">{datos.totalAsistencias} asistencias totales en el rango</p>
       <div className="flex items-end gap-1.5 h-40">
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         {datos.porHora.map((p: any) => (
           <div key={p.hora} className="flex-1 flex flex-col items-center gap-1">
             <div
-              className="w-full bg-orange-400 rounded-t-sm hover:bg-orange-500 transition-colors"
+              className="w-full bg-orange-500 rounded-t-sm hover:bg-orange-600 transition-colors"
               style={{ height: `${Math.max((p.cantidad / max) * 100, p.cantidad > 0 ? 4 : 0)}%` }}
               title={`${p.hora}:00 — ${p.cantidad} asistencias`}
             />
-            <span className="text-[8px] font-bold text-gray-400">{p.hora}</span>
+            <span className="text-[8px] font-bold text-muted-foreground">{p.hora}</span>
           </div>
         ))}
       </div>
@@ -295,40 +297,40 @@ function ReporteOcupacion({ datos }: { datos: any }) {
 function ReporteContable({ datos }: { datos: any }) {
   return (
     <div>
-      <div className="p-4 border-b border-gray-100 grid grid-cols-2 sm:grid-cols-5 gap-3">
+      <div className="p-4 border-b border-border grid grid-cols-2 sm:grid-cols-5 gap-3">
         <div>
-          <p className="text-[10px] font-bold uppercase text-gray-400">Ingresos</p>
-          <p className="text-sm font-black text-emerald-700">{money(datos.totalIngresos)}</p>
+          <p className="text-[10px] font-bold uppercase text-muted-foreground">Ingresos</p>
+          <p className="text-sm font-black text-emerald-600 dark:text-emerald-400">{money(datos.totalIngresos)}</p>
         </div>
         <div>
-          <p className="text-[10px] font-bold uppercase text-gray-400">Egresos</p>
-          <p className="text-sm font-black text-rose-700">{money(datos.totalEgresos)}</p>
+          <p className="text-[10px] font-bold uppercase text-muted-foreground">Egresos</p>
+          <p className="text-sm font-black text-rose-600 dark:text-rose-400">{money(datos.totalEgresos)}</p>
         </div>
         <div>
-          <p className="text-[10px] font-bold uppercase text-gray-400">Inversiones</p>
-          <p className="text-sm font-black text-blue-700">{money(datos.totalInversiones)}</p>
+          <p className="text-[10px] font-bold uppercase text-muted-foreground">Inversiones</p>
+          <p className="text-sm font-black text-blue-600 dark:text-blue-400">{money(datos.totalInversiones)}</p>
         </div>
         <div>
-          <p className="text-[10px] font-bold uppercase text-gray-400">Compras</p>
-          <p className="text-sm font-black text-amber-700">{money(datos.totalCompras)}</p>
+          <p className="text-[10px] font-bold uppercase text-muted-foreground">Compras</p>
+          <p className="text-sm font-black text-amber-600 dark:text-amber-400">{money(datos.totalCompras)}</p>
         </div>
         <div>
-          <p className="text-[10px] font-bold uppercase text-gray-400">Balance</p>
-          <p className={cn("text-sm font-black", datos.balance >= 0 ? "text-emerald-700" : "text-rose-700")}>{money(datos.balance)}</p>
+          <p className="text-[10px] font-bold uppercase text-muted-foreground">Balance</p>
+          <p className={cn("text-sm font-black", datos.balance >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400")}>{money(datos.balance)}</p>
         </div>
       </div>
       {datos.items.length === 0 ? (
-        <p className="text-sm text-gray-400 text-center py-10">Sin movimientos en el rango seleccionado.</p>
+        <p className="text-sm text-muted-foreground text-center py-10">Sin movimientos en el rango seleccionado.</p>
       ) : (
-        <div className="divide-y divide-gray-100 max-h-[380px] overflow-y-auto">
+        <div className="divide-y divide-border max-h-[380px] overflow-y-auto">
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {datos.items.map((i: any, idx: number) => (
             <div key={idx} className="p-3 flex items-center justify-between text-sm">
               <div className="min-w-0">
-                <p className="font-bold text-gray-900 truncate">{i.descripcion}</p>
-                <p className="text-[11px] text-gray-400">{i.fecha} · {i.tipo} · {i.categoria}</p>
+                <p className="font-bold text-foreground truncate">{i.descripcion}</p>
+                <p className="text-[11px] text-muted-foreground">{i.fecha} · {i.tipo} · {i.categoria}</p>
               </div>
-              <span className="font-black text-gray-900 shrink-0 ml-3">{money(i.monto)}</span>
+              <span className="font-black text-foreground shrink-0 ml-3">{money(i.monto)}</span>
             </div>
           ))}
         </div>

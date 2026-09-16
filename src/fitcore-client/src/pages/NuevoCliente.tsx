@@ -164,7 +164,7 @@ export default function NuevoCliente() {
             <div className="space-y-2">
               <Label htmlFor="plan">
                 Plan{" "}
-                <span className="text-gray-400 font-normal text-sm">(opcional)</span>
+                <span className="text-muted-foreground font-normal text-sm">(opcional)</span>
               </Label>
               <Select
                 value={planId}

@@ -131,7 +131,7 @@ export default function ClienteCombobox({
   return (
     <div ref={containerRef} className={cn("relative", className)}>
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
         <input
           id={id}
           ref={inputRef}
@@ -143,8 +143,8 @@ export default function ClienteCombobox({
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           className={cn(
-            "flex h-10 w-full rounded-lg border border-gray-300 bg-white pl-9 pr-16 py-2 text-sm font-normal text-gray-900 placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f97316] focus-visible:border-[#f97316] disabled:cursor-not-allowed disabled:opacity-50",
-            !open && seleccionado && "placeholder:text-gray-900 placeholder:font-medium"
+            "flex h-10 w-full rounded-lg border border-border bg-background pl-9 pr-16 py-2 text-sm font-normal text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f97316] focus-visible:border-[#f97316] disabled:cursor-not-allowed disabled:opacity-50",
+            !open && seleccionado && "placeholder:text-foreground placeholder:font-medium"
           )}
         />
         {seleccionado && !open && (
@@ -156,18 +156,18 @@ export default function ClienteCombobox({
               onChange("");
               setQuery("");
             }}
-            className="absolute right-8 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-600"
+            className="absolute right-8 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
           >
             <X className="h-3.5 w-3.5" />
           </button>
         )}
-        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
       </div>
 
       {mounted && !disabled && (
         <div
           className={cn(
-            "absolute z-50 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg py-1",
+            "absolute z-50 w-full overflow-y-auto rounded-lg border border-border bg-popover shadow-xl py-1",
             "transition-[opacity,transform] duration-150 ease-out",
             dropUp ? "bottom-full mb-1" : "top-full mt-1",
             open
@@ -177,7 +177,7 @@ export default function ClienteCombobox({
           style={{ maxHeight: maxListHeight }}
         >
           {filtrados.length === 0 ? (
-            <p className="px-3 py-3 text-xs text-gray-400 text-center">{emptyLabel}</p>
+            <p className="px-3 py-3 text-xs text-muted-foreground text-center">{emptyLabel}</p>
           ) : (
             filtrados.map((c, i) => (
               <button
@@ -187,7 +187,7 @@ export default function ClienteCombobox({
                 onClick={() => seleccionar(c)}
                 className={cn(
                   "w-full text-left px-3 py-2 text-sm truncate",
-                  i === highlight ? "bg-orange-50 text-orange-700" : "text-gray-700 hover:bg-gray-50",
+                  i === highlight ? "bg-orange-500/15 text-orange-600 dark:text-orange-400" : "text-foreground hover:bg-muted",
                   String(c.id) === String(value) && "font-semibold"
                 )}
               >

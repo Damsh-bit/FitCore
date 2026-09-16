@@ -948,35 +948,35 @@ export default function Clientes() {
             onClick={() => setFiltroRapido("todos")}
             className={`col-span-2 sm:col-span-1 lg:col-span-1 p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer h-[116px] flex flex-col justify-between relative overflow-hidden shadow-xs hover:shadow-md group ${
               filtroRapido === "todos"
-                ? "border-slate-800 ring-2 ring-slate-800/10 bg-slate-50/60 shadow-sm"
-                : "border-slate-200/80 bg-white hover:border-slate-300 hover:bg-slate-50/30"
+                ? "border-primary ring-2 ring-primary/15 bg-primary/10 shadow-sm"
+                : "border-border bg-card hover:border-border/80 hover:bg-muted/40"
             }`}
           >
             {filtroRapido === "todos" && (
-              <div className="absolute top-0 left-0 right-0 h-1 bg-slate-800" />
+              <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
             )}
             <div className="flex items-center justify-between">
               <span className={`text-[11px] font-bold uppercase tracking-wider ${
-                filtroRapido === "todos" ? "text-slate-900" : "text-slate-500"
+                filtroRapido === "todos" ? "text-foreground" : "text-muted-foreground"
               }`}>
                 Socios Totales
               </span>
               <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 ${
                 filtroRapido === "todos"
-                  ? "bg-slate-900 text-white shadow-xs"
-                  : "bg-slate-100 text-slate-700 border border-slate-200/60"
+                  ? "bg-primary text-primary-foreground shadow-xs"
+                  : "bg-muted text-muted-foreground border border-border"
               }`}>
                 <Users className="h-4 w-4" />
               </div>
             </div>
             <div>
-              <p className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+              <p className="text-2xl font-black text-foreground tracking-tight leading-none">
                 {loading ? <Skeleton className="h-7 w-12" /> : metrics.total}
               </p>
-              <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium mt-1.5 truncate">
+              <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground font-medium mt-1.5 truncate">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
                 <span>{metrics.activos} activos</span>
-                <span className="text-slate-300">·</span>
+                <span className="text-border">·</span>
                 <span>{metrics.inactivos} inactivos</span>
               </div>
             </div>
@@ -988,8 +988,8 @@ export default function Clientes() {
             onClick={() => setFiltroRapido(filtroRapido === "alDia" ? "todos" : "alDia")}
             className={`p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer h-[116px] flex flex-col justify-between relative overflow-hidden shadow-xs hover:shadow-md group ${
               filtroRapido === "alDia"
-                ? "border-emerald-500 ring-2 ring-emerald-500/15 bg-emerald-50/30 shadow-sm"
-                : "border-slate-200/80 bg-white hover:border-emerald-200 hover:bg-emerald-50/20"
+                ? "border-emerald-500 ring-2 ring-emerald-500/15 bg-emerald-500/10 shadow-sm"
+                : "border-border bg-card hover:border-emerald-500/30 hover:bg-emerald-500/5"
             }`}
           >
             {filtroRapido === "alDia" && (
@@ -997,23 +997,23 @@ export default function Clientes() {
             )}
             <div className="flex items-center justify-between">
               <span className={`text-[11px] font-bold uppercase tracking-wider ${
-                filtroRapido === "alDia" ? "text-emerald-800" : "text-slate-500"
+                filtroRapido === "alDia" ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"
               }`}>
                 Al Día
               </span>
               <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 ${
                 filtroRapido === "alDia"
                   ? "bg-emerald-600 text-white shadow-xs"
-                  : "bg-emerald-50 text-emerald-600 border border-emerald-200/60"
+                  : "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
               }`}>
                 <ShieldCheck className="h-4 w-4" />
               </div>
             </div>
             <div>
-              <p className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+              <p className="text-2xl font-black text-foreground tracking-tight leading-none">
                 {loading ? <Skeleton className="h-7 w-12" /> : metrics.alDia}
               </p>
-              <div className="flex items-center gap-1.5 text-[11px] text-emerald-700 font-medium mt-1.5 truncate">
+              <div className="flex items-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-1.5 truncate">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
                 <span>Vigencia &gt; 7 días</span>
               </div>
@@ -1026,8 +1026,8 @@ export default function Clientes() {
             onClick={() => setFiltroRapido(filtroRapido === "porVencer" ? "todos" : "porVencer")}
             className={`p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer h-[116px] flex flex-col justify-between relative overflow-hidden shadow-xs hover:shadow-md group ${
               filtroRapido === "porVencer"
-                ? "border-amber-500 ring-2 ring-amber-500/15 bg-amber-50/30 shadow-sm"
-                : "border-slate-200/80 bg-white hover:border-amber-200 hover:bg-amber-50/20"
+                ? "border-amber-500 ring-2 ring-amber-500/15 bg-amber-500/10 shadow-sm"
+                : "border-border bg-card hover:border-amber-500/30 hover:bg-amber-500/5"
             }`}
           >
             {filtroRapido === "porVencer" && (
@@ -1035,23 +1035,23 @@ export default function Clientes() {
             )}
             <div className="flex items-center justify-between">
               <span className={`text-[11px] font-bold uppercase tracking-wider ${
-                filtroRapido === "porVencer" ? "text-amber-800" : "text-slate-500"
+                filtroRapido === "porVencer" ? "text-amber-600 dark:text-amber-400" : "text-muted-foreground"
               }`}>
                 Vence Pronto
               </span>
               <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 ${
                 filtroRapido === "porVencer"
                   ? "bg-amber-500 text-white shadow-xs"
-                  : "bg-amber-50 text-amber-600 border border-amber-200/60"
+                  : "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20"
               }`}>
                 <Clock className="h-4 w-4" />
               </div>
             </div>
             <div>
-              <p className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+              <p className="text-2xl font-black text-foreground tracking-tight leading-none">
                 {loading ? <Skeleton className="h-7 w-12" /> : metrics.porVencer}
               </p>
-              <div className="flex items-center gap-1.5 text-[11px] text-amber-700 font-medium mt-1.5 truncate">
+              <div className="flex items-center gap-1.5 text-[11px] text-amber-600 dark:text-amber-400 font-medium mt-1.5 truncate">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
                 <span>Próximos 7 días</span>
               </div>
@@ -1064,8 +1064,8 @@ export default function Clientes() {
             onClick={() => setFiltroRapido(filtroRapido === "vencidos" ? "todos" : "vencidos")}
             className={`p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer h-[116px] flex flex-col justify-between relative overflow-hidden shadow-xs hover:shadow-md group ${
               filtroRapido === "vencidos"
-                ? "border-rose-500 ring-2 ring-rose-500/15 bg-rose-50/30 shadow-sm"
-                : "border-slate-200/80 bg-white hover:border-rose-200 hover:bg-rose-50/20"
+                ? "border-rose-500 ring-2 ring-rose-500/15 bg-rose-500/10 shadow-sm"
+                : "border-border bg-card hover:border-rose-500/30 hover:bg-rose-500/5"
             }`}
           >
             {filtroRapido === "vencidos" && (
@@ -1073,23 +1073,23 @@ export default function Clientes() {
             )}
             <div className="flex items-center justify-between">
               <span className={`text-[11px] font-bold uppercase tracking-wider ${
-                filtroRapido === "vencidos" ? "text-rose-800" : "text-slate-500"
+                filtroRapido === "vencidos" ? "text-rose-600 dark:text-rose-400" : "text-muted-foreground"
               }`}>
                 Vencidos / Mora
               </span>
               <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 ${
                 filtroRapido === "vencidos"
                   ? "bg-rose-600 text-white shadow-xs"
-                  : "bg-rose-50 text-rose-600 border border-rose-200/60"
+                  : "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/20"
               }`}>
                 <AlertCircle className="h-4 w-4" />
               </div>
             </div>
             <div>
-              <p className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+              <p className="text-2xl font-black text-foreground tracking-tight leading-none">
                 {loading ? <Skeleton className="h-7 w-12" /> : metrics.vencidos}
               </p>
-              <div className="flex items-center gap-1.5 text-[11px] text-rose-700 font-medium mt-1.5 truncate">
+              <div className="flex items-center gap-1.5 text-[11px] text-rose-600 dark:text-rose-400 font-medium mt-1.5 truncate">
                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
                 <span>Requiere cobro</span>
               </div>
@@ -1102,8 +1102,8 @@ export default function Clientes() {
             onClick={() => setFiltroRapido(filtroRapido === "aptoVencido" ? "todos" : "aptoVencido")}
             className={`p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer h-[116px] flex flex-col justify-between relative overflow-hidden shadow-xs hover:shadow-md group ${
               filtroRapido === "aptoVencido"
-                ? "border-purple-500 ring-2 ring-purple-500/15 bg-purple-50/30 shadow-sm"
-                : "border-slate-200/80 bg-white hover:border-purple-200 hover:bg-purple-50/20"
+                ? "border-purple-500 ring-2 ring-purple-500/15 bg-purple-500/10 shadow-sm"
+                : "border-border bg-card hover:border-purple-500/30 hover:bg-purple-500/5"
             }`}
           >
             {filtroRapido === "aptoVencido" && (
@@ -1111,9 +1111,9 @@ export default function Clientes() {
             )}
             <div className="flex items-center justify-between">
               <span className={`text-[11px] font-bold uppercase tracking-wider ${
-                filtroRapido === "aptoVencido" ? "text-purple-800" : "text-slate-500"
+                filtroRapido === "aptoVencido" ? "text-purple-600 dark:text-purple-400" : "text-muted-foreground"
               }`}>
-                Apto Vencido
+                Apto Médico
               </span>
               <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 ${
                 filtroRapido === "aptoVencido"
@@ -1136,23 +1136,23 @@ export default function Clientes() {
         </div>
 
         {/* ── Barra de Control de Búsqueda y Filtros ── */}
-        <div className="bg-white border border-gray-200/80 rounded-2xl p-3.5 shadow-sm space-y-3">
+        <div className="bg-card border border-border rounded-2xl p-3.5 shadow-sm space-y-3">
           <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
             {/* Buscador Universal */}
             <div className="relative flex-1 min-w-[240px]">
-              <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder="Buscar socio por nombre, apellido, email o teléfono..."
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
-                className="pl-10 pr-9 rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white text-sm"
+                className="pl-10 pr-9 rounded-xl border-border bg-muted/40 focus:bg-background text-sm text-foreground"
               />
               {busqueda && (
                 <button
                   type="button"
                   onClick={() => setBusqueda("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
@@ -1163,13 +1163,13 @@ export default function Clientes() {
             <div className="flex flex-wrap items-center gap-2">
               {/* Filtro por Badge Inteligente */}
               <Select value={filtroBadge} onValueChange={setFiltroBadge}>
-                <SelectTrigger className="w-[155px] sm:w-[185px] rounded-xl border-gray-200 text-xs font-semibold">
-                  <Tags className="h-3.5 w-3.5 mr-1.5 text-gray-400 shrink-0" />
+                <SelectTrigger className="w-[155px] sm:w-[185px] rounded-xl border-border text-xs font-semibold">
+                  <Tags className="h-3.5 w-3.5 mr-1.5 text-muted-foreground shrink-0" />
                   <SelectValue placeholder="Todos los badges" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="todos">
-                    <span className="text-gray-600 font-medium">Todos los badges</span>
+                    <span className="text-muted-foreground font-medium">Todos los badges</span>
                   </SelectItem>
                   <SelectItem value="vip">
                     <div className="flex items-center gap-2">
@@ -1212,7 +1212,7 @@ export default function Clientes() {
 
               {/* Filtro Plan */}
               <Select value={filtroPlan} onValueChange={setFiltroPlan}>
-                <SelectTrigger className="w-[135px] sm:w-[155px] rounded-xl border-gray-200 text-xs font-semibold">
+                <SelectTrigger className="w-[135px] sm:w-[155px] rounded-xl border-border text-xs font-semibold">
                   <SelectValue placeholder="Todos los planes" />
                 </SelectTrigger>
                 <SelectContent>
@@ -1231,7 +1231,7 @@ export default function Clientes() {
                 value={filtroEstadoUsuario}
                 onValueChange={(val: "todos" | "activos" | "inactivos") => setFiltroEstadoUsuario(val)}
               >
-                <SelectTrigger className="w-[110px] rounded-xl border-gray-200 text-xs font-semibold">
+                <SelectTrigger className="w-[110px] rounded-xl border-border text-xs font-semibold">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -1242,13 +1242,13 @@ export default function Clientes() {
               </Select>
 
               {/* Toggle de Vista Cards vs Tabla */}
-              <div className="flex items-center bg-gray-100 p-1 rounded-xl border border-gray-200/60">
+              <div className="flex items-center bg-muted p-1 rounded-xl border border-border">
                 <button
                   type="button"
                   onClick={() => setViewMode("grid")}
                   aria-label="Vista Mosaico"
                   className={`p-1.5 rounded-lg text-xs font-semibold transition-all ${
-                    viewMode === "grid" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-900"
+                    viewMode === "grid" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   <LayoutGrid className="h-4 w-4" />
@@ -1258,7 +1258,7 @@ export default function Clientes() {
                   onClick={() => setViewMode("table")}
                   aria-label="Vista Tabla"
                   className={`p-1.5 rounded-lg text-xs font-semibold transition-all ${
-                    viewMode === "table" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-900"
+                    viewMode === "table" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   <TableIcon className="h-4 w-4" />
@@ -1361,7 +1361,7 @@ export default function Clientes() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="bg-white border border-gray-200/80 rounded-2xl p-5 space-y-4">
+              <div key={i} className="bg-card border border-border rounded-2xl p-5 space-y-4">
                 <div className="flex items-center gap-3">
                   <Skeleton className="h-12 w-12 rounded-full" />
                   <div className="space-y-1.5 flex-1">
@@ -1371,7 +1371,7 @@ export default function Clientes() {
                 </div>
                 <Skeleton className="h-3 w-full" />
                 <Skeleton className="h-3 w-3/4" />
-                <div className="flex justify-end gap-1.5 pt-2 border-t border-gray-100">
+                <div className="flex justify-end gap-1.5 pt-2 border-t border-border">
                   <Skeleton className="h-8 w-8 rounded-lg" />
                   <Skeleton className="h-8 w-8 rounded-lg" />
                   <Skeleton className="h-8 w-8 rounded-lg" />
@@ -1380,12 +1380,12 @@ export default function Clientes() {
             ))}
           </div>
         ) : clientesPaginados.length === 0 ? (
-          <div className="bg-white border border-gray-200/80 rounded-2xl p-12 text-center space-y-3">
-            <div className="w-14 h-14 rounded-2xl bg-gray-100 text-gray-400 flex items-center justify-center mx-auto">
+          <div className="bg-card border border-border rounded-2xl p-12 text-center space-y-3">
+            <div className="w-14 h-14 rounded-2xl bg-muted text-muted-foreground flex items-center justify-center mx-auto">
               <Users className="w-7 h-7" />
             </div>
-            <h3 className="text-base font-bold text-gray-800">No se encontraron clientes</h3>
-            <p className="text-xs text-gray-500 max-w-sm mx-auto">
+            <h3 className="text-base font-bold text-foreground">No se encontraron clientes</h3>
+            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
               No hay socios que coincidan con los criterios de búsqueda o filtros seleccionados.
             </p>
             <Button
@@ -1417,7 +1417,7 @@ export default function Clientes() {
               return (
                 <div
                   key={c.id}
-                  className="bg-white border border-gray-200/80 rounded-2xl p-5 flex flex-col justify-between gap-4 hover:border-gray-300 hover:shadow-sm hover:-translate-y-0.5 transition-all animate-fade-in-up group"
+                  className="bg-card border border-border rounded-2xl p-5 flex flex-col justify-between gap-4 hover:border-border/80 hover:shadow-sm hover:-translate-y-0.5 transition-all animate-fade-in-up group"
                   style={{ animationDelay: `${Math.min(i, 8) * 30}ms` }}
                 >
                   {/* Fila Superior: Avatar + Nombre + Estado */}
@@ -1429,10 +1429,10 @@ export default function Clientes() {
                       >
                         <PersonaAvatar seed={c.id} size={46} />
                         <div className="min-w-0">
-                          <h3 className="text-sm font-black text-gray-900 group-hover:text-primary transition-colors truncate">
+                          <h3 className="text-sm font-black text-foreground group-hover:text-primary transition-colors truncate">
                             {c.nombre} {c.apellido}
                           </h3>
-                          <p className="text-[11px] text-gray-400 mt-0.5">
+                          <p className="text-[11px] text-muted-foreground mt-0.5">
                             Socio desde {new Date(c.fechaAlta).toLocaleDateString("es-AR")}
                           </p>
                         </div>
@@ -1507,10 +1507,10 @@ export default function Clientes() {
                     </div>
 
                     {/* Tarjeta de Membresía Actual */}
-                    <div className="p-2.5 rounded-xl border border-gray-100 bg-white flex items-center justify-between">
+                    <div className="p-2.5 rounded-xl border border-border bg-muted/40 flex items-center justify-between">
                       <div className="min-w-0">
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Plan Actual</p>
-                        <p className="text-xs font-black text-gray-800 truncate">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Plan Actual</p>
+                        <p className="text-xs font-black text-foreground truncate">
                           {c.planNombre ?? "Sin plan asignado"}
                         </p>
                       </div>
@@ -1670,10 +1670,10 @@ export default function Clientes() {
           /* ══════════════════════════════════════════════════════════
              VISTA TABLA COMPACTA ADMINISTRATIVA (HIGH-VOLUME DESK)
              ══════════════════════════════════════════════════════════ */
-          <div className="bg-white border border-gray-200/80 rounded-2xl overflow-hidden shadow-sm">
+          <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader className="bg-gray-50/75">
+                <TableHeader className="bg-muted/50">
                   <TableRow>
                     <TableHead className="font-bold text-gray-700 text-xs py-3.5">Socio / Contacto</TableHead>
                     <TableHead className="font-bold text-gray-700 text-xs">Badges & Actividad</TableHead>

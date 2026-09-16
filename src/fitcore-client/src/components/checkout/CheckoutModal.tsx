@@ -437,7 +437,7 @@ export default function CheckoutModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto p-0 border-gray-200 bg-white dark:bg-zinc-950 shadow-2xl rounded-2xl">
+      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto p-0 border-border bg-card text-card-foreground shadow-2xl rounded-2xl">
         {/* Header Resumen del Plan */}
         <div className="bg-gradient-to-r from-zinc-900 to-zinc-800 text-white p-6 rounded-t-2xl relative overflow-hidden">
           <div className="absolute right-0 top-0 translate-x-4 -translate-y-4 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl" />
@@ -460,7 +460,7 @@ export default function CheckoutModal({
         <div className="p-6 space-y-6">
           {/* Selector de Métodos */}
           <div>
-            <Label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2.5 block">
+            <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2.5 block">
               Seleccioná cómo pagar
             </Label>
             <div className="grid grid-cols-3 gap-2.5">
@@ -470,8 +470,8 @@ export default function CheckoutModal({
                 onClick={() => setTab("mercadopago")}
                 className={`flex flex-col items-center justify-center p-3.5 rounded-xl border text-center transition-all cursor-pointer ${
                   tab === "mercadopago"
-                    ? "border-[#009ee3] bg-[#009ee3]/10 ring-2 ring-[#009ee3]/30 text-zinc-900 font-semibold shadow-xs"
-                    : "border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-600"
+                    ? "border-[#009ee3] bg-[#009ee3]/10 ring-2 ring-[#009ee3]/30 text-foreground font-semibold shadow-xs"
+                    : "border-border hover:border-muted-foreground/40 hover:bg-muted text-muted-foreground"
                 }`}
               >
                 <div className="w-8 h-8 rounded-lg bg-[#009ee3] text-white flex items-center justify-center mb-1.5 shadow-xs">
@@ -486,8 +486,8 @@ export default function CheckoutModal({
                 onClick={() => setTab("tarjeta")}
                 className={`flex flex-col items-center justify-center p-3.5 rounded-xl border text-center transition-all cursor-pointer ${
                   tab === "tarjeta"
-                    ? "border-orange-500 bg-orange-500/10 ring-2 ring-orange-500/30 text-zinc-900 font-semibold shadow-xs"
-                    : "border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-600"
+                    ? "border-orange-500 bg-orange-500/10 ring-2 ring-orange-500/30 text-foreground font-semibold shadow-xs"
+                    : "border-border hover:border-muted-foreground/40 hover:bg-muted text-muted-foreground"
                 }`}
               >
                 <div className="w-8 h-8 rounded-lg bg-orange-500 text-white flex items-center justify-center mb-1.5 shadow-xs">
@@ -502,8 +502,8 @@ export default function CheckoutModal({
                 onClick={() => setTab("transferencia")}
                 className={`flex flex-col items-center justify-center p-3.5 rounded-xl border text-center transition-all cursor-pointer ${
                   tab === "transferencia"
-                    ? "border-emerald-500 bg-emerald-500/10 ring-2 ring-emerald-500/30 text-zinc-900 font-semibold shadow-xs"
-                    : "border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-600"
+                    ? "border-emerald-500 bg-emerald-500/10 ring-2 ring-emerald-500/30 text-foreground font-semibold shadow-xs"
+                    : "border-border hover:border-muted-foreground/40 hover:bg-muted text-muted-foreground"
                 }`}
               >
                 <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center mb-1.5 shadow-xs">
@@ -523,12 +523,12 @@ export default function CheckoutModal({
                     MP
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-gray-900">Mercado Pago Checkout</h4>
-                    <p className="text-xs text-gray-500">Pagá con dinero en cuenta, débito o crédito en cuotas.</p>
+                    <h4 className="text-sm font-bold text-foreground">Mercado Pago Checkout</h4>
+                    <p className="text-xs text-muted-foreground">Pagá con dinero en cuenta, débito o crédito en cuotas.</p>
                   </div>
                 </div>
 
-                <ul className="text-xs text-gray-600 space-y-1.5 pt-1 pl-1">
+                <ul className="text-xs text-muted-foreground space-y-1.5 pt-1 pl-1">
                   <li className="flex items-center gap-2">
                     <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
                     <span>Transacción 100% encriptada y protegida.</span>
@@ -633,7 +633,7 @@ export default function CheckoutModal({
               <div className="space-y-3">
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center">
-                    <Label htmlFor="tarjeta-numero" className="text-xs font-semibold text-gray-700">
+                    <Label htmlFor="tarjeta-numero" className="text-xs font-semibold text-foreground">
                       Número de Tarjeta
                     </Label>
                     {luhnStatus === true && (
@@ -663,14 +663,14 @@ export default function CheckoutModal({
                       }
                       required
                     />
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-xs font-bold text-gray-400">
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-xs font-bold text-muted-foreground">
                       {cardBrand.name}
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="tarjeta-titular" className="text-xs font-semibold text-gray-700">
+                  <Label htmlFor="tarjeta-titular" className="text-xs font-semibold text-foreground">
                     Nombre del Titular (como figura en la tarjeta)
                   </Label>
                   <Input
@@ -685,7 +685,7 @@ export default function CheckoutModal({
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <Label htmlFor="tarjeta-venc" className="text-xs font-semibold text-gray-700">
+                    <Label htmlFor="tarjeta-venc" className="text-xs font-semibold text-foreground">
                       Vence
                     </Label>
                     <Input
@@ -709,7 +709,7 @@ export default function CheckoutModal({
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label htmlFor="tarjeta-cvv" className="text-xs font-semibold text-gray-700">
+                    <Label htmlFor="tarjeta-cvv" className="text-xs font-semibold text-foreground">
                       CVV
                     </Label>
                     <Input
@@ -754,19 +754,19 @@ export default function CheckoutModal({
                 </div>
 
                 <div className="space-y-2 text-xs">
-                  <div className="flex justify-between items-center gap-x-3 bg-white dark:bg-zinc-900 p-2.5 rounded-xl border border-gray-200 dark:border-zinc-800">
+                  <div className="flex justify-between items-center gap-x-3 bg-card p-2.5 rounded-xl border border-border">
                     <div className="min-w-0">
-                      <span className="text-[10px] text-gray-400 block uppercase font-bold">Banco & Titular</span>
-                      <span className="font-semibold text-gray-800 dark:text-zinc-200 truncate block">Banco Galicia — FitCore Gym S.A.</span>
+                      <span className="text-[10px] text-muted-foreground block uppercase font-bold">Banco & Titular</span>
+                      <span className="font-semibold text-foreground truncate block">Banco Galicia — FitCore Gym S.A.</span>
                     </div>
-                    <span className="text-[10px] text-gray-500 font-mono shrink-0">CUIT: 30-71234567-8</span>
+                    <span className="text-[10px] text-muted-foreground font-mono shrink-0">CUIT: 30-71234567-8</span>
                   </div>
 
                   {/* Alias con botón de copia */}
-                  <div className="flex justify-between items-center gap-x-3 bg-white dark:bg-zinc-900 p-2.5 rounded-xl border border-gray-200 dark:border-zinc-800">
+                  <div className="flex justify-between items-center gap-x-3 bg-card p-2.5 rounded-xl border border-border">
                     <div className="min-w-0">
-                      <span className="text-[10px] text-gray-400 block uppercase font-bold">Alias</span>
-                      <span className="font-mono font-bold text-gray-900 dark:text-zinc-100 text-sm truncate">FITCORE.GYM</span>
+                      <span className="text-[10px] text-muted-foreground block uppercase font-bold">Alias</span>
+                      <span className="font-mono font-bold text-foreground text-sm truncate">FITCORE.GYM</span>
                     </div>
                     <Button
                       type="button"
@@ -788,10 +788,10 @@ export default function CheckoutModal({
                   </div>
 
                   {/* CBU con botón de copia */}
-                  <div className="flex justify-between items-center gap-x-3 bg-white dark:bg-zinc-900 p-2.5 rounded-xl border border-gray-200 dark:border-zinc-800">
+                  <div className="flex justify-between items-center gap-x-3 bg-card p-2.5 rounded-xl border border-border">
                     <div className="min-w-0">
-                      <span className="text-[10px] text-gray-400 block uppercase font-bold">CBU / CVU</span>
-                      <span className="font-mono text-xs text-gray-700 dark:text-zinc-300 truncate block">0070123420000012345678</span>
+                      <span className="text-[10px] text-muted-foreground block uppercase font-bold">CBU / CVU</span>
+                      <span className="font-mono text-xs text-foreground truncate block">0070123420000012345678</span>
                     </div>
                     <Button
                       type="button"
@@ -817,7 +817,7 @@ export default function CheckoutModal({
               {/* Formulario de Comprobante */}
               <div className="space-y-3 pt-1">
                 <div className="space-y-1.5">
-                  <Label htmlFor="transf-comp" className="text-xs font-semibold text-gray-700">
+                  <Label htmlFor="transf-comp" className="text-xs font-semibold text-foreground">
                     N° de Comprobante / Código de Operación <span className="text-red-500">*</span>
                   </Label>
                   <Input
@@ -828,14 +828,14 @@ export default function CheckoutModal({
                     disabled={loading}
                     required
                   />
-                  <p className="text-[11px] text-gray-400">
+                  <p className="text-[11px] text-muted-foreground">
                     Podés encontrar este código en el comprobante emitido por tu banco o billetera virtual.
                   </p>
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="transf-obs" className="text-xs font-semibold text-gray-700">
-                    Observación adicional <span className="text-gray-400 font-normal text-xs">(opcional)</span>
+                  <Label htmlFor="transf-obs" className="text-xs font-semibold text-foreground">
+                    Observación adicional <span className="text-muted-foreground font-normal text-xs">(opcional)</span>
                   </Label>
                   <Input
                     id="transf-obs"
@@ -865,8 +865,8 @@ export default function CheckoutModal({
           )}
 
           {/* Footer de Seguridad */}
-          <div className="pt-2 border-t border-gray-100 flex items-center justify-center gap-2 text-[11px] text-gray-400">
-            <Lock className="w-3.5 h-3.5 text-gray-400" />
+          <div className="pt-2 border-t border-border flex items-center justify-center gap-2 text-[11px] text-muted-foreground">
+            <Lock className="w-3.5 h-3.5 text-muted-foreground" />
             <span>Tus pagos están protegidos bajo estándares bancarios y SSL.</span>
           </div>
         </div>

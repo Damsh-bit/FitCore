@@ -495,14 +495,14 @@ export default function ClienteProgreso() {
       <div className="flex items-center justify-between">
         <button
           onClick={() => navigate("/clientes")}
-          className="text-xs font-semibold text-slate-500 hover:text-slate-800 flex items-center gap-1.5 py-1 px-2.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+          className="text-xs font-semibold text-muted-foreground hover:text-foreground flex items-center gap-1.5 py-1 px-2.5 rounded-lg hover:bg-muted transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" /> Volver a Gestión de Clientes
         </button>
       </div>
 
       {/* ── Ficha de Cabecera del Socio ── */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5">
         <div className="flex items-start sm:items-center gap-4">
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent border border-primary/20 text-primary font-black text-xl flex items-center justify-center shrink-0 shadow-xs">
             {cliente.nombre.slice(0, 1).toUpperCase()}
@@ -510,15 +510,15 @@ export default function ClienteProgreso() {
           </div>
           <div>
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-black text-foreground tracking-tight">
                 {cliente.nombre} {cliente.apellido}
               </h1>
               <Badge
                 variant="outline"
                 className={
                   cliente.activo
-                    ? "bg-emerald-50 text-emerald-700 border-emerald-200 font-bold text-xs"
-                    : "bg-slate-100 text-slate-600 border-slate-200 font-bold text-xs"
+                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 font-bold text-xs"
+                    : "bg-muted text-muted-foreground border-border font-bold text-xs"
                 }
               >
                 {cliente.activo ? "Socio Activo" : "Inactivo"}
@@ -529,20 +529,20 @@ export default function ClienteProgreso() {
                 </Badge>
               )}
             </div>
-            <div className="flex items-center gap-4 text-xs text-slate-500 mt-1.5 flex-wrap font-medium">
+            <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1.5 flex-wrap font-medium">
               {cliente.telefono && (
                 <span className="flex items-center gap-1">
-                  <Phone className="w-3.5 h-3.5 text-slate-400" />
+                  <Phone className="w-3.5 h-3.5 text-muted-foreground" />
                   {cliente.telefono}
                 </span>
               )}
               {cliente.email && (
                 <span className="flex items-center gap-1">
-                  <Mail className="w-3.5 h-3.5 text-slate-400" />
+                  <Mail className="w-3.5 h-3.5 text-muted-foreground" />
                   {cliente.email}
                 </span>
               )}
-              <span className="flex items-center gap-1 text-slate-600 font-semibold">
+              <span className="flex items-center gap-1 text-foreground/90 font-semibold">
                 <Activity className="w-3.5 h-3.5 text-primary" />
                 {cliente.asistenciasUltimos30Dias ?? 0} asistencias este mes
               </span>
@@ -560,9 +560,9 @@ export default function ClienteProgreso() {
                 const url = tabActiva === "rutina" ? compartirRutinaWhatsApp() : compartirProgresoWhatsApp();
                 if (url) window.open(url, "_blank");
               }}
-              className="rounded-xl border-emerald-200 text-emerald-700 hover:bg-emerald-50 font-bold text-xs shadow-xs"
+              className="rounded-xl border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 font-bold text-xs shadow-xs"
             >
-              <Share2 className="w-3.5 h-3.5 mr-1.5 text-emerald-600" />
+              <Share2 className="w-3.5 h-3.5 mr-1.5 text-emerald-600 dark:text-emerald-400" />
               {tabActiva === "rutina" ? "Enviar Rutina WhatsApp" : "Compartir Evolución"}
             </Button>
           )}
@@ -580,24 +580,24 @@ export default function ClienteProgreso() {
       {/* ── KPIs Superiores Centrados y Calibrados ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         {/* 1. Peso Actual */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
+        <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
           <div className="flex items-center justify-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-slate-900 text-white flex items-center justify-center shadow-xs">
+            <div className="w-6 h-6 rounded-lg bg-primary text-primary-foreground flex items-center justify-center shadow-xs">
               <Scale className="w-3.5 h-3.5" />
             </div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Peso Actual</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Peso Actual</span>
           </div>
           <div className="my-1">
             {metrics.pesoActual !== null ? (
-              <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
-                {metrics.pesoActual} <span className="text-base font-semibold text-slate-400">kg</span>
+              <p className="text-2xl sm:text-[28px] font-black text-foreground tracking-tight leading-none">
+                {metrics.pesoActual} <span className="text-base font-semibold text-muted-foreground">kg</span>
               </p>
             ) : (
-              <p className="text-2xl font-black text-slate-400 tracking-tight leading-none">—</p>
+              <p className="text-2xl font-black text-muted-foreground tracking-tight leading-none">—</p>
             )}
           </div>
-          <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500 font-medium truncate w-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-slate-900 shrink-0" />
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground font-medium truncate w-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
             <span>
               {metrics.ultimaFecha ? `Registrado el ${formatFechaCorta(metrics.ultimaFecha)}` : "Sin registros aún"}
             </span>
@@ -605,38 +605,38 @@ export default function ClienteProgreso() {
         </div>
 
         {/* 2. Peso Inicial */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
+        <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
           <div className="flex items-center justify-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 border border-blue-200/60 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 flex items-center justify-center">
               <Calendar className="w-3.5 h-3.5" />
             </div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Punto de Partida</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Punto de Partida</span>
           </div>
           <div className="my-1">
             {metrics.pesoInicial !== null ? (
-              <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
-                {metrics.pesoInicial} <span className="text-base font-semibold text-slate-400">kg</span>
+              <p className="text-2xl sm:text-[28px] font-black text-foreground tracking-tight leading-none">
+                {metrics.pesoInicial} <span className="text-base font-semibold text-muted-foreground">kg</span>
               </p>
             ) : (
-              <p className="text-2xl font-black text-slate-400 tracking-tight leading-none">—</p>
+              <p className="text-2xl font-black text-muted-foreground tracking-tight leading-none">—</p>
             )}
           </div>
-          <div className="flex items-center justify-center gap-1.5 text-[11px] text-blue-700 font-medium truncate w-full">
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-blue-600 dark:text-blue-400 font-medium truncate w-full">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
             <span>{mediciones[0] ? `Inicio: ${formatFechaCorta(mediciones[0].fecha)}` : "Primer control pendiente"}</span>
           </div>
         </div>
 
         {/* 3. Variación Total (Delta) */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
+        <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
           <div className="flex items-center justify-center gap-2">
             <div
               className={`w-6 h-6 rounded-lg flex items-center justify-center ${
                 metrics.deltaTotal < 0
-                  ? "bg-emerald-50 text-emerald-600 border border-emerald-200/60"
+                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
                   : metrics.deltaTotal > 0
-                  ? "bg-blue-50 text-blue-600 border border-blue-200/60"
-                  : "bg-slate-100 text-slate-600 border border-slate-200/60"
+                  ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20"
+                  : "bg-muted text-muted-foreground border border-border"
               }`}
             >
               {metrics.deltaTotal < 0 ? (
@@ -647,24 +647,24 @@ export default function ClienteProgreso() {
                 <Minus className="w-3.5 h-3.5" />
               )}
             </div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Variación Neta</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Variación Neta</span>
           </div>
           <div className="my-1">
             {metrics.totalRegistros > 1 ? (
               <p
                 className={`text-2xl sm:text-[28px] font-black tracking-tight leading-none ${
                   metrics.deltaTotal < 0
-                    ? "text-emerald-700"
+                    ? "text-emerald-600 dark:text-emerald-400"
                     : metrics.deltaTotal > 0
-                    ? "text-blue-700"
-                    : "text-slate-900"
+                    ? "text-blue-600 dark:text-blue-400"
+                    : "text-foreground"
                 }`}
               >
                 {metrics.deltaTotal > 0 ? `+${metrics.deltaTotal.toFixed(1)}` : metrics.deltaTotal.toFixed(1)}{" "}
-                <span className="text-base font-semibold text-slate-400">kg</span>
+                <span className="text-base font-semibold text-muted-foreground">kg</span>
               </p>
             ) : (
-              <p className="text-2xl font-black text-slate-400 tracking-tight leading-none">0.0 kg</p>
+              <p className="text-2xl font-black text-muted-foreground tracking-tight leading-none">0.0 kg</p>
             )}
           </div>
           <div className="flex items-center justify-center gap-1.5 text-[11px] font-medium truncate w-full">
@@ -674,16 +674,16 @@ export default function ClienteProgreso() {
                   ? "bg-emerald-500"
                   : metrics.deltaTotal > 0
                   ? "bg-blue-500"
-                  : "bg-slate-400"
+                  : "bg-muted-foreground"
               }`}
             />
             <span
               className={
                 metrics.deltaTotal < 0
-                  ? "text-emerald-700"
+                  ? "text-emerald-600 dark:text-emerald-400"
                   : metrics.deltaTotal > 0
-                  ? "text-blue-700"
-                  : "text-slate-500"
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-muted-foreground"
               }
             >
               {metrics.totalRegistros > 1
@@ -694,19 +694,19 @@ export default function ClienteProgreso() {
         </div>
 
         {/* 4. Rutina Semanal y Disciplina */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
+        <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group">
           <div className="flex items-center justify-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-amber-50 text-amber-600 border border-amber-200/60 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center justify-center">
               <Dumbbell className="w-3.5 h-3.5" />
             </div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Plan de Rutina</span>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Plan de Rutina</span>
           </div>
           <div className="my-1">
-            <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
-              {diasRutinaActivos} <span className="text-base font-semibold text-slate-400">días</span>
+            <p className="text-2xl sm:text-[28px] font-black text-foreground tracking-tight leading-none">
+              {diasRutinaActivos} <span className="text-base font-semibold text-muted-foreground">días</span>
             </p>
           </div>
-          <div className="flex items-center justify-center gap-1.5 text-[11px] text-amber-700 font-medium truncate w-full">
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-amber-600 dark:text-amber-400 font-medium truncate w-full">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
             <span>{diasRutinaActivos > 0 ? `${diasRutinaActivos} de entreno / ${7 - diasRutinaActivos} descanso` : "Sin rutina asignada"}</span>
           </div>
@@ -714,14 +714,14 @@ export default function ClienteProgreso() {
       </div>
 
       {/* ── Barra de Navegación por Pestañas ── */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2 overflow-x-auto">
+      <div className="flex items-center gap-2 border-b border-border pb-2 overflow-x-auto">
         <button
           type="button"
           onClick={() => setTabActiva("evolucion")}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             tabActiva === "evolucion"
-              ? "bg-slate-900 text-white shadow-xs"
-              : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80"
+              ? "bg-primary text-primary-foreground shadow-xs"
+              : "bg-card text-muted-foreground hover:bg-muted border border-border"
           }`}
         >
           <TrendingUp className="w-4 h-4" />
@@ -729,7 +729,7 @@ export default function ClienteProgreso() {
           {mediciones.length > 0 && (
             <span
               className={`px-1.5 py-0.2 rounded-full text-[10px] ${
-                tabActiva === "evolucion" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-700"
+                tabActiva === "evolucion" ? "bg-white/20 text-white" : "bg-muted text-foreground"
               }`}
             >
               {mediciones.length}
@@ -742,8 +742,8 @@ export default function ClienteProgreso() {
           onClick={() => setTabActiva("nueva")}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             tabActiva === "nueva"
-              ? "bg-slate-900 text-white shadow-xs"
-              : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80"
+              ? "bg-primary text-primary-foreground shadow-xs"
+              : "bg-card text-muted-foreground hover:bg-muted border border-border"
           }`}
         >
           <Plus className="w-4 h-4" />
@@ -755,8 +755,8 @@ export default function ClienteProgreso() {
           onClick={() => setTabActiva("rutina")}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             tabActiva === "rutina"
-              ? "bg-slate-900 text-white shadow-xs"
-              : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80"
+              ? "bg-primary text-primary-foreground shadow-xs"
+              : "bg-card text-muted-foreground hover:bg-muted border border-border"
           }`}
         >
           <Dumbbell className="w-4 h-4" />
@@ -764,7 +764,7 @@ export default function ClienteProgreso() {
           {diasRutinaActivos > 0 && (
             <span
               className={`px-1.5 py-0.2 rounded-full text-[10px] ${
-                tabActiva === "rutina" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-700"
+                tabActiva === "rutina" ? "bg-white/20 text-white" : "bg-muted text-foreground"
               }`}
             >
               {diasRutinaActivos}d
@@ -777,28 +777,28 @@ export default function ClienteProgreso() {
       {tabActiva === "evolucion" && (
         <div className="space-y-6">
           {/* Gráfico de Peso */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-100 pb-3">
+          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-border pb-3">
               <div>
-                <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <h2 className="text-base font-bold text-foreground flex items-center gap-2">
                   <TrendingUp className="w-4 h-4 text-primary" />
                   Curva de Evolución de Peso Corporal
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   Seguimiento cronológico de pesajes registrados en el gimnasio.
                 </p>
               </div>
               {mediciones.length > 1 && (
                 <div className="flex items-center gap-2 text-xs">
-                  <span className="font-semibold text-slate-500">Tendencia:</span>
+                  <span className="font-semibold text-muted-foreground">Tendencia:</span>
                   <Badge
                     variant="outline"
                     className={
                       metrics.deltaTotal < 0
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-200 font-bold"
+                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 font-bold"
                         : metrics.deltaTotal > 0
-                        ? "bg-blue-50 text-blue-700 border-blue-200 font-bold"
-                        : "bg-slate-50 text-slate-700 border-slate-200 font-bold"
+                        ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20 font-bold"
+                        : "bg-muted text-muted-foreground border-border font-bold"
                     }
                   >
                     {metrics.deltaTotal < 0
@@ -812,10 +812,10 @@ export default function ClienteProgreso() {
             </div>
 
             {chartData.length < 2 ? (
-              <div className="py-12 px-4 text-center space-y-3 bg-slate-50/50 rounded-xl border border-dashed border-slate-200">
-                <Scale className="w-8 h-8 text-slate-300 mx-auto" />
-                <p className="text-sm font-semibold text-slate-700">Se necesitan al menos 2 mediciones para graficar la curva</p>
-                <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              <div className="py-12 px-4 text-center space-y-3 bg-muted/40 rounded-xl border border-dashed border-border">
+                <Scale className="w-8 h-8 text-muted-foreground/50 mx-auto" />
+                <p className="text-sm font-semibold text-foreground">Se necesitan al menos 2 mediciones para graficar la curva</p>
+                <p className="text-xs text-muted-foreground max-w-sm mx-auto">
                   Cargá periódicamente el peso de {cliente.nombre} para visualizar su progreso y calcular la velocidad de cambio.
                 </p>
                 <Button
@@ -837,22 +837,23 @@ export default function ClienteProgreso() {
                         <stop offset="95%" stopColor="var(--color-primary, #3b82f6)" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
                     <XAxis
                       dataKey="fechaStr"
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 11, fill: "#64748b" }}
+                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
                       dy={5}
                     />
                     <YAxis
                       domain={["dataMin - 1", "dataMax + 1"]}
                       tickLine={false}
                       axisLine={false}
-                      tick={{ fontSize: 11, fill: "#64748b" }}
+                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
                       tickFormatter={(val) => `${val}k`}
                     />
                     <Tooltip
+                      cursor={{ stroke: "hsl(var(--border))", strokeWidth: 1 }}
                       content={
                         <ChartTooltip
                           variant="line"
@@ -869,7 +870,7 @@ export default function ClienteProgreso() {
                       strokeWidth={2.5}
                       fillOpacity={1}
                       fill="url(#pesoGradient)"
-                      dot={{ r: 4, fill: "var(--color-primary, #3b82f6)", strokeWidth: 2, stroke: "#ffffff" }}
+                      dot={{ r: 4, fill: "var(--color-primary, #3b82f6)", strokeWidth: 2, stroke: "hsl(var(--card))" }}
                       activeDot={{ r: 6, strokeWidth: 0 }}
                     />
                   </AreaChart>
@@ -880,14 +881,14 @@ export default function ClienteProgreso() {
 
           {/* ── Comparador Visual "Antes y Después" ── */}
           {mediciones.length > 0 && (
-            <div className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-100 pb-3">
+            <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-border pb-3">
                 <div>
-                  <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                    <Camera className="w-4 h-4 text-emerald-600" />
+                  <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+                    <Camera className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                     Comparativa de Transformación (Antes y Después)
                   </h2>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     Contrastá las fotografías iniciales y actuales para evaluar cambios en composición corporal.
                   </p>
                 </div>
@@ -895,11 +896,11 @@ export default function ClienteProgreso() {
                 {/* Selectores de medición para comparar */}
                 {mediciones.length > 1 && (
                   <div className="flex items-center gap-2 text-xs flex-wrap">
-                    <span className="font-semibold text-slate-500">Comparar:</span>
+                    <span className="font-semibold text-muted-foreground">Comparar:</span>
                     <select
                       value={antesId ?? ""}
                       onChange={(e) => setAntesId(Number(e.target.value))}
-                      className="rounded-xl border border-slate-200 bg-slate-50 py-1 px-2.5 text-xs font-semibold text-slate-700"
+                      className="rounded-xl border border-border bg-background py-1 px-2.5 text-xs font-semibold text-foreground cursor-pointer"
                     >
                       {mediciones.map((m) => (
                         <option key={`antes-${m.id}`} value={m.id}>
@@ -907,11 +908,11 @@ export default function ClienteProgreso() {
                         </option>
                       ))}
                     </select>
-                    <span className="text-slate-400">vs</span>
+                    <span className="text-muted-foreground">vs</span>
                     <select
                       value={despuesId ?? ""}
                       onChange={(e) => setDespuesId(Number(e.target.value))}
-                      className="rounded-xl border border-slate-200 bg-slate-50 py-1 px-2.5 text-xs font-semibold text-slate-700"
+                      className="rounded-xl border border-border bg-background py-1 px-2.5 text-xs font-semibold text-foreground cursor-pointer"
                     >
                       {mediciones.map((m) => (
                         <option key={`despues-${m.id}`} value={m.id}>
@@ -926,13 +927,13 @@ export default function ClienteProgreso() {
               {/* Paneles lado a lado */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
                 {/* Lado ANTES */}
-                <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-4 space-y-3">
+                <div className="bg-muted/40 border border-border rounded-2xl p-4 space-y-3">
                   <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="bg-white border-slate-200 text-slate-700 font-bold text-xs">
+                    <Badge variant="outline" className="bg-card border-border text-foreground font-bold text-xs">
                       ANTES
                     </Badge>
                     {medicionAntes && (
-                      <span className="text-xs font-bold text-slate-900">
+                      <span className="text-xs font-bold text-foreground">
                         {formatFechaCompleta(medicionAntes.fecha)} · {medicionAntes.pesoKg} kg
                       </span>
                     )}
@@ -941,7 +942,7 @@ export default function ClienteProgreso() {
                   <div className="grid grid-cols-2 gap-3">
                     {/* Foto Frente */}
                     <div>
-                      <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block mb-1.5">
+                      <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1.5">
                         Frente
                       </span>
                       {medicionAntes?.fotoFrenteBase64 ? (
@@ -952,7 +953,7 @@ export default function ClienteProgreso() {
                               titulo: `Foto de Frente - Antes (${formatFechaCorta(medicionAntes.fecha)})`,
                             })
                           }
-                          className="group relative aspect-[3/4] rounded-xl overflow-hidden border border-slate-200 cursor-pointer shadow-xs"
+                          className="group relative aspect-[3/4] rounded-xl overflow-hidden border border-border cursor-pointer shadow-xs"
                         >
                           <img
                             src={medicionAntes.fotoFrenteBase64}
@@ -964,8 +965,8 @@ export default function ClienteProgreso() {
                           </div>
                         </div>
                       ) : (
-                        <div className="aspect-[3/4] rounded-xl bg-slate-100 border border-slate-200 flex flex-col items-center justify-center text-slate-400 text-xs text-center p-3">
-                          <ImageOff className="w-6 h-6 mb-1 text-slate-300" />
+                        <div className="aspect-[3/4] rounded-xl bg-muted border border-border flex flex-col items-center justify-center text-muted-foreground text-xs text-center p-3">
+                          <ImageOff className="w-6 h-6 mb-1 text-muted-foreground/50" />
                           <span>Sin foto de frente</span>
                         </div>
                       )}
@@ -973,7 +974,7 @@ export default function ClienteProgreso() {
 
                     {/* Foto Perfil */}
                     <div>
-                      <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block mb-1.5">
+                      <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1.5">
                         Perfil
                       </span>
                       {medicionAntes?.fotoPerfilBase64 ? (
@@ -984,7 +985,7 @@ export default function ClienteProgreso() {
                               titulo: `Foto de Perfil - Antes (${formatFechaCorta(medicionAntes.fecha)})`,
                             })
                           }
-                          className="group relative aspect-[3/4] rounded-xl overflow-hidden border border-slate-200 cursor-pointer shadow-xs"
+                          className="group relative aspect-[3/4] rounded-xl overflow-hidden border border-border cursor-pointer shadow-xs"
                         >
                           <img
                             src={medicionAntes.fotoPerfilBase64}
@@ -996,8 +997,8 @@ export default function ClienteProgreso() {
                           </div>
                         </div>
                       ) : (
-                        <div className="aspect-[3/4] rounded-xl bg-slate-100 border border-slate-200 flex flex-col items-center justify-center text-slate-400 text-xs text-center p-3">
-                          <ImageOff className="w-6 h-6 mb-1 text-slate-300" />
+                        <div className="aspect-[3/4] rounded-xl bg-muted border border-border flex flex-col items-center justify-center text-muted-foreground text-xs text-center p-3">
+                          <ImageOff className="w-6 h-6 mb-1 text-muted-foreground/50" />
                           <span>Sin foto de perfil</span>
                         </div>
                       )}
@@ -1006,20 +1007,20 @@ export default function ClienteProgreso() {
                 </div>
 
                 {/* Lado DESPUÉS */}
-                <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-4 space-y-3">
+                <div className="bg-muted/40 border border-border rounded-2xl p-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 font-bold text-xs">
+                      <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 font-bold text-xs">
                         DESPUÉS
                       </Badge>
                       {deltaAntesDespues !== null && (
                         <span
                           className={`text-xs font-black ${
                             deltaAntesDespues < 0
-                              ? "text-emerald-700"
+                              ? "text-emerald-600 dark:text-emerald-400"
                               : deltaAntesDespues > 0
-                              ? "text-blue-700"
-                              : "text-slate-600"
+                              ? "text-blue-600 dark:text-blue-400"
+                              : "text-muted-foreground"
                           }`}
                         >
                           {deltaAntesDespues > 0 ? `+${deltaAntesDespues.toFixed(1)}` : deltaAntesDespues.toFixed(1)} kg
@@ -1027,7 +1028,7 @@ export default function ClienteProgreso() {
                       )}
                     </div>
                     {medicionDespues && (
-                      <span className="text-xs font-bold text-slate-900">
+                      <span className="text-xs font-bold text-foreground">
                         {formatFechaCompleta(medicionDespues.fecha)} · {medicionDespues.pesoKg} kg
                       </span>
                     )}
@@ -1036,7 +1037,7 @@ export default function ClienteProgreso() {
                   <div className="grid grid-cols-2 gap-3">
                     {/* Foto Frente */}
                     <div>
-                      <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block mb-1.5">
+                      <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1.5">
                         Frente
                       </span>
                       {medicionDespues?.fotoFrenteBase64 ? (
@@ -1047,7 +1048,7 @@ export default function ClienteProgreso() {
                               titulo: `Foto de Frente - Actual (${formatFechaCorta(medicionDespues.fecha)})`,
                             })
                           }
-                          className="group relative aspect-[3/4] rounded-xl overflow-hidden border border-slate-200 cursor-pointer shadow-xs"
+                          className="group relative aspect-[3/4] rounded-xl overflow-hidden border border-border cursor-pointer shadow-xs"
                         >
                           <img
                             src={medicionDespues.fotoFrenteBase64}
@@ -1059,8 +1060,8 @@ export default function ClienteProgreso() {
                           </div>
                         </div>
                       ) : (
-                        <div className="aspect-[3/4] rounded-xl bg-slate-100 border border-slate-200 flex flex-col items-center justify-center text-slate-400 text-xs text-center p-3">
-                          <ImageOff className="w-6 h-6 mb-1 text-slate-300" />
+                        <div className="aspect-[3/4] rounded-xl bg-muted border border-border flex flex-col items-center justify-center text-muted-foreground text-xs text-center p-3">
+                          <ImageOff className="w-6 h-6 mb-1 text-muted-foreground/50" />
                           <span>Sin foto de frente</span>
                         </div>
                       )}
@@ -1068,7 +1069,7 @@ export default function ClienteProgreso() {
 
                     {/* Foto Perfil */}
                     <div>
-                      <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block mb-1.5">
+                      <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block mb-1.5">
                         Perfil
                       </span>
                       {medicionDespues?.fotoPerfilBase64 ? (
@@ -1079,7 +1080,7 @@ export default function ClienteProgreso() {
                               titulo: `Foto de Perfil - Actual (${formatFechaCorta(medicionDespues.fecha)})`,
                             })
                           }
-                          className="group relative aspect-[3/4] rounded-xl overflow-hidden border border-slate-200 cursor-pointer shadow-xs"
+                          className="group relative aspect-[3/4] rounded-xl overflow-hidden border border-border cursor-pointer shadow-xs"
                         >
                           <img
                             src={medicionDespues.fotoPerfilBase64}
@@ -1091,8 +1092,8 @@ export default function ClienteProgreso() {
                           </div>
                         </div>
                       ) : (
-                        <div className="aspect-[3/4] rounded-xl bg-slate-100 border border-slate-200 flex flex-col items-center justify-center text-slate-400 text-xs text-center p-3">
-                          <ImageOff className="w-6 h-6 mb-1 text-slate-300" />
+                        <div className="aspect-[3/4] rounded-xl bg-muted border border-border flex flex-col items-center justify-center text-muted-foreground text-xs text-center p-3">
+                          <ImageOff className="w-6 h-6 mb-1 text-muted-foreground/50" />
                           <span>Sin foto de perfil</span>
                         </div>
                       )}
@@ -1104,34 +1105,34 @@ export default function ClienteProgreso() {
           )}
 
           {/* ── Historial Cronológico de Mediciones ── */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl shadow-xs overflow-hidden">
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+          <div className="bg-card border border-border rounded-2xl shadow-xs overflow-hidden">
+            <div className="p-5 border-b border-border flex items-center justify-between">
               <div>
-                <h2 className="text-base font-bold text-slate-900">Historial Detallado de Controles</h2>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <h2 className="text-base font-bold text-foreground">Historial Detallado de Controles</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">
                   Registro completo de pesajes, notas de sensaciones y registro fotográfico.
                 </p>
               </div>
-              <span className="text-xs font-semibold text-slate-400">
+              <span className="text-xs font-semibold text-muted-foreground">
                 {mediciones.length} {mediciones.length === 1 ? "registro" : "registros"}
               </span>
             </div>
 
             {mediciones.length === 0 ? (
-              <div className="p-10 text-center text-slate-400 text-sm space-y-2">
-                <Scale className="w-8 h-8 text-slate-300 mx-auto" />
-                <p className="font-semibold text-slate-600">Todavía no hay mediciones cargadas para este cliente.</p>
-                <p className="text-xs text-slate-400">Registrá la primera medición para inaugurar su ficha de seguimiento.</p>
+              <div className="p-10 text-center text-muted-foreground text-sm space-y-2">
+                <Scale className="w-8 h-8 text-muted-foreground/50 mx-auto" />
+                <p className="font-semibold text-foreground">Todavía no hay mediciones cargadas para este cliente.</p>
+                <p className="text-xs text-muted-foreground">Registrá la primera medición para inaugurar su ficha de seguimiento.</p>
               </div>
             ) : (
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-border">
                 {[...mediciones].reverse().map((m, i) => {
                   const ant = mediciones[mediciones.length - 2 - i];
                   const dif = ant ? m.pesoKg - ant.pesoKg : 0;
                   return (
                     <div
                       key={m.id}
-                      className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/60 transition-colors"
+                      className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-muted/40 transition-colors"
                     >
                       <div className="flex items-center gap-4">
                         {/* Miniaturas de fotos */}
@@ -1149,14 +1150,14 @@ export default function ClienteProgreso() {
                                     titulo: `Foto de ${item.etiqueta} (${formatFechaCorta(m.fecha)})`,
                                   })
                                 }
-                                className="w-11 h-11 rounded-xl overflow-hidden border-2 border-white shadow-xs cursor-pointer hover:scale-110 transition-transform relative"
+                                className="w-11 h-11 rounded-xl overflow-hidden border-2 border-card shadow-xs cursor-pointer hover:scale-110 transition-transform relative"
                               >
                                 <img src={item.foto} alt="" className="w-full h-full object-cover" />
                               </div>
                             ) : (
                               <div
                                 key={idx}
-                                className="w-11 h-11 rounded-xl bg-slate-100 border-2 border-white flex items-center justify-center text-slate-300"
+                                className="w-11 h-11 rounded-xl bg-muted border-2 border-card flex items-center justify-center text-muted-foreground/50"
                               >
                                 <ImageOff className="w-4 h-4" />
                               </div>
@@ -1166,20 +1167,20 @@ export default function ClienteProgreso() {
 
                         <div>
                           <div className="flex items-center gap-2.5">
-                            <span className="text-base font-black text-slate-900">{m.pesoKg} kg</span>
+                            <span className="text-base font-black text-foreground">{m.pesoKg} kg</span>
                             {ant && (
                               <span
                                 className={`text-xs font-bold ${
-                                  dif < 0 ? "text-emerald-600" : dif > 0 ? "text-blue-600" : "text-slate-400"
+                                  dif < 0 ? "text-emerald-600 dark:text-emerald-400" : dif > 0 ? "text-blue-600 dark:text-blue-400" : "text-muted-foreground"
                                 }`}
                               >
                                 {dif > 0 ? `+${dif.toFixed(1)}` : dif.toFixed(1)} kg
                               </span>
                             )}
                           </div>
-                          <p className="text-xs text-slate-500 mt-0.5">
+                          <p className="text-xs text-muted-foreground mt-0.5">
                             {formatFechaCompleta(m.fecha)}
-                            {m.nota && <span className="text-slate-700 font-medium"> · {m.nota}</span>}
+                            {m.nota && <span className="text-foreground/80 font-medium"> · {m.nota}</span>}
                           </p>
                         </div>
                       </div>
@@ -1190,7 +1191,7 @@ export default function ClienteProgreso() {
                           variant="ghost"
                           size="sm"
                           onClick={() => setMedicionAEliminar(m.id)}
-                          className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-xl h-8 px-2.5 text-xs font-semibold"
+                          className="text-rose-600 dark:text-rose-400 hover:text-rose-700 hover:bg-rose-500/10 rounded-xl h-8 px-2.5 text-xs font-semibold"
                         >
                           <Trash2 className="w-3.5 h-3.5 mr-1" />
                           Eliminar
@@ -1209,21 +1210,21 @@ export default function ClienteProgreso() {
       {tabActiva === "nueva" && (
         <form
           onSubmit={handleAgregarMedicion}
-          className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-7 shadow-xs space-y-6 max-w-3xl mx-auto"
+          className="bg-card border border-border rounded-2xl p-5 sm:p-7 shadow-xs space-y-6 max-w-3xl mx-auto"
         >
-          <div className="border-b border-slate-100 pb-3">
-            <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+          <div className="border-b border-border pb-3">
+            <h2 className="text-base font-bold text-foreground flex items-center gap-2">
               <Plus className="w-4 h-4 text-primary" />
               Cargar Nuevo Control Físico
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               Registrá el peso actual, medidas opcionales y fotos de progreso para {cliente.nombre}.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-700">Fecha del Pesaje</Label>
+              <Label className="text-xs font-bold text-foreground">Fecha del Pesaje</Label>
               <Input
                 type="date"
                 value={fecha}
@@ -1235,9 +1236,9 @@ export default function ClienteProgreso() {
 
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <Label className="text-xs font-bold text-slate-700">Peso Corporal (kg)</Label>
+                <Label className="text-xs font-bold text-foreground">Peso Corporal (kg)</Label>
                 {metrics.pesoActual !== null && (
-                  <span className="text-[11px] font-semibold text-slate-400">
+                  <span className="text-[11px] font-semibold text-muted-foreground">
                     Último: {metrics.pesoActual} kg
                   </span>
                 )}
@@ -1257,39 +1258,39 @@ export default function ClienteProgreso() {
           </div>
 
           {/* Medidas opcionales */}
-          <div className="p-4 bg-slate-50/70 border border-slate-200/80 rounded-xl space-y-3">
+          <div className="p-4 bg-muted/40 border border-border rounded-xl space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-700">Medidas Antropométricas Opcionales</span>
-              <span className="text-[11px] text-slate-400 font-medium">Recomendado cada 30 días</span>
+              <span className="text-xs font-bold text-foreground">Medidas Antropométricas Opcionales</span>
+              <span className="text-[11px] text-muted-foreground font-medium">Recomendado cada 30 días</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
-                <Label className="text-[11px] font-semibold text-slate-600">Perímetro de Cintura (cm)</Label>
+                <Label className="text-[11px] font-semibold text-muted-foreground">Perímetro de Cintura (cm)</Label>
                 <Input
                   type="number"
                   step="0.5"
                   placeholder="Ej: 82.5"
                   value={cinturaCm}
                   onChange={(e) => setCinturaCm(e.target.value)}
-                  className="rounded-xl bg-white h-9 text-xs"
+                  className="rounded-xl bg-background h-9 text-xs"
                 />
               </div>
               <div className="space-y-1">
-                <Label className="text-[11px] font-semibold text-slate-600">% Grasa Estimado (BIA o plicómetro)</Label>
+                <Label className="text-[11px] font-semibold text-muted-foreground">% Grasa Estimado (BIA o plicómetro)</Label>
                 <Input
                   type="number"
                   step="0.1"
                   placeholder="Ej: 16.5"
                   value={grasaPct}
                   onChange={(e) => setGrasaPct(e.target.value)}
-                  className="rounded-xl bg-white h-9 text-xs"
+                  className="rounded-xl bg-background h-9 text-xs"
                 />
               </div>
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs font-bold text-slate-700">Notas / Sensaciones del Socio</Label>
+            <Label className="text-xs font-bold text-foreground">Notas / Sensaciones del Socio</Label>
             <Input
               placeholder="Ej: Buena adherencia al plan, aumentó cargas en prensa, descansó bien..."
               value={nota}
@@ -1302,12 +1303,12 @@ export default function ClienteProgreso() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
             {/* Foto Frente */}
             <div className="space-y-2">
-              <Label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                <Camera className="w-3.5 h-3.5 text-slate-500" />
+              <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                <Camera className="w-3.5 h-3.5 text-muted-foreground" />
                 Foto de Frente (opcional)
               </Label>
               {fotoFrente ? (
-                <div className="relative aspect-[3/4] w-36 rounded-xl overflow-hidden border border-slate-200 shadow-xs">
+                <div className="relative aspect-[3/4] w-36 rounded-xl overflow-hidden border border-border shadow-xs">
                   <img src={fotoFrente} alt="Preview Frente" className="w-full h-full object-cover" />
                   <button
                     type="button"
@@ -1318,10 +1319,10 @@ export default function ClienteProgreso() {
                   </button>
                 </div>
               ) : (
-                <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-xl p-4 cursor-pointer hover:border-slate-300 hover:bg-slate-50 transition-colors text-center">
-                  <Camera className="w-6 h-6 text-slate-400 mb-1.5" />
-                  <span className="text-xs font-semibold text-slate-700">Subir foto frontal</span>
-                  <span className="text-[10px] text-slate-400 mt-0.5">JPG o PNG hasta 5MB</span>
+                <label className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded-xl p-4 cursor-pointer hover:border-muted-foreground/40 hover:bg-muted/30 transition-colors text-center">
+                  <Camera className="w-6 h-6 text-muted-foreground mb-1.5" />
+                  <span className="text-xs font-semibold text-foreground">Subir foto frontal</span>
+                  <span className="text-[10px] text-muted-foreground mt-0.5">JPG o PNG hasta 5MB</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -1334,12 +1335,12 @@ export default function ClienteProgreso() {
 
             {/* Foto Perfil */}
             <div className="space-y-2">
-              <Label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                <Camera className="w-3.5 h-3.5 text-slate-500" />
+              <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                <Camera className="w-3.5 h-3.5 text-muted-foreground" />
                 Foto de Perfil (opcional)
               </Label>
               {fotoPerfil ? (
-                <div className="relative aspect-[3/4] w-36 rounded-xl overflow-hidden border border-slate-200 shadow-xs">
+                <div className="relative aspect-[3/4] w-36 rounded-xl overflow-hidden border border-border shadow-xs">
                   <img src={fotoPerfil} alt="Preview Perfil" className="w-full h-full object-cover" />
                   <button
                     type="button"
@@ -1350,10 +1351,10 @@ export default function ClienteProgreso() {
                   </button>
                 </div>
               ) : (
-                <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-xl p-4 cursor-pointer hover:border-slate-300 hover:bg-slate-50 transition-colors text-center">
-                  <Camera className="w-6 h-6 text-slate-400 mb-1.5" />
-                  <span className="text-xs font-semibold text-slate-700">Subir foto lateral</span>
-                  <span className="text-[10px] text-slate-400 mt-0.5">JPG o PNG hasta 5MB</span>
+                <label className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded-xl p-4 cursor-pointer hover:border-muted-foreground/40 hover:bg-muted/30 transition-colors text-center">
+                  <Camera className="w-6 h-6 text-muted-foreground mb-1.5" />
+                  <span className="text-xs font-semibold text-foreground">Subir foto lateral</span>
+                  <span className="text-[10px] text-muted-foreground mt-0.5">JPG o PNG hasta 5MB</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -1365,7 +1366,7 @@ export default function ClienteProgreso() {
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-slate-100">
+          <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-border">
             <Button
               type="button"
               variant="outline"
@@ -1389,14 +1390,14 @@ export default function ClienteProgreso() {
       {tabActiva === "rutina" && (
         <div className="space-y-6">
           {/* Selector de Plantillas Rápidas */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+            <div className="flex items-center justify-between border-b border-border pb-3">
               <div>
-                <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <h2 className="text-base font-bold text-foreground flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-amber-500" />
                   Cargar Plantilla de Rutina Rápida (1 Clic)
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   Cargá una estructura base prediseñada y ajustá los ejercicios según la necesidad del socio.
                 </p>
               </div>
@@ -1407,24 +1408,24 @@ export default function ClienteProgreso() {
                 <div
                   key={idx}
                   onClick={() => aplicarPlantilla(p)}
-                  className="bg-slate-50/70 border border-slate-200/80 hover:border-primary/40 hover:bg-primary/[0.02] rounded-xl p-3.5 cursor-pointer transition-all flex flex-col justify-between space-y-2 group shadow-2xs"
+                  className="bg-muted/40 border border-border hover:border-primary/40 hover:bg-primary/[0.04] rounded-xl p-3.5 cursor-pointer transition-all flex flex-col justify-between space-y-2 group shadow-2xs"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-bold text-slate-900 group-hover:text-primary transition-colors">
+                      <span className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">
                         {p.nombre}
                       </span>
                     </div>
-                    <Badge variant="outline" className="text-[10px] font-semibold bg-white border-slate-200 mb-1.5">
+                    <Badge variant="outline" className="text-[10px] font-semibold bg-card border-border mb-1.5">
                       {p.badge}
                     </Badge>
-                    <p className="text-[11px] text-slate-500 line-clamp-2">{p.descripcion}</p>
+                    <p className="text-[11px] text-muted-foreground line-clamp-2">{p.descripcion}</p>
                   </div>
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="w-full text-xs font-bold text-primary group-hover:bg-primary group-hover:text-white rounded-lg h-7 mt-1"
+                    className="w-full text-xs font-bold text-primary group-hover:bg-primary group-hover:text-primary-foreground rounded-lg h-7 mt-1"
                   >
                     Usar Plantilla
                   </Button>
@@ -1434,14 +1435,14 @@ export default function ClienteProgreso() {
           </div>
 
           {/* Editor Día a Día */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-xs space-y-5">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 pb-3">
+          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border pb-3">
               <div>
-                <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <h2 className="text-base font-bold text-foreground flex items-center gap-2">
                   <Dumbbell className="w-4 h-4 text-primary" />
                   Plan Semanal Asignado
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   Dejá el campo vacío para los días de descanso o recuperación activa.
                 </p>
               </div>
@@ -1456,9 +1457,9 @@ export default function ClienteProgreso() {
                       const url = compartirRutinaWhatsApp();
                       if (url) window.open(url, "_blank");
                     }}
-                    className="rounded-xl border-emerald-200 text-emerald-700 hover:bg-emerald-50 text-xs font-bold"
+                    className="rounded-xl border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 text-xs font-bold"
                   >
-                    <Share2 className="w-3.5 h-3.5 mr-1 text-emerald-600" />
+                    <Share2 className="w-3.5 h-3.5 mr-1 text-emerald-600 dark:text-emerald-400" />
                     Enviar al WhatsApp
                   </Button>
                 )}
@@ -1482,15 +1483,15 @@ export default function ClienteProgreso() {
                     key={idx}
                     className={`p-4 rounded-xl border transition-all ${
                       tieneTexto
-                        ? "bg-white border-slate-200 shadow-2xs"
-                        : "bg-slate-50/50 border-slate-200/60"
+                        ? "bg-card border-border shadow-2xs"
+                        : "bg-muted/30 border-border/60"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <Label className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                      <Label className="text-xs font-bold text-foreground flex items-center gap-1.5">
                         <span
                           className={`w-2 h-2 rounded-full ${
-                            tieneTexto ? "bg-primary" : "bg-slate-300"
+                            tieneTexto ? "bg-primary" : "bg-muted-foreground/40"
                           }`}
                         />
                         {nombre}
@@ -1499,8 +1500,8 @@ export default function ClienteProgreso() {
                         variant="outline"
                         className={`text-[10px] font-bold ${
                           tieneTexto
-                            ? "bg-primary/5 text-primary border-primary/20"
-                            : "bg-slate-100 text-slate-400 border-slate-200"
+                            ? "bg-primary/10 text-primary border-primary/20"
+                            : "bg-muted text-muted-foreground border-border"
                         }`}
                       >
                         {tieneTexto ? "Entrenamiento" : "Descanso"}
@@ -1512,15 +1513,15 @@ export default function ClienteProgreso() {
                       placeholder="Ej: Pecho y tríceps: Press banca 4x8, Aperturas 3x12, Fondos 3x10... (Dejar vacío para descanso)"
                       value={rutina[idx] ?? ""}
                       onChange={(e) => setRutina((prev) => ({ ...prev, [idx]: e.target.value }))}
-                      className="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
+                      className="w-full rounded-xl border border-border bg-background p-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
                     />
                   </div>
                 );
               })}
             </div>
 
-            <div className="flex items-center justify-between pt-2 border-t border-slate-100">
-              <span className="text-xs font-medium text-slate-500">
+            <div className="flex items-center justify-between pt-2 border-t border-border">
+              <span className="text-xs font-medium text-muted-foreground">
                 {diasRutinaActivos} {diasRutinaActivos === 1 ? "día con entrenamiento asignado" : "días con entrenamiento asignados"}
               </span>
               <Button
@@ -1543,15 +1544,15 @@ export default function ClienteProgreso() {
           onClick={() => setFotoModal(null)}
         >
           <div
-            className="relative bg-white rounded-2xl p-3 max-w-2xl max-h-[90vh] flex flex-col items-center overflow-hidden shadow-2xl"
+            className="relative bg-card border border-border rounded-2xl p-3 max-w-2xl max-h-[90vh] flex flex-col items-center overflow-hidden shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between w-full px-2 py-1 mb-2 border-b border-slate-100">
-              <span className="text-xs font-bold text-slate-800">{fotoModal.titulo}</span>
+            <div className="flex items-center justify-between w-full px-2 py-1 mb-2 border-b border-border">
+              <span className="text-xs font-bold text-foreground">{fotoModal.titulo}</span>
               <button
                 type="button"
                 onClick={() => setFotoModal(null)}
-                className="w-7 h-7 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center"
+                className="w-7 h-7 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted flex items-center justify-center"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1568,14 +1569,14 @@ export default function ClienteProgreso() {
       {/* ── Modal de Confirmación para Eliminar Medición ── */}
       {medicionAEliminar && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 backdrop-blur-xs animate-fade-in">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-xl border border-slate-200">
-            <div className="flex items-center gap-3 text-rose-600">
-              <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center">
+          <div className="bg-card rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-xl border border-border">
+            <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400">
+              <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center">
                 <Trash2 className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-bold text-slate-900">¿Eliminar medición?</h3>
+              <h3 className="text-base font-bold text-foreground">¿Eliminar medición?</h3>
             </div>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-muted-foreground">
               Esta acción eliminará el registro de peso y sus fotos de forma permanente.
             </p>
             <div className="flex items-center justify-end gap-2 pt-2">

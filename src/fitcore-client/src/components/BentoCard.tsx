@@ -11,7 +11,7 @@ export default function BentoCard({ children, className, delay = 0 }: BentoCardP
   return (
     <div
       className={cn(
-        "bg-white/80 backdrop-blur-xl border border-white/40 rounded-[var(--radius)] p-6 group relative",
+        "bg-card/80 backdrop-blur-xl border border-border/60 rounded-[var(--radius)] p-6 group relative shadow-sm",
         "animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both",
         "min-h-0",
         className

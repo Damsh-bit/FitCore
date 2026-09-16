@@ -86,17 +86,17 @@ const METODOS = ["Efectivo", "Transferencia", "Débito", "Crédito"];
 const ESTADO_CONFIG = {
   AlDia: {
     label: "Al día",
-    className: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    className: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/60",
     badgeVariant: "success" as const,
   },
   PendienteMesActual: {
     label: "Pendiente este mes",
-    className: "bg-amber-50 text-amber-700 border-amber-200",
+    className: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/60",
     badgeVariant: "outline" as const,
   },
   ConDeuda: {
     label: "Con deuda vencida",
-    className: "bg-rose-50 text-rose-700 border-rose-200",
+    className: "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800/60",
     badgeVariant: "danger" as const,
   },
 };
@@ -580,12 +580,12 @@ export default function EstadoCuenta() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-gray-900">Estado de Cuenta</h1>
-            <Badge variant="outline" className="text-xs font-semibold px-2.5 py-0.5 rounded-full border-gray-200 bg-gray-50 text-gray-700">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">Estado de Cuenta</h1>
+            <Badge variant="outline" className="text-xs font-semibold px-2.5 py-0.5 rounded-full border-border bg-muted text-muted-foreground">
               Control de Deudas
             </Badge>
           </div>
-          <p className="text-xs sm:text-sm text-gray-500 mt-1">
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             Matriz de cobranza por período, gestión de morosos y recordatorios automáticos por WhatsApp.
           </p>
         </div>
@@ -604,9 +604,9 @@ export default function EstadoCuenta() {
             variant="outline"
             size="sm"
             onClick={exportarMorososCSV}
-            className="rounded-xl border-gray-200 shadow-xs hover:bg-gray-50 text-xs font-medium text-rose-700"
+            className="rounded-xl border-border shadow-xs hover:bg-muted text-xs font-medium text-rose-600 dark:text-rose-400"
           >
-            <Download className="w-3.5 h-3.5 mr-1.5 text-rose-600" />
+            <Download className="w-3.5 h-3.5 mr-1.5 text-rose-600 dark:text-rose-400" />
             Descargar Morosos (CSV)
           </Button>
         </div>
@@ -621,10 +621,10 @@ export default function EstadoCuenta() {
             setFiltroEstado(filtroEstado === "ConDeuda" ? "Todos" : "ConDeuda");
             setPaginaActual(1);
           }}
-          className={`bg-white border rounded-2xl p-4 sm:p-5 shadow-xs text-center cursor-pointer transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center relative overflow-hidden group hover:shadow-md ${
+          className={`bg-card border rounded-2xl p-4 sm:p-5 shadow-xs text-center cursor-pointer transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center relative overflow-hidden group hover:shadow-md ${
             filtroEstado === "ConDeuda"
-              ? "border-rose-500 ring-2 ring-rose-500/15 bg-rose-50/30 shadow-sm"
-              : "border-slate-200/80 hover:border-rose-200 hover:bg-rose-50/20"
+              ? "border-rose-500 ring-2 ring-rose-500/15 bg-rose-500/10 shadow-sm"
+              : "border-border hover:border-rose-300 dark:hover:border-rose-800/60 hover:bg-rose-500/5"
           }`}
         >
           {filtroEstado === "ConDeuda" && (
@@ -634,12 +634,12 @@ export default function EstadoCuenta() {
             <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
               filtroEstado === "ConDeuda"
                 ? "bg-rose-600 text-white shadow-xs"
-                : "bg-rose-50 text-rose-600 border border-rose-200/60"
+                : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"
             }`}>
               <AlertTriangle className="w-3.5 h-3.5" />
             </div>
             <span className={`text-[11px] font-bold uppercase tracking-wider ${
-              filtroEstado === "ConDeuda" ? "text-rose-800" : "text-slate-500"
+              filtroEstado === "ConDeuda" ? "text-rose-600 dark:text-rose-400" : "text-muted-foreground"
             }`}>
               Deuda Vencida
             </span>
@@ -648,12 +648,12 @@ export default function EstadoCuenta() {
             {loading ? (
               <Skeleton className="h-8 w-32 rounded mx-auto" />
             ) : (
-              <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+              <p className="text-2xl sm:text-[28px] font-black text-foreground tracking-tight leading-none">
                 ${metricas.deudaTotalDinero.toLocaleString("es-AR")}
               </p>
             )}
           </div>
-          <div className="flex items-center justify-center gap-1.5 text-[11px] text-rose-700 font-medium truncate w-full">
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-rose-600 dark:text-rose-400 font-medium truncate w-full">
             <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
             <span>{metricas.clientesConDeudaCount} socios con mora</span>
           </div>
@@ -666,10 +666,10 @@ export default function EstadoCuenta() {
             setFiltroEstado(filtroEstado === "PendienteMesActual" ? "Todos" : "PendienteMesActual");
             setPaginaActual(1);
           }}
-          className={`bg-white border rounded-2xl p-4 sm:p-5 shadow-xs text-center cursor-pointer transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center relative overflow-hidden group hover:shadow-md ${
+          className={`bg-card border rounded-2xl p-4 sm:p-5 shadow-xs text-center cursor-pointer transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center relative overflow-hidden group hover:shadow-md ${
             filtroEstado === "PendienteMesActual"
-              ? "border-amber-500 ring-2 ring-amber-500/15 bg-amber-50/30 shadow-sm"
-              : "border-slate-200/80 hover:border-amber-200 hover:bg-amber-50/20"
+              ? "border-amber-500 ring-2 ring-amber-500/15 bg-amber-500/10 shadow-sm"
+              : "border-border hover:border-amber-300 dark:hover:border-amber-800/60 hover:bg-amber-500/5"
           }`}
         >
           {filtroEstado === "PendienteMesActual" && (
@@ -679,12 +679,12 @@ export default function EstadoCuenta() {
             <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
               filtroEstado === "PendienteMesActual"
                 ? "bg-amber-500 text-white shadow-xs"
-                : "bg-amber-50 text-amber-600 border border-amber-200/60"
+                : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
             }`}>
               <Clock className="w-3.5 h-3.5" />
             </div>
             <span className={`text-[11px] font-bold uppercase tracking-wider ${
-              filtroEstado === "PendienteMesActual" ? "text-amber-800" : "text-slate-500"
+              filtroEstado === "PendienteMesActual" ? "text-amber-600 dark:text-amber-400" : "text-muted-foreground"
             }`}>
               Por Cobrar Mes
             </span>
@@ -693,24 +693,24 @@ export default function EstadoCuenta() {
             {loading ? (
               <Skeleton className="h-8 w-32 rounded mx-auto" />
             ) : (
-              <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+              <p className="text-2xl sm:text-[28px] font-black text-foreground tracking-tight leading-none">
                 ${metricas.porCobrarMesDinero.toLocaleString("es-AR")}
               </p>
             )}
           </div>
-          <div className="flex items-center justify-center gap-1.5 text-[11px] text-amber-700 font-medium truncate w-full">
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-amber-600 dark:text-amber-400 font-medium truncate w-full">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
             <span>{metricas.clientesPendientesCount} socios por liquidar</span>
           </div>
         </button>
 
         {/* 3. Cobrado Este Mes */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group hover:shadow-md transition-all duration-200">
+        <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-xs min-h-[132px] flex flex-col justify-between items-center text-center relative overflow-hidden group hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200/60 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center">
               <DollarSign className="w-3.5 h-3.5" />
             </div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
               Cobrado Este Mes
             </span>
           </div>
@@ -718,12 +718,12 @@ export default function EstadoCuenta() {
             {loading ? (
               <Skeleton className="h-8 w-28 rounded mx-auto" />
             ) : (
-              <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+              <p className="text-2xl sm:text-[28px] font-black text-foreground tracking-tight leading-none">
                 ${metricas.cobradoMesDinero.toLocaleString("es-AR")}
               </p>
             )}
           </div>
-          <div className="flex items-center justify-center gap-1.5 text-[11px] text-emerald-700 font-medium truncate w-full">
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium truncate w-full">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
             <span>Ingreso neto liquidado</span>
           </div>
@@ -736,10 +736,10 @@ export default function EstadoCuenta() {
             setFiltroEstado(filtroEstado === "AlDia" ? "Todos" : "AlDia");
             setPaginaActual(1);
           }}
-          className={`bg-white border rounded-2xl p-4 sm:p-5 shadow-xs text-center cursor-pointer transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center relative overflow-hidden group hover:shadow-md ${
+          className={`bg-card border rounded-2xl p-4 sm:p-5 shadow-xs text-center cursor-pointer transition-all duration-200 min-h-[132px] flex flex-col justify-between items-center relative overflow-hidden group hover:shadow-md ${
             filtroEstado === "AlDia"
-              ? "border-indigo-500 ring-2 ring-indigo-500/15 bg-indigo-50/30 shadow-sm"
-              : "border-slate-200/80 hover:border-indigo-200 hover:bg-indigo-50/20"
+              ? "border-indigo-500 ring-2 ring-indigo-500/15 bg-indigo-500/10 shadow-sm"
+              : "border-border hover:border-indigo-300 dark:hover:border-indigo-800/60 hover:bg-indigo-500/5"
           }`}
         >
           {filtroEstado === "AlDia" && (
@@ -749,12 +749,12 @@ export default function EstadoCuenta() {
             <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
               filtroEstado === "AlDia"
                 ? "bg-indigo-600 text-white shadow-xs"
-                : "bg-indigo-50 text-indigo-600 border border-indigo-200/60"
+                : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20"
             }`}>
               <CheckCircle2 className="w-3.5 h-3.5" />
             </div>
             <span className={`text-[11px] font-bold uppercase tracking-wider ${
-              filtroEstado === "AlDia" ? "text-indigo-800" : "text-slate-500"
+              filtroEstado === "AlDia" ? "text-indigo-600 dark:text-indigo-400" : "text-muted-foreground"
             }`}>
               Efectividad Cobro
             </span>
@@ -763,12 +763,12 @@ export default function EstadoCuenta() {
             {loading ? (
               <Skeleton className="h-8 w-28 rounded mx-auto" />
             ) : (
-              <p className="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-none">
+              <p className="text-2xl sm:text-[28px] font-black text-foreground tracking-tight leading-none">
                 {metricas.tasaEfectividad}%
               </p>
             )}
           </div>
-          <div className="flex items-center justify-center gap-1.5 text-[11px] text-indigo-700 font-medium mt-1 truncate w-full">
+          <div className="flex items-center justify-center gap-1.5 text-[11px] text-indigo-600 dark:text-indigo-400 font-medium mt-1 truncate w-full">
             <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
             <span>{metricas.clientesAlDiaCount} socios 100% al día</span>
           </div>
@@ -776,11 +776,11 @@ export default function EstadoCuenta() {
       </div>
 
       {/* ── Barra de Filtros y Búsqueda ── */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="bg-card rounded-2xl border border-border p-4 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 w-full sm:w-auto flex-wrap">
           {/* Buscador */}
           <div className="relative w-full sm:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <Input
               placeholder="Buscar socio, email o teléfono..."
               value={busqueda}
@@ -843,23 +843,23 @@ export default function EstadoCuenta() {
                 setBusqueda("");
                 setPaginaActual(1);
               }}
-              className="text-xs text-gray-500 hover:text-gray-900 h-9"
+              className="text-xs text-muted-foreground hover:text-foreground h-9"
             >
               Limpiar filtros
             </Button>
           )}
         </div>
 
-        <span className="text-xs text-gray-400 font-medium">
+        <span className="text-xs text-muted-foreground font-medium">
           {clientesFiltrados.length} socios listados
         </span>
       </div>
 
       {/* ── Matriz de Estados de Cuenta ── */}
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-xs">
+      <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-xs">
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-50/70 border-b border-gray-100 text-[11px] uppercase tracking-wider text-gray-400 font-bold">
+            <TableRow className="bg-muted/40 border-b border-border text-[11px] uppercase tracking-wider text-muted-foreground font-bold">
               <TableHead className="py-3 px-4">Socio</TableHead>
               <TableHead className="py-3 px-4">Plan & Tarifa</TableHead>
               <TableHead className="py-3 px-4">Estado General</TableHead>
@@ -878,7 +878,7 @@ export default function EstadoCuenta() {
               ))
             ) : clientesFiltrados.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4 + periodoHeaders.length} className="text-center text-gray-400 py-12 text-xs">
+                <TableCell colSpan={4 + periodoHeaders.length} className="text-center text-muted-foreground py-12 text-xs">
                   No se encontraron socios con los filtros actuales.
                 </TableCell>
               </TableRow>
@@ -889,15 +889,15 @@ export default function EstadoCuenta() {
                 return (
                   <TableRow
                     key={c.userId}
-                    className="hover:bg-gray-50/80 transition-colors"
+                    className="hover:bg-muted/50 transition-colors"
                   >
                     {/* Socio */}
                     <TableCell className="py-3.5 px-4">
                       <div className="flex items-center gap-3">
                         <PersonaAvatar seed={c.userId} size={36} />
                         <div className="min-w-0">
-                          <p className="font-bold text-xs text-gray-900 truncate">{c.nombre}</p>
-                          <p className="text-[11px] text-gray-400 truncate">{c.email || c.telefono || "Sin contacto"}</p>
+                          <p className="font-bold text-xs text-foreground truncate">{c.nombre}</p>
+                          <p className="text-[11px] text-muted-foreground truncate">{c.email || c.telefono || "Sin contacto"}</p>
                         </div>
                       </div>
                     </TableCell>
@@ -905,11 +905,11 @@ export default function EstadoCuenta() {
                     {/* Plan */}
                     <TableCell className="py-3.5 px-4">
                       <div>
-                        <span className="text-xs font-bold text-gray-800">
-                          {c.planNombre ?? <span className="text-gray-400 font-normal">Sin plan</span>}
+                        <span className="text-xs font-bold text-foreground">
+                          {c.planNombre ?? <span className="text-muted-foreground font-normal">Sin plan</span>}
                         </span>
                         {c.planPrecio ? (
-                          <p className="text-[11px] font-medium text-emerald-700">
+                          <p className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
                             ${c.planPrecio.toLocaleString("es-AR")} / mes
                           </p>
                         ) : null}
@@ -919,9 +919,9 @@ export default function EstadoCuenta() {
                     {/* Estado */}
                     <TableCell className="py-3.5 px-4">
                       <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full border ${cfg.className}`}>
-                        {c.estadoGeneral === "ConDeuda" && <AlertTriangle className="w-3 h-3 text-rose-600" />}
-                        {c.estadoGeneral === "PendienteMesActual" && <Clock className="w-3 h-3 text-amber-600" />}
-                        {c.estadoGeneral === "AlDia" && <CheckCircle2 className="w-3 h-3 text-emerald-600" />}
+                        {c.estadoGeneral === "ConDeuda" && <AlertTriangle className="w-3 h-3 text-rose-600 dark:text-rose-400" />}
+                        {c.estadoGeneral === "PendienteMesActual" && <Clock className="w-3 h-3 text-amber-600 dark:text-amber-400" />}
+                        {c.estadoGeneral === "AlDia" && <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />}
                         <span>{cfg.label}</span>
                       </span>
                     </TableCell>
@@ -931,10 +931,10 @@ export default function EstadoCuenta() {
                       <TableCell key={`${p.mes}-${p.anio}`} className="text-center py-3.5 px-3">
                         {p.pagado ? (
                           <div className="inline-flex flex-col items-center">
-                            <span className="w-6 h-6 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center">
+                            <span className="w-6 h-6 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                               <Check className="h-3.5 w-3.5" />
                             </span>
-                            <span className="text-[10px] text-gray-400 font-bold mt-0.5">
+                            <span className="text-[10px] text-muted-foreground font-bold mt-0.5">
                               ${p.monto?.toLocaleString("es-AR")}
                             </span>
                           </div>
@@ -942,10 +942,10 @@ export default function EstadoCuenta() {
                           <button
                             type="button"
                             onClick={() => abrirPago(c, p)}
-                            className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10.5px] font-bold text-rose-700 bg-rose-50 border border-rose-200 hover:bg-rose-100 hover:border-rose-300 transition-colors shadow-2xs"
+                            className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10.5px] font-bold text-rose-600 dark:text-rose-400 bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors shadow-2xs"
                             title={`Cobrar ${p.nombreMes}`}
                           >
-                            <Plus className="h-3 w-3 text-rose-600" />
+                            <Plus className="h-3 w-3 text-rose-600 dark:text-rose-400" />
                             Cobrar
                           </button>
                         )}
@@ -960,16 +960,16 @@ export default function EstadoCuenta() {
                           onClick={() => abrirModalWa(c)}
                           className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold transition-all shadow-2xs cursor-pointer ${
                             c.telefono
-                              ? "text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100"
-                              : "text-amber-800 bg-amber-50 border border-amber-200 hover:bg-amber-100"
+                              ? "text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20"
+                              : "text-amber-800 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20"
                           }`}
                           title={c.telefono ? "Enviar recordatorio por WhatsApp" : "Enviar recordatorio (ingresar teléfono)"}
                         >
-                          <MessageCircle className={`w-3.5 h-3.5 ${c.telefono ? "text-emerald-600" : "text-amber-600"}`} />
+                          <MessageCircle className={`w-3.5 h-3.5 ${c.telefono ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"}`} />
                           <span>{c.telefono ? "Recordar WhatsApp" : "Recordar"}</span>
                         </button>
                       ) : (
-                        <span className="text-gray-300 text-xs">—</span>
+                        <span className="text-muted-foreground/40 text-xs">—</span>
                       )}
                     </TableCell>
                   </TableRow>
@@ -981,7 +981,7 @@ export default function EstadoCuenta() {
 
         {/* ── Controles de Paginación ── */}
         {!loading && clientesFiltrados.length > 0 && (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 border-t border-gray-100 text-xs text-gray-500">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 border-t border-border text-xs text-muted-foreground">
             <div className="flex items-center gap-2">
               <span>Mostrar</span>
               <Select
@@ -1022,7 +1022,7 @@ export default function EstadoCuenta() {
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
               </Button>
-              <span className="px-2 text-xs font-semibold text-gray-700">
+              <span className="px-2 text-xs font-semibold text-foreground">
                 Página {paginaAjustada} de {totalPaginas}
               </span>
               <Button
@@ -1057,7 +1057,7 @@ export default function EstadoCuenta() {
               Registrar Pago de Cuota
             </DialogTitle>
             <DialogDescription className="text-xs">
-              <span className="font-bold text-gray-900">{clienteSeleccionado?.nombre}</span>
+              <span className="font-bold text-foreground">{clienteSeleccionado?.nombre}</span>
               {" — "}
               <span className="capitalize font-semibold text-primary">{periodoSeleccionado?.nombreMes}</span>
             </DialogDescription>
@@ -1065,12 +1065,12 @@ export default function EstadoCuenta() {
 
           <div className="mt-4 space-y-4">
             {clienteSeleccionado?.planNombre && (
-              <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-200 text-xs">
-                <span className="text-gray-500">Plan contratado:</span>
-                <span className="font-bold text-gray-900">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-muted/50 border border-border text-xs">
+                <span className="text-muted-foreground">Plan contratado:</span>
+                <span className="font-bold text-foreground">
                   {clienteSeleccionado.planNombre}
                   {clienteSeleccionado.planPrecio && (
-                    <span className="ml-1 text-emerald-700 font-bold">
+                    <span className="ml-1 text-emerald-600 dark:text-emerald-400 font-bold">
                       (${clienteSeleccionado.planPrecio.toLocaleString("es-AR")})
                     </span>
                   )}
@@ -1080,9 +1080,9 @@ export default function EstadoCuenta() {
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <Label htmlFor="montoBase" className="text-xs font-semibold text-gray-700">Monto Original</Label>
+                <Label htmlFor="montoBase" className="text-xs font-semibold text-foreground">Monto Original</Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400">$</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-muted-foreground">$</span>
                   <Input
                     id="montoBase"
                     type="text"
@@ -1097,7 +1097,7 @@ export default function EstadoCuenta() {
               </div>
 
               <div className="space-y-1">
-                <Label className="text-xs font-semibold text-gray-700">Método de Pago</Label>
+                <Label className="text-xs font-semibold text-foreground">Método de Pago</Label>
                 <Select
                   value={pagoForm.metodo}
                   onValueChange={(v) => setPagoForm((p) => ({ ...p, metodo: v }))}
@@ -1113,40 +1113,40 @@ export default function EstadoCuenta() {
             </div>
 
             {/* Checkbox Descuento */}
-            <div className="pt-2 border-t border-gray-100">
+            <div className="pt-2 border-t border-border">
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={aplicaDescuento}
                   onChange={(e) => handleToggleDescuento(e.target.checked)}
                   disabled={saving}
-                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                  className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
                 />
-                <span className="text-xs font-bold text-gray-700 flex items-center gap-1">
-                  <Percent className="w-3.5 h-3.5 text-amber-600" />
+                <span className="text-xs font-bold text-foreground flex items-center gap-1">
+                  <Percent className="w-3.5 h-3.5 text-amber-500" />
                   Aplicar Descuento / Bonificación
                 </span>
               </label>
 
               {aplicaDescuento && (
-                <div className="mt-2.5 p-3 rounded-xl bg-amber-50/80 border border-amber-200/80 space-y-2 animate-fade-in-up">
+                <div className="mt-2.5 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 space-y-2 animate-fade-in-up">
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <Label className="text-[11px] font-semibold text-amber-900">% Descuento</Label>
+                      <Label className="text-[11px] font-semibold text-amber-700 dark:text-amber-300">% Descuento</Label>
                       <Input
                         type="number"
                         min="0"
                         max="100"
                         placeholder="10"
-                        className="bg-white rounded-lg h-8 text-xs font-bold"
+                        className="bg-card rounded-lg h-8 text-xs font-bold"
                         value={porcentajeDescuento}
                         onChange={(e) => handlePorcentajeChange(e.target.value)}
                         disabled={saving}
                       />
                     </div>
                     <div>
-                      <Label className="text-[11px] font-semibold text-emerald-900">Importe Final</Label>
-                      <div className="h-8 flex items-center px-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-xs font-black text-emerald-700">
+                      <Label className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-300">Importe Final</Label>
+                      <div className="h-8 flex items-center px-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-xs font-black text-emerald-600 dark:text-emerald-400">
                         ${importeFinal ? parseFloat(importeFinal).toLocaleString("es-AR") : "0"}
                       </div>
                     </div>
@@ -1157,7 +1157,7 @@ export default function EstadoCuenta() {
 
             {/* Nota */}
             <div className="space-y-1">
-              <Label className="text-xs font-semibold text-gray-700">Nota personalizada (opcional)</Label>
+              <Label className="text-xs font-semibold text-foreground">Nota personalizada (opcional)</Label>
               <Input
                 placeholder="Ej: Pago en recepción, se le descontó $500..."
                 value={pagoForm.nota}
@@ -1188,23 +1188,23 @@ export default function EstadoCuenta() {
               Notificación por WhatsApp
             </DialogTitle>
             <DialogDescription className="text-xs">
-              Elegí el tipo de mensaje para enviar a <span className="font-bold text-gray-900">{clienteWa?.nombre}</span>.
+              Elegí el tipo de mensaje para enviar a <span className="font-bold text-foreground">{clienteWa?.nombre}</span>.
             </DialogDescription>
           </DialogHeader>
 
           {clienteWa && (
             <div className="space-y-4 mt-2">
               {/* Campo de Teléfono */}
-              <div className="space-y-1.5 bg-gray-50/80 p-3 rounded-xl border border-gray-200">
+              <div className="space-y-1.5 bg-muted/40 p-3 rounded-xl border border-border">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="wa-phone" className="text-xs font-semibold text-gray-700 flex items-center gap-1">
+                  <Label htmlFor="wa-phone" className="text-xs font-semibold text-foreground flex items-center gap-1">
                     <Phone className="w-3 h-3 text-emerald-600" />
                     Teléfono del Destinatario
                   </Label>
                   <button
                     type="button"
                     onClick={() => setTelefonoModal("+54 9 11 6002-1513")}
-                    className="text-[11px] font-bold text-emerald-700 hover:underline cursor-pointer"
+                    className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
                   >
                     Usar mi N° de prueba
                   </button>
@@ -1215,7 +1215,7 @@ export default function EstadoCuenta() {
                     value={telefonoModal}
                     onChange={(e) => setTelefonoModal(e.target.value)}
                     placeholder="Ej: +54 9 11 6002-1513 o 1160021513"
-                    className="text-xs h-9 bg-white"
+                    className="text-xs h-9 bg-card"
                   />
                   {telefonoModal.trim() && telefonoModal !== clienteWa.telefono && (
                     <Button
@@ -1224,33 +1224,33 @@ export default function EstadoCuenta() {
                       variant="outline"
                       onClick={() => handleGuardarTelefono(clienteWa.userId, telefonoModal)}
                       disabled={guardandoTel}
-                      className="text-[11px] h-9 whitespace-nowrap rounded-lg border-gray-300 hover:bg-gray-100"
+                      className="text-[11px] h-9 whitespace-nowrap rounded-lg border-border hover:bg-muted"
                     >
                       {guardandoTel ? "Guardando..." : "Guardar en ficha"}
                     </Button>
                   )}
                 </div>
                 {!clienteWa.telefono && !telefonoModal.trim() && (
-                  <p className="text-[11px] text-amber-600 font-medium">
+                  <p className="text-[11px] text-amber-600 dark:text-amber-400 font-medium">
                     ⚠️ Este socio no tiene teléfono cargado. Ingresá uno o hacé clic en "Usar mi N° de prueba" para habilitar el envío.
                   </p>
                 )}
               </div>
 
               {/* Opción 1: Recordatorio Amigable */}
-              <div className="p-3.5 rounded-xl border border-gray-200 hover:border-emerald-400 bg-white hover:bg-emerald-50/20 transition-all space-y-1.5">
+              <div className="p-3.5 rounded-xl border border-border hover:border-emerald-500 bg-card hover:bg-emerald-500/5 transition-all space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-amber-600" />
+                  <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-amber-500" />
                     1. Recordatorio Cordial (Cuota del Mes)
                   </span>
                 </div>
-                <p className="text-[11px] text-gray-500 italic leading-relaxed">
+                <p className="text-[11px] text-muted-foreground italic leading-relaxed">
                   "Hola {clienteWa.nombre.split(" ")[0]}! Te escribimos desde {settings.nombreGimnasio || "el gimnasio"} para recordarte que tenés disponible la cuota de este mes..."
                 </p>
                 <div className="pt-1">
                   {obtenerMensajesWhatsApp(clienteWa, telefonoModal).recordatorio ? (
-                    <Button asChild size="sm" className="w-full rounded-lg bg-emerald-600 hover:bg-emerald-700 text-xs font-bold">
+                    <Button asChild size="sm" className="w-full rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">
                       <a
                         href={obtenerMensajesWhatsApp(clienteWa, telefonoModal).recordatorio!}
                         target="_blank"
@@ -1268,14 +1268,14 @@ export default function EstadoCuenta() {
               </div>
 
               {/* Opción 2: Aviso de Regularización */}
-              <div className="p-3.5 rounded-xl border border-rose-200 hover:border-rose-400 bg-rose-50/30 transition-all space-y-1.5">
+              <div className="p-3.5 rounded-xl border border-rose-500/20 hover:border-rose-500/40 bg-rose-500/5 transition-all space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-rose-800 flex items-center gap-1.5">
-                    <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
+                  <span className="text-xs font-bold text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
+                    <ShieldAlert className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
                     2. Aviso de Regularización (Deuda Vencida)
                   </span>
                 </div>
-                <p className="text-[11px] text-gray-600 italic leading-relaxed">
+                <p className="text-[11px] text-muted-foreground italic leading-relaxed">
                   "Hola {clienteWa.nombre.split(" ")[0]}! Nos comunicamos desde {settings.nombreGimnasio || "el gimnasio"} para informarte que tenés cuotas pendientes de pago..."
                 </p>
                 <div className="pt-1">
@@ -1322,7 +1322,7 @@ export default function EstadoCuenta() {
 
           <div className="flex-1 overflow-y-auto space-y-2.5 my-3 pr-1 max-h-[55vh]">
             {clientesConDeudaOPendiente.length === 0 ? (
-              <div className="text-center py-10 text-gray-400 text-xs">
+              <div className="text-center py-10 text-muted-foreground text-xs">
                 ¡Excelente! No hay socios con cuotas pendientes ni deudas en este momento.
               </div>
             ) : (
@@ -1331,24 +1331,24 @@ export default function EstadoCuenta() {
                 return (
                   <div
                     key={c.userId}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border border-gray-200 bg-white hover:border-gray-300 transition-all shadow-2xs"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border border-border bg-card hover:border-muted-foreground/30 transition-all shadow-2xs"
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <PersonaAvatar seed={c.userId} size={36} />
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <p className="font-bold text-xs text-gray-900 truncate">{c.nombre}</p>
+                          <p className="font-bold text-xs text-foreground truncate">{c.nombre}</p>
                           <span
                             className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                               esDeuda
-                                ? "bg-rose-100 text-rose-700"
-                                : "bg-amber-100 text-amber-800"
+                                ? "bg-rose-500/10 text-rose-600 dark:text-rose-400"
+                                : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
                             }`}
                           >
                             {esDeuda ? "Deuda Vencida" : "Pendiente este mes"}
                           </span>
                         </div>
-                        <p className="text-[11px] text-gray-500 truncate">
+                        <p className="text-[11px] text-muted-foreground truncate">
                           {c.planNombre || "Sin plan"} · {c.telefono || "⚠️ Sin teléfono guardado"}
                         </p>
                       </div>

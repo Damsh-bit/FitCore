@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function MetricCardSkeleton() {
   return (
-    <div className="bg-white rounded-lg p-6 border border-gray-200 relative">
+    <div className="bg-card rounded-lg p-6 border border-border relative shadow-sm">
       <div className="flex items-start justify-between">
         <div className="space-y-2 flex-1">
           <Skeleton className="h-9 w-16" />

@@ -36,7 +36,7 @@ export default function QuickActionsBar() {
             key={accion.path}
             type="button"
             onClick={() => navigate(accion.path)}
-            className="flex items-center gap-2 shrink-0 pl-1.5 pr-3 py-1.5 rounded-xl text-[11px] font-bold whitespace-nowrap transition-all active:scale-95 cursor-pointer bg-white border border-gray-200/80 text-gray-700 hover:border-gray-300 hover:shadow-sm shadow-xs"
+            className="flex items-center gap-2 shrink-0 pl-1.5 pr-3 py-1.5 rounded-xl text-[11px] font-bold whitespace-nowrap transition-all active:scale-95 cursor-pointer bg-card border border-border text-foreground hover:bg-muted hover:shadow-sm shadow-xs"
           >
             <span className={cn("flex items-center justify-center w-6 h-6 rounded-lg text-white shrink-0", accion.iconClass)}>
               <Icon className="h-3.5 w-3.5" />

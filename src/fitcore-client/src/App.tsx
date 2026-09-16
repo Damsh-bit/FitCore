@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import { GymSettingsProvider } from "@/context/GymSettingsContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
@@ -26,6 +27,7 @@ import Configuracion from "./pages/Configuracion";
 function App() {
   return (
     <BrowserRouter>
+      <ThemeProvider>
       <GymSettingsProvider>
       <AuthProvider>
         <Routes>
@@ -123,6 +125,7 @@ function App() {
         <Toaster />
       </AuthProvider>
       </GymSettingsProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

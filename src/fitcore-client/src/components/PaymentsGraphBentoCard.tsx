@@ -82,28 +82,28 @@ export default function PaymentsGraphBentoCard({
             <DollarSign className="h-4 w-4 text-primary" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-black tracking-tight">Ingresos</h3>
-            <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Últimos 7 días</p>
+            <h3 className="text-sm font-bold text-foreground tracking-tight">Ingresos</h3>
+            <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest">Últimos 7 días</p>
           </div>
         </div>
         <div className="flex items-center gap-1.5">
           <div className={cn(
             "flex items-center gap-1 px-2 py-0.5 rounded-full border",
-            isPositive ? "bg-emerald-50 border-emerald-100 text-emerald-600" : "bg-rose-50 border-rose-100 text-rose-600"
+            isPositive ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-600 dark:text-emerald-400" : "bg-rose-500/15 border-rose-500/30 text-rose-600 dark:text-rose-400"
           )}>
             {isPositive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
             <span className="text-[10px] font-black">{isPositive ? `+${porcentajeCrecimiento}%` : `${porcentajeCrecimiento}%`}</span>
           </div>
-          <Maximize2 className="h-3 w-3 text-gray-400 group-hover:text-black transition-colors" />
+          <Maximize2 className="h-3 w-3 text-muted-foreground group-hover:text-foreground transition-colors" />
         </div>
       </div>
 
       <div className="lg:flex-1 flex flex-col mt-2 min-h-0">
         <div className="mb-2">
-          <p className="text-2xl font-black text-black tracking-tighter">
+          <p className="text-2xl font-black text-foreground tracking-tighter">
             {totalSemanaFormatted ?? `$${totalSemana.toLocaleString("es-AR")}`}
           </p>
-          <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">Total Semanal Cobrado</p>
+          <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest mt-0.5">Total Semanal Cobrado</p>
         </div>
 
         {/* Gráfico de área — recharts */}
@@ -116,17 +116,18 @@ export default function PaymentsGraphBentoCard({
                   <stop offset="100%" stopColor="var(--primary)" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid vertical={false} stroke="#f1f1f2" />
+              <CartesianGrid vertical={false} stroke="currentColor" className="text-border/40" />
               <XAxis
                 dataKey="dia"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fontSize: 9, fontWeight: 700, fill: "#9ca3af" }}
+                tick={{ fontSize: 9, fontWeight: 700, fill: "currentColor" }}
+                className="text-muted-foreground"
                 padding={{ left: 8, right: 8 }}
               />
               <YAxis hide domain={[0, (max: number) => max * 1.2]} />
               <Tooltip
-                cursor={{ stroke: "#e5e7eb", strokeWidth: 1 }}
+                cursor={{ stroke: "var(--border)", strokeWidth: 1 }}
                 content={(props) => (
                   <ChartTooltip
                     {...(props as object)}
@@ -143,7 +144,7 @@ export default function PaymentsGraphBentoCard({
                 strokeWidth={2}
                 fill="url(#gradient-pay)"
                 dot={false}
-                activeDot={{ r: 5, stroke: "#fff", strokeWidth: 2 }}
+                activeDot={{ r: 5, stroke: "var(--card)", strokeWidth: 2 }}
                 isAnimationActive
               />
             </AreaChart>

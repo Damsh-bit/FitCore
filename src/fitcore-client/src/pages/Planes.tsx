@@ -214,16 +214,16 @@ export default function Planes() {
     <div className="space-y-10 max-w-6xl mx-auto pb-12">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-black text-black tracking-tight">Tu Cuenta y Membresía</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <h1 className="text-3xl font-black text-foreground tracking-tight">Tu Cuenta y Membresía</h1>
+        <p className="text-sm text-muted-foreground mt-1">
           Gestioná tu plan activo, realizá pagos seguros y consultá tu historial.
         </p>
       </div>
 
       {/* ── 1. Membresía activa ── */}
       <div>
-        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-          <ShieldCheck className="w-4 h-4 text-gray-500" /> Estado de tu Membresía
+        <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3 flex items-center gap-2">
+          <ShieldCheck className="w-4 h-4 text-muted-foreground" /> Estado de tu Membresía
         </h2>
 
         {loadingMembresia ? (
@@ -282,13 +282,13 @@ export default function Planes() {
             </div>
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-3xl p-8 text-center space-y-3 shadow-xs">
-            <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mx-auto shadow-xs">
+          <div className="bg-card border border-border rounded-3xl p-8 text-center space-y-3 shadow-xs">
+            <div className="w-12 h-12 rounded-2xl bg-orange-500/10 text-orange-600 dark:text-orange-400 flex items-center justify-center mx-auto shadow-xs">
               <Clock className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-gray-900">No tenés una membresía activa</h3>
-              <p className="text-xs text-gray-500 max-w-sm mx-auto mt-1">
+              <h3 className="text-base font-bold text-foreground">No tenés una membresía activa</h3>
+              <p className="text-xs text-muted-foreground max-w-sm mx-auto mt-1">
                 Elegí uno de los planes disponibles a continuación para comenzar a entrenar hoy mismo.
               </p>
             </div>
@@ -300,10 +300,10 @@ export default function Planes() {
       <div>
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-gray-500" /> Planes Disponibles
+            <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+              <CreditCard className="w-4 h-4 text-muted-foreground" /> Planes Disponibles
             </h2>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               Pagá online con Mercado Pago, Tarjeta o Transferencia bancaria directa.
             </p>
           </div>
@@ -316,7 +316,7 @@ export default function Planes() {
             ))}
           </div>
         ) : planes.length === 0 ? (
-          <p className="text-sm text-gray-400 py-8 text-center">No hay planes disponibles por el momento.</p>
+          <p className="text-sm text-muted-foreground py-8 text-center">No hay planes disponibles por el momento.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {planes.map((p, i) => {
@@ -324,43 +324,43 @@ export default function Planes() {
               return (
                 <div
                   key={p.id}
-                  className={`bg-white rounded-3xl p-6 flex flex-col justify-between transition-all duration-200 border animate-fade-in-up ${
+                  className={`bg-card rounded-3xl p-6 flex flex-col justify-between transition-all duration-200 border animate-fade-in-up ${
                     esActual
                       ? "border-orange-500 shadow-md ring-2 ring-orange-500/20"
-                      : "border-gray-200 hover:border-gray-300 hover:shadow-lg hover:-translate-y-1"
+                      : "border-border hover:border-muted-foreground/30 hover:shadow-lg hover:-translate-y-1"
                   }`}
                   style={{ animationDelay: `${i * 70}ms` }}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-lg font-black text-gray-900">{p.nombre}</h3>
+                      <h3 className="text-lg font-black text-foreground">{p.nombre}</h3>
                       {esActual && (
-                        <span className="px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-700 text-[11px] font-bold">
+                        <span className="px-2.5 py-0.5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 text-[11px] font-bold">
                           Tu plan actual
                         </span>
                       )}
                     </div>
 
                     <div className="py-2">
-                      <p className="text-3xl font-black text-gray-900 tracking-tight">
+                      <p className="text-3xl font-black text-foreground tracking-tight">
                         ${p.precio.toLocaleString("es-AR")}
                       </p>
-                      <p className="text-xs text-gray-400 mt-1 font-medium">
+                      <p className="text-xs text-muted-foreground mt-1 font-medium">
                         Válido por {p.duracionEnDias} días
                       </p>
                     </div>
 
-                    <ul className="text-xs text-gray-600 space-y-2 mt-4 pt-4 border-t border-gray-100">
+                    <ul className="text-xs text-muted-foreground space-y-2 mt-4 pt-4 border-t border-border">
                       <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                         <span>Acceso ilimitado a las instalaciones</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                         <span>Registro automático de asistencias</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                         <span>Múltiples métodos de pago online</span>
                       </li>
                     </ul>
@@ -370,7 +370,7 @@ export default function Planes() {
                     onClick={() => handleAbrirCheckout(p)}
                     className={`mt-6 w-full h-11 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer ${
                       esActual
-                        ? "bg-zinc-900 hover:bg-black text-white"
+                        ? "bg-muted hover:bg-muted/80 text-foreground border border-border"
                         : "bg-orange-600 hover:bg-orange-700 text-white shadow-md shadow-orange-600/20"
                     }`}
                   >
@@ -386,8 +386,8 @@ export default function Planes() {
       {/* ── 3. Historial de Pagos ── */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
-            <Receipt className="w-4 h-4 text-gray-500" /> Historial de Pagos y Recibos
+          <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+            <Receipt className="w-4 h-4 text-muted-foreground" /> Historial de Pagos y Recibos
           </h2>
         </div>
 
@@ -398,13 +398,13 @@ export default function Planes() {
             ))}
           </div>
         ) : misPagos.length === 0 ? (
-          <div className="bg-white border border-gray-200 rounded-3xl p-8 text-center text-gray-400 text-sm">
-            <Receipt className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+          <div className="bg-card border border-border rounded-3xl p-8 text-center text-muted-foreground text-sm">
+            <Receipt className="w-8 h-8 text-muted-foreground/40 mx-auto mb-2" />
             Todavía no registrás pagos en tu cuenta.
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-xs">
-            <div className="divide-y divide-gray-100">
+          <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-xs">
+            <div className="divide-y divide-border">
               {misPagos.map((p, i) => {
                 const esMP = p.metodo.toLowerCase().includes("mercado");
                 const esTarjeta = p.metodo.toLowerCase().includes("tarjeta");
@@ -412,7 +412,7 @@ export default function Planes() {
                 return (
                   <div
                     key={p.id}
-                    className="p-4 sm:p-5 flex items-center justify-between hover:bg-gray-50/70 transition-colors animate-fade-in-up"
+                    className="p-4 sm:p-5 flex items-center justify-between hover:bg-muted/50 transition-colors animate-fade-in-up"
                     style={{ animationDelay: `${Math.min(i, 10) * 40}ms` }}
                   >
                     <div className="flex items-center gap-4 min-w-0">
@@ -420,8 +420,8 @@ export default function Planes() {
                         esMP
                           ? "bg-[#009ee3]/10 text-[#009ee3] border-[#009ee3]/20"
                           : esTarjeta
-                          ? "bg-orange-50 text-orange-600 border-orange-100"
-                          : "bg-emerald-50 text-emerald-600 border-emerald-100"
+                          ? "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20"
+                          : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                       }`}>
                         {esMP ? (
                           <span className="font-black text-xs">MP</span>
@@ -434,22 +434,22 @@ export default function Planes() {
 
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <p className="font-bold text-sm text-gray-900 truncate">{p.planNombre}</p>
+                          <p className="font-bold text-sm text-foreground truncate">{p.planNombre}</p>
                           <Badge variant="outline" className="text-[10px] font-semibold">
                             {p.metodo}
                           </Badge>
                         </div>
-                        <p className="text-xs text-gray-400 mt-0.5 truncate">
+                        <p className="text-xs text-muted-foreground mt-0.5 truncate">
                           {p.fechaFormatted} {p.nota ? `— ${p.nota}` : ""}
                         </p>
                       </div>
                     </div>
 
                     <div className="text-right shrink-0 pl-4">
-                      <p className="text-base font-black text-gray-900 font-mono">
+                      <p className="text-base font-black text-foreground font-mono">
                         {p.montoFormatted}
                       </p>
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 uppercase tracking-wider">
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
                         <CheckCircle2 className="w-3 h-3" /> Aprobado
                       </span>
                     </div>
@@ -471,9 +471,9 @@ export default function Planes() {
 
       {/* ── Modal baja propia cliente ── */}
       <Dialog open={bajaOpen} onOpenChange={setBajaOpen}>
-        <DialogContent className="rounded-2xl border-gray-200">
+        <DialogContent className="rounded-2xl border-border">
           <DialogHeader>
-            <DialogTitle className="text-red-600">
+            <DialogTitle className="text-red-600 dark:text-red-400">
               Cancelar mi membresía
             </DialogTitle>
             <DialogDescription>
@@ -506,7 +506,7 @@ export default function Planes() {
 
             <div className="space-y-2">
               <Label htmlFor="cliente-obs-baja">
-                Comentarios o sugerencias <span className="text-gray-400 font-normal text-xs">(opcional)</span>
+                Comentarios o sugerencias <span className="text-muted-foreground font-normal text-xs">(opcional)</span>
               </Label>
               <Input
                 id="cliente-obs-baja"
@@ -517,7 +517,7 @@ export default function Planes() {
               />
             </div>
 
-            <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-800">
+            <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-xs text-red-600 dark:text-red-400">
               Al confirmar, tu membresía se cancelará de inmediato y no se generarán cuotas posteriores.
             </div>
           </div>

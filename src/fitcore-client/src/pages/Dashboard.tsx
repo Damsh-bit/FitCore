@@ -368,10 +368,10 @@ export default function Dashboard() {
     <div className="space-y-2.5 pb-3 max-w-[1800px] mx-auto flex flex-col lg:h-full">
       <div className="flex flex-wrap justify-between items-center gap-2 px-1">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-black tracking-tight">Panel Central</h1>
-          <p className="text-gray-400 text-[10px] font-bold uppercase tracking-[0.2em] mt-0.5">Control de Gimnasio</p>
+          <h1 className="text-xl sm:text-2xl font-black text-foreground tracking-tight">Panel Central</h1>
+          <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-[0.2em] mt-0.5">Control de Gimnasio</p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shrink-0">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-foreground text-background rounded-full text-[10px] font-black uppercase tracking-widest shadow-md shrink-0">
           <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
           Sistema Activo
         </div>
@@ -384,7 +384,7 @@ export default function Dashboard() {
       {/* Un solo panel con divisores en vez de 8 tarjetas separadas: a lo
           ancho, 8 cajas individuales dejaban mucho espacio en blanco a la
           derecha de cada valor. */}
-      <div className="bg-white border border-gray-200/80 rounded-2xl shadow-xs overflow-hidden">
+      <div className="bg-card border border-border rounded-2xl shadow-xs overflow-hidden">
         <div className="grid grid-cols-2">
           {[
             { key: "activos", icon: Users, color: "indigo" as const, value: stats ? stats.clientesActivos : 0, label: "Clientes Activos", onClick: () => abrirStat("activos") },
@@ -405,8 +405,8 @@ export default function Dashboard() {
               onClick={s.onClick}
               loading={loading}
               className={cn(
-                i % 2 === 0 && "border-r border-gray-100",
-                i < arr.length - 2 && "border-b border-gray-100"
+                i % 2 === 0 && "border-r border-border",
+                i < arr.length - 2 && "border-b border-border"
               )}
             />
           ))}
