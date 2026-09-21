@@ -16,7 +16,9 @@ public record GymSettingsDto(
     string? Email,
     string? InstagramUrl,
     string? FacebookUrl,
-    string? TiktokUrl
+    string? TiktokUrl,
+    bool ReporteOcupacionHabilitado,
+    bool ReporteContableHabilitado
 );
 
 public record ActualizarGymSettingsDto(
@@ -35,5 +37,7 @@ public record ActualizarGymSettingsDto(
     string? Email,
     string? InstagramUrl,
     string? FacebookUrl,
-    string? TiktokUrl
+    string? TiktokUrl,
+    bool ReporteOcupacionHabilitado,
+    bool ReporteContableHabilitado
 );

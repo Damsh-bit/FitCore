@@ -18,6 +18,8 @@ interface GymSettings {
   instagramUrl: string | null;
   facebookUrl: string | null;
   tiktokUrl: string | null;
+  reporteOcupacionHabilitado: boolean;
+  reporteContableHabilitado: boolean;
 }
 
 const DEFAULT_SETTINGS: GymSettings = {
@@ -37,7 +39,10 @@ const DEFAULT_SETTINGS: GymSettings = {
   instagramUrl: null,
   facebookUrl: null,
   tiktokUrl: null,
+  reporteOcupacionHabilitado: true,
+  reporteContableHabilitado: true,
 };
+
 
 const RADIUS_MAP: Record<string, string> = {
   none: "0rem",

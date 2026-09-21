@@ -76,6 +76,8 @@ public class GymSettingsController : ControllerBase
         settings.InstagramUrl = dto.InstagramUrl;
         settings.FacebookUrl = dto.FacebookUrl;
         settings.TiktokUrl = dto.TiktokUrl;
+        settings.ReporteOcupacionHabilitado = dto.ReporteOcupacionHabilitado;
+        settings.ReporteContableHabilitado = dto.ReporteContableHabilitado;
 
         await _context.SaveChangesAsync();
         return Ok(ToDto(settings));
@@ -86,8 +88,10 @@ public class GymSettingsController : ControllerBase
         s.ColorPrimario, s.ColorSecundario, s.ColorAcento,
         s.BorderRadius, s.FontFamily, s.AvatarStyle, s.MensajeBienvenida,
         s.Telefono, s.Whatsapp, s.Email,
-        s.InstagramUrl, s.FacebookUrl, s.TiktokUrl);
+        s.InstagramUrl, s.FacebookUrl, s.TiktokUrl,
+        s.ReporteOcupacionHabilitado, s.ReporteContableHabilitado);
 
     private static GymSettingsDto DefaultDto() => new(
-        null, null, null, null, null, null, "lg", "inter", "avataaars", null, null, null, null, null, null, null);
+        null, null, null, null, null, null, "lg", "inter", "avataaars", null, null, null, null, null, null, null,
+        true, true);
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Palette, Image as ImageIcon, MessageCircle, Save, Users } from "lucide-react";
+import { Palette, Image as ImageIcon, MessageCircle, Save, Users, BarChart2, Lock, CheckCircle2 } from "lucide-react";
 import { apiFetch } from "@/lib/api";
 import { fileToBase64 } from "@/lib/fileToBase64";
 import { useGymSettings } from "@/context/GymSettingsContext";
@@ -46,6 +46,8 @@ type FormState = {
   instagramUrl: string;
   facebookUrl: string;
   tiktokUrl: string;
+  reporteOcupacionHabilitado: boolean;
+  reporteContableHabilitado: boolean;
 };
 
 const DEFAULT_COLORS = {
@@ -69,15 +71,18 @@ const emptyForm: FormState = {
   instagramUrl: "",
   facebookUrl: "",
   tiktokUrl: "",
+  reporteOcupacionHabilitado: true,
+  reporteContableHabilitado: true,
 };
 
-type Seccion = "marca" | "colores" | "avatares" | "comunicacion";
+type Seccion = "marca" | "colores" | "avatares" | "comunicacion" | "reportes";
 
 const SECCIONES: { id: Seccion; label: string; icon: typeof Palette }[] = [
   { id: "marca", label: "Identidad de marca", icon: ImageIcon },
   { id: "colores", label: "Colores y estética", icon: Palette },
   { id: "avatares", label: "Avatares", icon: Users },
   { id: "comunicacion", label: "Comunicación al cliente", icon: MessageCircle },
+  { id: "reportes", label: "Reportes", icon: BarChart2 },
 ];
 
 export default function Configuracion() {
@@ -110,6 +115,8 @@ export default function Configuracion() {
           instagramUrl: data.instagramUrl ?? "",
           facebookUrl: data.facebookUrl ?? "",
           tiktokUrl: data.tiktokUrl ?? "",
+          reporteOcupacionHabilitado: data.reporteOcupacionHabilitado ?? true,
+          reporteContableHabilitado: data.reporteContableHabilitado ?? true,
         });
       })
       .catch(() => {
@@ -156,6 +163,8 @@ export default function Configuracion() {
           instagramUrl: form.instagramUrl || null,
           facebookUrl: form.facebookUrl || null,
           tiktokUrl: form.tiktokUrl || null,
+          reporteOcupacionHabilitado: form.reporteOcupacionHabilitado,
+          reporteContableHabilitado: form.reporteContableHabilitado,
         }),
       });
       if (!res.ok) {
@@ -400,6 +409,100 @@ export default function Configuracion() {
               <Label htmlFor="tiktok">TikTok</Label>
               <Input id="tiktok" placeholder="https://tiktok.com/@tugym" value={form.tiktokUrl} onChange={(e) => setForm((p) => ({ ...p, tiktokUrl: e.target.value }))} disabled={saving} />
             </div>
+          </div>
+        </div>
+      )}
+
+      {seccion === "reportes" && (
+        <div className="bg-card border border-border rounded-2xl p-6 space-y-5">
+          <div>
+            <p className="text-sm font-semibold text-foreground">Visibilidad de reportes</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Activá solo los reportes que uses. Los obligatorios siempre están disponibles.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {/* --- Reportes siempre activos --- */}
+            {[
+              { label: "Ingresos", desc: "Pagos cobrados y total del período. Esencial para saber si el negocio es rentable." },
+              { label: "Morosidad", desc: "Clientes con cuotas vencidas. Crítico para el flujo de caja de cualquier gimnasio." },
+            ].map((r) => (
+              <div
+                key={r.label}
+                className="flex items-start gap-4 p-4 rounded-xl border border-border bg-muted/30"
+              >
+                <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-foreground">{r.label}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{r.desc}</p>
+                </div>
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground border border-border rounded-full px-2.5 py-1 shrink-0">
+                  <Lock className="w-3 h-3" /> Siempre activo
+                </span>
+              </div>
+            ))}
+
+            {/* --- Reportes opcionales --- */}
+            {[
+              {
+                key: "reporteOcupacionHabilitado" as const,
+                label: "Ocupación por Hora",
+                desc: "Histograma de asistencias por franja horaria. Útil para gyms con clases o turnos; prescindible si atendés de forma libre.",
+              },
+              {
+                key: "reporteContableHabilitado" as const,
+                label: "Contable Completo",
+                desc: "Ingresos, egresos, inversiones y balance. Ideal si usás FitCore como herramienta contable; innecesario si llevás las cuentas con un contador aparte.",
+              },
+            ].map((r) => {
+              const activo = form[r.key];
+              return (
+                <div
+                  key={r.key}
+                  className={cn(
+                    "flex items-start gap-4 p-4 rounded-xl border transition-colors",
+                    activo ? "border-border bg-card" : "border-border bg-muted/20"
+                  )}
+                >
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={activo}
+                    disabled={saving}
+                    onClick={() => setForm((p) => ({ ...p, [r.key]: !p[r.key] }))}
+                    className={cn(
+                      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent",
+                      "transition-colors duration-200 ease-in-out focus-visible:outline-none",
+                      "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-0.5",
+                      activo ? "bg-emerald-500" : "bg-muted-foreground/30"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-lg",
+                        "ring-0 transition-transform duration-200 ease-in-out",
+                        activo ? "translate-x-5" : "translate-x-0"
+                      )}
+                    />
+                  </button>
+                  <div className="flex-1 min-w-0">
+                    <p className={cn("text-sm font-bold", activo ? "text-foreground" : "text-muted-foreground")}>
+                      {r.label}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{r.desc}</p>
+                  </div>
+                  <span className={cn(
+                    "text-[10px] font-black uppercase tracking-widest rounded-full px-2.5 py-1 shrink-0 mt-0.5",
+                    activo
+                      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                      : "bg-muted text-muted-foreground"
+                  )}>
+                    {activo ? "Activo" : "Inactivo"}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

@@ -423,7 +423,7 @@ export default function Dashboard() {
           onSelectDate={setFechaSeleccionada}
         />
 
-        <div className="lg:col-span-5 flex flex-col gap-3 lg:min-h-0">
+        <div className="lg:col-span-5 flex flex-col gap-3 lg:min-h-0 overflow-hidden">
           <PaymentsGraphBentoCard
             className="lg:flex-1"
             delay={150}

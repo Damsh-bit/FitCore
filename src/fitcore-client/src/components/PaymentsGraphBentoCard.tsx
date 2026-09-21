@@ -40,7 +40,7 @@ export default function PaymentsGraphBentoCard({
 
   if (loading) {
     return (
-      <BentoCard className={cn("flex flex-col lg:h-full !p-3", className)} delay={delay}>
+      <BentoCard className={cn("flex flex-col !p-3", className)} delay={delay}>
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-2.5">
             <Skeleton className="h-8 w-8 rounded-lg" />
@@ -72,7 +72,7 @@ export default function PaymentsGraphBentoCard({
   }));
 
   return (
-    <BentoCard className={cn("flex flex-col lg:h-full !p-3", className)} delay={delay}>
+    <BentoCard className={cn("flex flex-col !p-3", className)} delay={delay}>
       <div
         className="flex items-center justify-between mb-1 cursor-pointer group"
         onClick={() => setModalOpen(true)}
@@ -107,7 +107,7 @@ export default function PaymentsGraphBentoCard({
         </div>
 
         {/* Gráfico de área — recharts */}
-        <div className="flex-1 min-h-[100px] w-full">
+        <div className="h-[160px] lg:flex-1 min-h-0 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={serie} margin={{ top: 8, right: 2, left: 2, bottom: 0 }}>
               <defs>

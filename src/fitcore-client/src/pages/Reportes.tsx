@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/ui/error-state";
 import { useToast } from "@/components/ui/use-toast";
+import { useGymSettings } from "@/context/GymSettingsContext";
 import { cn } from "@/lib/utils";
 
 type TipoReporte = "ingresos" | "morosidad" | "ocupacion" | "contable";
@@ -65,6 +66,15 @@ async function descargarArchivo(path: string, filenameFallback: string) {
 
 export default function Reportes() {
   const { toast } = useToast();
+  const { settings } = useGymSettings();
+
+  // Filtrar los reportes visibles según la configuración del gimnasio.
+  // Ingresos y Morosidad son siempre visibles; Ocupación y Contable son opcionales.
+  const reportesVisibles = REPORTES.filter((r) => {
+    if (r.key === "ocupacion") return settings.reporteOcupacionHabilitado;
+    if (r.key === "contable") return settings.reporteContableHabilitado;
+    return true;
+  });
 
   const [tipo, setTipo] = useState<TipoReporte>("ingresos");
   const [desde, setDesde] = useState(haceDiasISO(30));
@@ -81,6 +91,14 @@ export default function Reportes() {
 
   const usaRango = tipo !== "morosidad";
   const datosActuales = datos && datos.tipo === tipo ? datos.payload : null;
+
+  // Si el reporte activo fue deshabilitado desde Configuración, volver al primero disponible.
+  useEffect(() => {
+    if (!reportesVisibles.find((r) => r.key === tipo)) {
+      setTipo(reportesVisibles[0]?.key ?? "ingresos");
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings.reporteOcupacionHabilitado, settings.reporteContableHabilitado]);
 
   const cargar = () => {
     setLoading(true);
@@ -129,8 +147,13 @@ export default function Reportes() {
       </div>
 
       {/* ── Selector de reporte ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {REPORTES.map((r) => {
+      <div className={cn(
+        "grid gap-3",
+        reportesVisibles.length === 4 ? "grid-cols-2 sm:grid-cols-4"
+        : reportesVisibles.length === 3 ? "grid-cols-3"
+        : "grid-cols-2"
+      )}>
+        {reportesVisibles.map((r) => {
           const Icon = r.icon;
           const activo = tipo === r.key;
           return (

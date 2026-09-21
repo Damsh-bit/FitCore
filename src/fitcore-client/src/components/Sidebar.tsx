@@ -3,13 +3,11 @@ import {
   LayoutDashboard, Users, CreditCard, Calendar, User, LogOut,
   ClipboardList, ShieldCheck, TrendingUp, Menu, X,
   PanelLeftClose, PanelLeftOpen, Wallet, FileSpreadsheet, Settings,
-  Sun, Moon,
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
 import { useGymSettings } from "@/context/GymSettingsContext";
-import { useTheme } from "@/context/ThemeContext";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import PersonaAvatar from "@/components/ui/persona-avatar";
 import logoIcon from "@/assets/brand/fitcore-icon.png";
@@ -87,7 +85,6 @@ export default function Sidebar() {
   const location = useLocation();
   const { user, logout, isAdmin } = useAuth();
   const { settings } = useGymSettings();
-  const { isDark, toggleTheme } = useTheme();
   const ahora = useReloj();
 
   const [collapsed, setCollapsed] = useState(() => {
@@ -216,33 +213,8 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* Acciones: Tema + Colapsar — solo desktop */}
+        {/* Acciones: Colapsar — solo desktop */}
         <div className={cn("hidden md:flex flex-col gap-1 mx-3 mb-1")}>
-          {/* Toggle de Tema */}
-          {collapsed ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={toggleTheme}
-                  className="flex items-center justify-center px-0 py-2 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-                  aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-                >
-                  {isDark ? <Sun className="h-4 w-4 shrink-0" /> : <Moon className="h-4 w-4 shrink-0" />}
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="right">{isDark ? "Modo claro" : "Modo oscuro"}</TooltipContent>
-            </Tooltip>
-          ) : (
-            <button
-              onClick={toggleTheme}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors text-xs font-semibold"
-              aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
-            >
-              {isDark ? <Sun className="h-4 w-4 shrink-0" /> : <Moon className="h-4 w-4 shrink-0" />}
-              <span className="whitespace-nowrap">{isDark ? "Modo claro" : "Modo oscuro"}</span>
-            </button>
-          )}
-
           {/* Colapsar */}
           {collapsed ? (
             <Tooltip>

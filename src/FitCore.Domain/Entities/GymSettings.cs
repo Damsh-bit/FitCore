@@ -27,4 +27,9 @@ public class GymSettings
     public string? InstagramUrl { get; set; }
     public string? FacebookUrl { get; set; }
     public string? TiktokUrl { get; set; }
+
+    // Visibilidad de reportes opcionales (true = visible). Ingresos y Morosidad son siempre visibles.
+    // Default true para no romper instalaciones existentes al migrar.
+    public bool ReporteOcupacionHabilitado { get; set; } = true;
+    public bool ReporteContableHabilitado { get; set; } = true;
 }
